@@ -1,0 +1,9 @@
+1. Create a git account
+2. Work on react js and develop a small react app
+     i. how to create a nav bar
+     ii.What are Hooks?
+     iii. Components?
+     iv. Bootstrap/Customized CSS
+3. Everyday perform git operations.
+4. Skelital structure of Frontend
+5. Logstash along with JWT -  (log in credentials)

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - AI Personal Trainer Assistant</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>⚡ AI Trainer</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li id="login-item"><a href="login.html" class="nav-link">🔐 Login</a></li>
+                <li id="signup-item"><a href="signup.html" class="nav-link active">📝 Signup</a></li>
+                <li id="dashboard-item" style="display: none;"><a href="dashboard.html" class="nav-link">📊 Dashboard</a></li>
+                <li id="ai-suggestions-item" style="display: none;"><a href="ai-suggestions.html" class="nav-link">🤖 AI Suggestions</a></li>
+                <li id="progress-item" style="display: none;"><a href="progress.html" class="nav-link">📈 View Progress</a></li>
+                <li id="logout-item" style="display: none;"><a href="#" class="nav-link" id="logout-link">🚪 Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="login-container">
+        <h1>Join Us Today</h1>
+        <p class="login-subtitle">Start your fitness transformation</p>
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="John Doe" required>
+                <div class="error-message">Please enter your name</div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                <div class="error-message">Please enter a valid email</div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+                <div class="error-message">Password must be at least 6 characters</div>
+            </div>
+            <div class="form-group">
+                <label for="role">I am a</label>
+                <select id="role" name="role" required style="width: 100%; padding: 12px 15px; border: 2px solid #E8EBED; border-radius: 8px; font-size: 14px; font-family: inherit; transition: all 0.3s ease; cursor: pointer;">
+                    <option value="">Select Role</option>
+                    <option value="member">Member</option>
+                    <option value="trainer">Trainer</option>
+                </select>
+            </div>
+            <button type="submit">Create Account</button>
+        </form>
+        <div class="form-footer">
+            Already have an account? <a href="login.html">Sign in here</a>
+        </div>
+    </div>
+
+    <script src="../js/nav.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const token = localStorage.getItem("token");
+            updateNavigation(token);
+
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

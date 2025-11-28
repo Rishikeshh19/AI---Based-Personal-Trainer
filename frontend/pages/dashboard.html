@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - AI Personal Trainer Assistant</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>⚡ AI Trainer</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li id="login-item" style="display: none;"><a href="login.html" class="nav-link">🔐 Login</a></li>
+                <li id="signup-item" style="display: none;"><a href="signup.html" class="nav-link">📝 Signup</a></li>
+                <li id="dashboard-item"><a href="dashboard.html" class="nav-link active">📊 Dashboard</a></li>
+                <li id="ai-suggestions-item"><a href="ai-suggestions.html" class="nav-link">🤖 AI Suggestions</a></li>
+                <li id="progress-item"><a href="progress.html" class="nav-link">📈 View Progress</a></li>
+                <li id="logout-item"><a href="#" class="nav-link" id="logout-link">🚪 Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <!-- Stats Cards -->
+        <div class="dashboard-container">
+            <div class="stats-card">
+                <div class="card-icon">📊</div>
+                <h3>Total Workouts</h3>
+                <div class="stat-value" id="total-workouts">0</div>
+                <p>This month</p>
+            </div>
+            <div class="stats-card">
+                <div class="card-icon">🔥</div>
+                <h3>Calories Burned</h3>
+                <div class="stat-value" id="total-calories">0</div>
+                <p>Total</p>
+            </div>
+            <div class="stats-card">
+                <div class="card-icon">⭐</div>
+                <h3>Streak</h3>
+                <div class="stat-value" id="streak">0</div>
+                <p>Days active</p>
+            </div>
+            <div class="stats-card">
+                <div class="card-icon">🎯</div>
+                <h3>Goal Progress</h3>
+                <div class="stat-value" id="goal-progress">75%</div>
+                <p>This week</p>
+            </div>
+        </div>
+
+        <!-- Latest Workout Section -->
+        <section id="workout-summary">
+            <h2>Latest Workout</h2>
+            <div id="latest-workout" class="empty-state">
+                <h3>No workouts recorded yet</h3>
+                <p>Start your fitness journey by logging your first workout</p>
+                <a href="ai-suggestions.html" class="button">Get AI Suggestions</a>
+            </div>
+        </section>
+
+        <!-- AI Suggestions Section -->
+        <section id="ai-suggestions">
+            <h2>🤖 AI-Based Suggestions</h2>
+            <div id="suggestions" class="empty-state">
+                <h3>Personalized recommendations coming soon</h3>
+                <p>Log more workouts to get personalized AI suggestions</p>
+            </div>
+        </section>
+
+        <!-- Progress Report Section -->
+        <section id="progress-report">
+            <h2>📈 Progress Report</h2>
+            <div id="progress-container">
+                <div class="empty-state">
+                    <h3>No progress data yet</h3>
+                    <p>Your progress will be displayed here</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="footer">
+        <p>&copy; 2025 AI Personal Trainer Assistant. All rights reserved.</p>
+    </div>
+
+    <script src="../js/nav.js"></script>
+    <script src="../js/dashboard.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+            updateNavigation(token);
+
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

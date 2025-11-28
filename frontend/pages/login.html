@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - AI Personal Trainer Assistant</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>⚡ AI Trainer</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li id="login-item"><a href="login.html" class="nav-link active">🔐 Login</a></li>
+                <li id="signup-item"><a href="signup.html" class="nav-link">📝 Signup</a></li>
+                <li id="dashboard-item" style="display: none;"><a href="dashboard.html" class="nav-link">📊 Dashboard</a></li>
+                <li id="ai-suggestions-item" style="display: none;"><a href="ai-suggestions.html" class="nav-link">🤖 AI Suggestions</a></li>
+                <li id="progress-item" style="display: none;"><a href="progress.html" class="nav-link">📈 View Progress</a></li>
+                <li id="logout-item" style="display: none;"><a href="#" class="nav-link" id="logout-link">🚪 Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="login-container">
+        <h1>Welcome Back</h1>
+        <p class="login-subtitle">Sign in to your fitness journey</p>
+        <form id="login-form">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                <div class="error-message">Please enter a valid email</div>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
+                <div class="error-message">Password is required</div>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <div class="form-footer">
+            Don't have an account? <a href="signup.html">Create one now</a>
+        </div>
+    </div>
+
+    <script src="../js/nav.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const token = localStorage.getItem("token");
+            updateNavigation(token);
+
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

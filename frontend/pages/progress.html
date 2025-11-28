@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progress Tracking - AI Personal Trainer Assistant</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>⚡ AI Trainer</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li id="login-item" style="display: none;"><a href="login.html" class="nav-link">🔐 Login</a></li>
+                <li id="signup-item" style="display: none;"><a href="signup.html" class="nav-link">📝 Signup</a></li>
+                <li id="dashboard-item"><a href="dashboard.html" class="nav-link">📊 Dashboard</a></li>
+                <li id="ai-suggestions-item"><a href="ai-suggestions.html" class="nav-link">🤖 AI Suggestions</a></li>
+                <li id="progress-item"><a href="progress.html" class="nav-link active">📈 View Progress</a></li>
+                <li id="logout-item"><a href="#" class="nav-link" id="logout-link">🚪 Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <section id="progress-section">
+            <h2>Your Fitness Progress</h2>
+            <div id="progress-data" class="empty-state">
+                <h3>No progress data yet</h3>
+                <p>Start logging workouts to see your progress</p>
+            </div>
+        </section>
+
+        <section id="weekly-stats">
+            <h2>Weekly Statistics</h2>
+            <div class="dashboard-container">
+                <div class="stats-card">
+                    <div class="card-icon">🏋️</div>
+                    <h3>Workouts This Week</h3>
+                    <div class="stat-value" id="weekly-workouts">0</div>
+                </div>
+                <div class="stats-card">
+                    <div class="card-icon">🔥</div>
+                    <h3>Calories This Week</h3>
+                    <div class="stat-value" id="weekly-calories">0</div>
+                </div>
+                <div class="stats-card">
+                    <div class="card-icon">⏱️</div>
+                    <h3>Total Time</h3>
+                    <div class="stat-value" id="total-time">0h</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="monthly-stats">
+            <h2>Monthly Overview</h2>
+            <div id="monthly-data" class="empty-state">
+                <h3>No monthly data available</h3>
+                <p>Your monthly statistics will appear here</p>
+            </div>
+        </section>
+
+        <section id="goals-section">
+            <h2>🎯 Goals</h2>
+            <div id="goals-data" class="empty-state">
+                <h3>Set Your Fitness Goals</h3>
+                <p>Define your fitness goals to track progress better</p>
+            </div>
+        </section>
+    </main>
+
+    <div class="footer">
+        <p>&copy; 2025 AI Personal Trainer Assistant. All rights reserved.</p>
+    </div>
+
+    <script src="../js/nav.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/dashboard.js"></script>
+
+    <style>
+        #progress-data .progress-card {
+            background: var(--light-bg);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        #progress-data h4 {
+            margin: 0 0 10px 0;
+            color: var(--primary-color);
+        }
+
+        #progress-data p {
+            margin: 5px 0;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+    </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+            updateNavigation(token);
+
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

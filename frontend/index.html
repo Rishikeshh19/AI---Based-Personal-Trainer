@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Based Personal Trainer Assistant</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>⚡ AI Trainer</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="nav-link active">🏠 Home</a></li>
+                <li id="login-item"><a href="pages/login.html" class="nav-link">🔐 Login</a></li>
+                <li id="signup-item"><a href="pages/signup.html" class="nav-link">📝 Signup</a></li>
+                <li id="dashboard-item" style="display: none;"><a href="pages/dashboard.html" class="nav-link">📊 Dashboard</a></li>
+                <li id="ai-suggestions-item" style="display: none;"><a href="pages/ai-suggestions.html" class="nav-link">🤖 AI Suggestions</a></li>
+                <li id="progress-item" style="display: none;"><a href="pages/progress.html" class="nav-link">📈 View Progress</a></li>
+                <li id="logout-item" style="display: none;"><a href="#" class="nav-link" id="logout-link">🚪 Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <section>
+            <h2>Your Fitness Journey Starts Here</h2>
+            <p>Welcome to the AI-powered fitness platform designed to help you achieve your goals. Track your workouts, monitor your progress, and receive personalized AI-driven suggestions to enhance your fitness experience.</p>
+            <div style="margin-top: 30px; text-align: center;">
+                <a href="pages/login.html" class="button">Get Started</a>
+            </div>
+        </section>
+
+        <section>
+            <h2>Features</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 25px;">
+                <div class="card">
+                    <h3>📊 Workout Tracking</h3>
+                    <p>Log your exercises, sets, reps, and calories burned. Keep detailed records of all your workouts.</p>
+                </div>
+                <div class="card">
+                    <h3>📈 Progress Analytics</h3>
+                    <p>Monitor your performance trends over time with detailed charts and statistics.</p>
+                </div>
+                <div class="card">
+                    <h3>🤖 AI Suggestions</h3>
+                    <p>Get personalized exercise recommendations based on your performance and goals.</p>
+                </div>
+                <div class="card">
+                    <h3>🎯 Goal Setting</h3>
+                    <p>Set fitness goals and track your progress towards achieving them.</p>
+                </div>
+                <div class="card">
+                    <h3>📱 Mobile Friendly</h3>
+                    <p>Access your fitness data anytime, anywhere with our responsive design.</p>
+                </div>
+                <div class="card">
+                    <h3>🔒 Secure</h3>
+                    <p>Your data is protected with JWT authentication and secure endpoints.</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Why Choose Us?</h2>
+            <ul style="list-style: none; padding: 0;">
+                <li style="padding: 15px 0; border-bottom: 1px solid #E8EBED;"><strong>✓ AI-Powered Analysis:</strong> Our system analyzes your workout patterns and provides intelligent suggestions.</li>
+                <li style="padding: 15px 0; border-bottom: 1px solid #E8EBED;"><strong>✓ Real-Time Tracking:</strong> Get instant feedback on your workouts and performance metrics.</li>
+                <li style="padding: 15px 0; border-bottom: 1px solid #E8EBED;"><strong>✓ Personalized Recommendations:</strong> Receive tailored workout and nutrition advice.</li>
+                <li style="padding: 15px 0;"><strong>✓ Community Support:</strong> Connect with trainers and other fitness enthusiasts.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 AI-Based Personal Trainer Assistant. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

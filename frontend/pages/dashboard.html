@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,36 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/dashboard.css">
 </head>
+
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
-            <h1>⚡ AI Trainer</h1>
+            <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+                <h1>⚡ AI Trainer</h1>
+            </a>
+            <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
         </div>
         <nav>
             <ul>
-                <li><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li id="home-item"><a href="../index.html" class="nav-link">🏠 Home</a></li>
                 <li id="login-item" style="display: none;"><a href="login.html" class="nav-link">🔐 Login</a></li>
                 <li id="signup-item" style="display: none;"><a href="signup.html" class="nav-link">📝 Signup</a></li>
                 <li id="dashboard-item"><a href="dashboard.html" class="nav-link active">📊 Dashboard</a></li>
+                <li id="trainer-dashboard-item" style="display: none;"><a href="trainer-dashboard.html"
+                        class="nav-link">👨‍🏫 Trainer Dashboard</a></li>
+                <li id="workout-item" style="display: none;"><a href="muscle-workout.html" class="nav-link">💪 Muscle
+                        Workout</a></li>
+                <li id="trainer-select-item" style="display: none;"><a href="select-trainer.html" class="nav-link">👨‍🏫
+                        Select Trainer</a></li>
                 <li id="ai-suggestions-item"><a href="ai-suggestions.html" class="nav-link">🤖 AI Suggestions</a></li>
                 <li id="progress-item"><a href="progress.html" class="nav-link">📈 View Progress</a></li>
+                <li><a href="profile.html" class="nav-link">👤 Profile</a></li>
                 <li id="logout-item"><a href="#" class="nav-link" id="logout-link">🚪 Logout</a></li>
             </ul>
         </nav>
@@ -60,7 +78,31 @@
             <div id="latest-workout" class="empty-state">
                 <h3>No workouts recorded yet</h3>
                 <p>Start your fitness journey by logging your first workout</p>
-                <a href="ai-suggestions.html" class="button">Get AI Suggestions</a>
+                <a href="muscle-workout.html" class="button">Select Muscle & Train</a>
+            </div>
+        </section>
+
+        <!-- Muscle Workout Section (Members Only) -->
+        <section id="muscle-workout-section"
+            style="margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 100%); border-radius: 10px; text-align: center; display: none;">
+            <h2>🏋️ Choose Your Workout</h2>
+            <p style="color: #666; margin-bottom: 20px;">Select a muscle group and get personalized exercises</p>
+            <a href="muscle-workout.html" class="button"
+                style="background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%); color: white; padding: 12px 30px; border-radius: 5px; text-decoration: none; font-weight: 600;">Start
+                Muscle-Based Workout</a>
+        </section>
+
+        <!-- Trainer Selection Section (Members Only) -->
+        <section id="trainer-selection-section"
+            style="margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; text-align: left; display: none;">
+            <h2>👨‍🏫 Select Your Trainer</h2>
+            <p style="color: #666; margin-bottom: 20px;">Choose a certified trainer to guide your fitness journey.</p>
+            <div id="dashboard-trainers-container"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+                <div class="empty-state" style="grid-column: 1 / -1; text-align: center;">
+                    <div class="spinner"></div>
+                    <p>Loading trainers...</p>
+                </div>
             </div>
         </section>
 
@@ -90,24 +132,109 @@
     </div>
 
     <script src="../js/nav.js"></script>
+    <script src="../js/storage.js"></script>
     <script src="../js/dashboard.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const token = localStorage.getItem("token");
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = storage.getToken();
             if (!token) {
                 window.location.href = "login.html";
                 return;
             }
-            updateNavigation(token);
+
+            const currentUser = storage.getCurrentUser();
+            if (!currentUser) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            // Show/hide sections based on role (no redirects, keep dashboard static)
+            if (currentUser.role === 'member') {
+                const mw = document.getElementById('muscle-workout-section');
+                const ts = document.getElementById('trainer-selection-section');
+                const workoutItem = document.getElementById('workout-item');
+                const trainerSelectItem = document.getElementById('trainer-select-item');
+                if (mw) mw.style.display = 'block';
+                if (ts) ts.style.display = 'block';
+                if (workoutItem) workoutItem.style.display = 'block';
+                if (trainerSelectItem) trainerSelectItem.style.display = 'block';
+
+                // Load trainers into dashboard section
+                loadDashboardTrainers();
+            } else if (currentUser.role === 'trainer') {
+                const trainerDashItem = document.getElementById('trainer-dashboard-item');
+                const aiSection = document.getElementById('ai-suggestions');
+                if (trainerDashItem) trainerDashItem.style.display = 'block';
+                // Hide AI suggestions section for trainers
+                if (aiSection) aiSection.style.display = 'none';
+            }
+
+            if (typeof updateNavigation === 'function') {
+                updateNavigation(token);
+            }
 
             const logoutLink = document.getElementById("logout-link");
             if (logoutLink) {
-                logoutLink.addEventListener("click", function(e) {
+                logoutLink.addEventListener("click", function (e) {
                     e.preventDefault();
-                    logout();
+                    if (typeof logout === 'function') {
+                        logout();
+                    } else {
+                        storage.clearSession();
+                        window.location.href = 'login.html';
+                    }
                 });
             }
         });
+
+        function loadDashboardTrainers() {
+            const container = document.getElementById('dashboard-trainers-container');
+            if (!container || typeof storage === 'undefined' || !storage.getTrainers) return;
+
+            const trainers = storage.getTrainers();
+
+            if (!trainers || trainers.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state" style="grid-column: 1 / -1; text-align: center;">
+                        <h3>No trainers available</h3>
+                        <p>Trainers will be added soon.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const currentUser = storage.getCurrentUser();
+            container.innerHTML = '';
+
+            trainers.forEach(trainer => {
+                const clientCount = trainer.clients ? trainer.clients.length : 0;
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <h3 style="margin-bottom: 8px;">${trainer.name}</h3>
+                    <p style="margin-bottom: 4px; color:#555;">${trainer.specialization || 'General Fitness'}</p>
+                    <p style="margin-bottom: 8px; font-size: 13px; color:#777;">Clients: ${clientCount}</p>
+                    <button class="button" style="padding: 8px 16px; font-size: 13px;" data-trainer-id="${trainer.id}">Select Trainer</button>
+                `;
+
+                const btn = card.querySelector('button');
+                btn.addEventListener('click', function () {
+                    if (!currentUser) return;
+                    if (!confirm(`Select ${trainer.name} as your trainer?`)) return;
+                    try {
+                        storage.assignTrainer(currentUser.id, trainer.id);
+                        alert('Trainer assigned successfully!');
+                        // Optionally refresh trainers to reflect client counts
+                        loadDashboardTrainers();
+                    } catch (err) {
+                        alert('Error assigning trainer: ' + (err.message || err));
+                    }
+                });
+
+                container.appendChild(card);
+            });
+        }
     </script>
 </body>
+
 </html>

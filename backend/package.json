@@ -1,0 +1,31 @@
+{
+  "name": "ai-trainer-backend",
+  "version": "1.0.0",
+  "description": "AI-Based Personal Trainer Backend",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "ejs": "^3.1.10",
+    "express": "^4.18.2",
+    "express-validator": "^7.3.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.0.3",
+    "morgan": "^1.10.0",
+    "nodemailer": "^7.0.11",
+    "redis": "^4.6.12",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.7.2",
+    "winston": "^3.8.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

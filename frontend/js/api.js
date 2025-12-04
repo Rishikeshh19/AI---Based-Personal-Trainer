@@ -33,12 +33,50 @@ const api = {
         return await apiCall('/auth/signup', 'POST', userData);
     },
     
+    // Member endpoints
+    member: {
+        getProfile: async () => {
+            return await apiCall('/members/profile');
+        },
+        updateProfile: async (profileData) => {
+            return await apiCall('/members/profile', 'PUT', profileData);
+        },
+        getProgress: async () => {
+            return await apiCall('/members/progress');
+        },
+        assignTrainer: async (trainerId) => {
+            return await apiCall('/members/assign-trainer', 'PUT', { trainerId });
+        },
+        getCurrentTrainer: async () => {
+            return await apiCall('/members/current-trainer');
+        }
+    },
+
+    // Trainer endpoints
+    trainer: {
+        getProfile: async () => {
+            return await apiCall('/trainers/profile');
+        },
+        updateProfile: async (profileData) => {
+            return await apiCall('/trainers/profile', 'PUT', profileData);
+        },
+        getAssignedClients: async () => {
+            return await apiCall('/trainers/clients');
+        },
+        getClientDetails: async (clientId) => {
+            return await apiCall(`/trainers/clients/${clientId}`);
+        },
+        removeClient: async (clientId) => {
+            return await apiCall(`/trainers/clients/${clientId}`, 'DELETE');
+        }
+    },
+    
     // Workouts
     addWorkout: async (workoutData) => {
-        return await apiCall('/workout', 'POST', workoutData);
+        return await apiCall('/workouts', 'POST', workoutData);
     },
     getMemberWorkouts: async (memberId) => {
-        return await apiCall(`/workout/member/${memberId}`);
+        return await apiCall(`/workouts/member/${memberId}`);
     },
     
     // Progress Reports
@@ -48,7 +86,7 @@ const api = {
     
     // AI Suggestions
     getAISuggestions: async (memberId) => {
-        return await apiCall(`/ai_suggestions/member/${memberId}`);
+        return await apiCall(`/ai-suggestions/member/${memberId}`);
     }
 };
 

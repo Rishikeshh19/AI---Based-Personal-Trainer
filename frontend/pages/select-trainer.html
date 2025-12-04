@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Trainer - AI Personal Trainer Assistant</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .trainers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .trainer-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .trainer-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 16px rgba(30, 64, 175, 0.2);
+            border-color: #1E40AF;
+        }
+
+        .trainer-card.selected {
+            border-color: #1E40AF;
+            background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 100%);
+        }
+
+        .trainer-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .trainer-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+        }
+
+        .trainer-info h3 {
+            margin: 0 0 5px 0;
+            color: #1E40AF;
+            font-size: 18px;
+        }
+
+        .trainer-specialization {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .trainer-bio {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .trainer-stats {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            padding-top: 15px;
+            border-top: 1px solid #E8EBED;
+        }
+
+        .stat-item {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #1E40AF;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .btn-select-trainer {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-select-trainer:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.4);
+        }
+
+        .btn-select-trainer.selected {
+            background: #16A34A;
+        }
+
+        .current-trainer-banner {
+            background: linear-gradient(135deg, #DCFCE7 0%, #BBF7D0 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #16A34A;
+        }
+
+        .current-trainer-banner h3 {
+            margin: 0 0 10px 0;
+            color: #166534;
+        }
+
+        .current-trainer-banner p {
+            margin: 5px 0;
+            color: #166534;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            color: #1E40AF;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+                <h1>⚡ AI Trainer</h1>
+            </a>
+            <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+        </div>
+        <nav>
+            <ul>
+                <li id="home-item"><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li id="login-item" style="display: none;"><a href="login.html" class="nav-link">🔐 Login</a></li>
+                <li id="signup-item" style="display: none;"><a href="signup.html" class="nav-link">📝 Signup</a></li>
+                <li id="dashboard-item"><a href="dashboard.html" class="nav-link">📊 Dashboard</a></li>
+                <li id="trainer-dashboard-item" style="display: none;"><a href="trainer-dashboard.html"
+                        class="nav-link">👨‍🏫 Trainer Dashboard</a></li>
+                <li id="workout-item" style="display: none;"><a href="muscle-workout.html" class="nav-link">💪 Muscle
+                        Workout</a></li>
+                <li id="trainer-select-item"><a href="select-trainer.html" class="nav-link active">👨‍🏫 Select
+                        Trainer</a></li>
+                <li id="ai-suggestions-item"><a href="ai-suggestions.html" class="nav-link">🤖 AI Suggestions</a></li>
+                <li id="progress-item"><a href="progress.html" class="nav-link">📈 View Progress</a></li>
+                <li><a href="profile.html" class="nav-link">👤 Profile</a></li>
+                <li id="logout-item"><a href="#" class="nav-link" id="logout-link">🚪 Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <h1>👨‍🏫 Select Your Trainer</h1>
+        <p style="color: #666; margin-bottom: 30px;">Choose a certified trainer to guide your fitness journey</p>
+
+        <div id="currentTrainerBanner" style="display: none;"></div>
+
+        <div id="trainersContainer" class="trainers-grid">
+            <div class="empty-state">
+                <div class="spinner"></div>
+                <p>Loading trainers...</p>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/nav.js"></script>
+    <script src="../js/storage.js"></script>
+    <script src="../js/api.js"></script>
+    <script>
+        let selectedTrainerId = null;
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = storage.getToken();
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const currentUser = storage.getCurrentUser();
+            if (!currentUser || currentUser.role !== 'member') {
+                alert('This page is for members only');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+
+            if (typeof updateNavigation === 'function') {
+                updateNavigation(token);
+            }
+
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    if (typeof logout === 'function') {
+                        logout();
+                    } else {
+                        storage.clearSession();
+                        window.location.href = 'login.html';
+                    }
+                });
+            }
+
+            loadTrainers();
+            displayCurrentTrainer();
+        });
+
+        async function loadTrainers() {
+            const container = document.getElementById('trainersContainer');
+
+            try {
+                // Fetch all trainers from the dedicated trainers endpoint
+                const response = await fetch('http://localhost:8000/api/trainers', {
+                    headers: {
+                        'Authorization': `Bearer ${storage.getToken()}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to load trainers');
+                }
+
+                const data = await response.json();
+                const trainers = data.data;
+
+                if (trainers.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>No trainers available</h3>
+                            <p>Trainers will be added soon!</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = '';
+                trainers.forEach(trainer => {
+                    const clientCount = trainer.assignedClients ? trainer.assignedClients.length : 0;
+                    const firstName = trainer.profile?.firstName || 'Trainer';
+                    const lastName = trainer.profile?.lastName || '';
+                    const fullName = `${firstName} ${lastName}`.trim();
+                    const initials = (firstName[0] + (lastName ? lastName[0] : '')).toUpperCase();
+                    const specialization = trainer.profile?.specialization || 'General Fitness';
+                    const bio = trainer.profile?.bio || 'Experienced fitness professional ready to help you achieve your goals.';
+
+                    const card = document.createElement('div');
+                    card.className = 'trainer-card';
+                    card.dataset.trainerId = trainer._id;
+
+                    card.innerHTML = `
+                        <div class="trainer-header">
+                            <div class="trainer-avatar">${initials}</div>
+                            <div class="trainer-info">
+                                <h3>${fullName}</h3>
+                                <p class="trainer-specialization">${specialization}</p>
+                            </div>
+                        </div>
+                        <p class="trainer-bio">${bio}</p>
+                        <div class="trainer-stats">
+                            <div class="stat-item">
+                                <div class="stat-value">${clientCount}</div>
+                                <div class="stat-label">Clients</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value">⭐ 4.8</div>
+                                <div class="stat-label">Rating</div>
+                            </div>
+                        </div>
+                        <button class="btn-select-trainer" onclick="selectTrainer('${trainer._id}')">
+                            Select Trainer
+                        </button>
+                    `;
+
+                    container.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading trainers:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Error loading trainers</h3>
+                        <p>${error.message}</p>
+                        <p style="font-size: 14px; color: #999;">Make sure the backend is running on http://localhost:5000</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function displayCurrentTrainer() {
+            try {
+                const response = await api.member.getCurrentTrainer();
+                if (response.data && response.data._id) {
+                    const trainer = response.data;
+                    const firstName = trainer.profile?.firstName || 'Trainer';
+                    const lastName = trainer.profile?.lastName || '';
+                    const fullName = `${firstName} ${lastName}`.trim();
+                    const specialization = trainer.profile?.specialization || 'General Fitness';
+
+                    const banner = document.getElementById('currentTrainerBanner');
+                    banner.style.display = 'block';
+                    banner.innerHTML = `
+                        <h3>✅ Your Current Trainer</h3>
+                        <p><strong>${fullName}</strong> - ${specialization}</p>
+                        <p style="font-size: 14px;">You can change your trainer at any time by selecting a new one below.</p>
+                    `;
+                }
+            } catch (error) {
+                console.log('No trainer assigned yet');
+            }
+        }
+
+        async function selectTrainer(trainerId) {
+            const currentUser = storage.getCurrentUser();
+            if (!currentUser) {
+                alert('Please login');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (confirm('Are you sure you want to select this trainer?')) {
+                try {
+                    const response = await api.member.assignTrainer(trainerId);
+                    if (response.success) {
+                        alert('✅ Trainer assigned successfully!');
+                        // Update current user in storage
+                        storage.setCurrentUser(response.data);
+                        displayCurrentTrainer();
+                        loadTrainers();
+                    }
+                } catch (error) {
+                    alert('Error: ' + error.message);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

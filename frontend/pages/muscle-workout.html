@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muscle Workout Selector - AI Trainer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <style>
+        .workout-selector-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            color: #1E40AF;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            font-size: 18px;
+            color: #6B7280;
+        }
+
+        .muscle-selection-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1E40AF;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .muscle-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .muscle-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            border: 3px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .muscle-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #1E40AF, #0891B2);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .muscle-card:hover {
+            border-color: #1E40AF;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.2);
+        }
+
+        .muscle-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .muscle-card.selected {
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            border-color: #1E40AF;
+            color: white;
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.4);
+        }
+
+        .muscle-card.selected::before {
+            transform: scaleX(1);
+        }
+
+        .muscle-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .muscle-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .muscle-card.selected .muscle-name {
+            color: white;
+        }
+
+        .selected-count {
+            display: inline-block;
+            background: #1E40AF;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 24px;
+            margin-left: 8px;
+        }
+
+        .suggestions-section {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+
+        .suggestions-section.active {
+            display: block;
+        }
+
+        .suggestion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #E5E7EB;
+        }
+
+        .selected-muscles-badge {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .muscle-badge {
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .muscle-badge .remove-btn {
+            background: rgba(255, 255, 255, 0.3);
+            border: none;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .muscle-badge .remove-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .exercises-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .exercise-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 2px solid #E5E7EB;
+            border-radius: 16px;
+            padding: 25px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .exercise-card.selected {
+            border-color: #10B981;
+            background: linear-gradient(135deg, #D1FAE5 0%, #ffffff 100%);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+        }
+
+        .exercise-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, #1E40AF, #0891B2);
+            transform: scaleY(0);
+            transition: transform 0.3s;
+        }
+
+        .exercise-card:hover {
+            border-color: #1E40AF;
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .exercise-card:hover::before {
+            transform: scaleY(1);
+        }
+
+        .exercise-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .exercise-selected-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #10B981;
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: none;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .exercise-card.selected .exercise-selected-badge {
+            display: block;
+        }
+
+        .exercise-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1E40AF;
+            margin: 0;
+        }
+
+        .difficulty-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .difficulty-beginner {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .difficulty-intermediate {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        .difficulty-advanced {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        .exercise-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .info-item {
+            text-align: center;
+            padding: 12px;
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .info-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1E40AF;
+            display: block;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .exercise-description {
+            color: #4B5563;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .exercise-gif {
+            margin-top: 15px;
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #f1f5f9;
+            border: 2px solid #E5E7EB;
+        }
+
+        .gif-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px;
+            background: #f1f5f9;
+            border-radius: 12px;
+            border: 2px dashed #CBD5E1;
+            color: #9CA3AF;
+            font-size: 14px;
+        }
+
+        .start-workout-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .start-workout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+        }
+
+        .start-workout-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9CA3AF;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .muscle-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 12px;
+            }
+
+            .exercises-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .workout-selector-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+                <h1>⚡ AI Trainer</h1>
+            </a>
+            <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+        </div>
+        <nav>
+            <ul>
+                <li id="home-item"><a href="../index.html" class="nav-link">🏠 Home</a></li>
+                <li id="login-item" style="display: none;"><a href="login.html" class="nav-link">🔐 Login</a></li>
+                <li id="signup-item" style="display: none;"><a href="signup.html" class="nav-link">📝 Signup</a></li>
+                <li id="dashboard-item"><a href="dashboard.html" class="nav-link">📊 Dashboard</a></li>
+                <li id="trainer-dashboard-item" style="display: none;"><a href="trainer-dashboard.html"
+                        class="nav-link">👨‍🏫 Trainer Dashboard</a></li>
+                <li id="workout-item"><a href="muscle-workout.html" class="nav-link active">💪 Muscle Workout</a></li>
+                <li id="trainer-select-item" style="display: none;"><a href="select-trainer.html" class="nav-link">👨‍🏫
+                        Select Trainer</a></li>
+                <li id="ai-suggestions-item"><a href="ai-suggestions.html" class="nav-link">🤖 AI Suggestions</a></li>
+                <li id="progress-item"><a href="progress.html" class="nav-link">📈 View Progress</a></li>
+                <li><a href="profile.html" class="nav-link">👤 Profile</a></li>
+                <li id="logout-item"><a href="#" class="nav-link" id="logout-link">🚪 Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <div class="workout-selector-container">
+            <div class="page-header">
+                <h1>💪 Build Your Workout</h1>
+                <p>Select the muscle groups you want to train today</p>
+            </div>
+
+            <!-- Muscle Selection Section -->
+            <div class="muscle-selection-section">
+                <h2 class="section-title">
+                    Which muscles do you want to train?
+                    <span class="selected-count" id="selectedCount" style="display: none;">0</span>
+                </h2>
+                <p style="color: #6B7280; margin-bottom: 20px;">Click on muscle groups to select them. You can select
+                    multiple muscles for a full-body workout.</p>
+
+                <div class="muscle-grid" id="muscleGrid">
+                    <div class="muscle-card" data-muscle="chest">
+                        <span class="muscle-icon">💪</span>
+                        <p class="muscle-name">Chest</p>
+                    </div>
+                    <div class="muscle-card" data-muscle="shoulders">
+                        <span class="muscle-icon">🏋️</span>
+                        <p class="muscle-name">Shoulders</p>
+                    </div>
+                    <div class="muscle-card" data-muscle="biceps">
+                        <span class="muscle-icon">💪</span>
+                        <p class="muscle-name">Biceps</p>
+                    </div>
+                    <div class="muscle-card" data-muscle="triceps">
+                        <span class="muscle-icon">💪</span>
+                        <p class="muscle-name">Triceps</p>
+                    </div>
+                    <div class="muscle-card" data-muscle="back">
+                        <span class="muscle-icon">🏋️</span>
+                        <p class="muscle-name">Back</p>
+                    </div>
+                    <div class="muscle-card" data-muscle="core">
+                        <span class="muscle-icon">🔥</span>
+                        <p class="muscle-name">Core</p>
+                    </div>
+                    <div class="muscle-card" data-muscle="lower_front">
+                        <span class="muscle-icon">🦵</span>
+                        <p class="muscle-name">Lower Front</p>
+                    </div>
+                    <div class="muscle-card" data-muscle="lower_back">
+                        <span class="muscle-icon">🍑</span>
+                        <p class="muscle-name">Lower Back</p>
+                    </div>
+                    <div class="muscle-card" data-muscle="forearms">
+                        <span class="muscle-icon">✋</span>
+                        <p class="muscle-name">Forearms</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suggestions Section -->
+            <div class="suggestions-section" id="suggestionsSection">
+                <div class="suggestion-header">
+                    <div>
+                        <h2 class="section-title">🎯 Your Workout Suggestions</h2>
+                        <div class="selected-muscles-badge" id="selectedMusclesBadge"></div>
+                    </div>
+                </div>
+
+                <div id="exercisesContainer" class="empty-state">
+                    <div class="empty-state-icon">💪</div>
+                    <h3>Loading exercises...</h3>
+                </div>
+
+                <button class="start-workout-btn" id="startWorkoutBtn" disabled>
+                    🚀 Start Workout (<span id="selectedExerciseCount">0</span> exercises selected)
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/gif_database.js"></script>
+    <script src="../js/exercises.js"></script>
+    <script>
+        let selectedMuscles = new Set();
+        let selectedExercises = new Set();
+        let allExercises = {};
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = storage.getToken();
+            if (!token) {
+                window.location.href = './login.html';
+                return;
+            }
+
+            updateNavigation(token);
+            setupEventListeners();
+            loadAllExercises();
+        });
+
+        function setupEventListeners() {
+            // Muscle card clicks
+            document.querySelectorAll('.muscle-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const muscle = card.dataset.muscle;
+                    toggleMuscle(muscle, card);
+                });
+            });
+
+            // Start workout button
+            document.getElementById('startWorkoutBtn').addEventListener('click', startWorkout);
+
+            // Logout
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    storage.clearSession();
+                    window.location.href = './login.html';
+                });
+            }
+        }
+
+        function loadAllExercises() {
+            // Load exercises from exerciseDatabase (from exercises.js)
+            if (typeof exerciseDatabase !== 'undefined') {
+                Object.keys(exerciseDatabase).forEach(muscle => {
+                    allExercises[muscle] = exerciseDatabase[muscle];
+                });
+            }
+        }
+
+        function toggleMuscle(muscle, cardElement) {
+            if (selectedMuscles.has(muscle)) {
+                selectedMuscles.delete(muscle);
+                cardElement.classList.remove('selected');
+            } else {
+                selectedMuscles.add(muscle);
+                cardElement.classList.add('selected');
+            }
+
+            updateSelectionUI();
+            if (selectedMuscles.size > 0) {
+                showSuggestions();
+            } else {
+                hideSuggestions();
+            }
+        }
+
+        function updateSelectionUI() {
+            const count = selectedMuscles.size;
+            const countElement = document.getElementById('selectedCount');
+
+            if (count > 0) {
+                countElement.textContent = count;
+                countElement.style.display = 'inline-block';
+            } else {
+                countElement.style.display = 'none';
+            }
+
+            // Update badges
+            const badgeContainer = document.getElementById('selectedMusclesBadge');
+            badgeContainer.innerHTML = '';
+
+            selectedMuscles.forEach(muscle => {
+                const badge = document.createElement('div');
+                badge.className = 'muscle-badge';
+                badge.innerHTML = `
+                    ${muscle.charAt(0).toUpperCase() + muscle.slice(1)}
+                    <button class="remove-btn" onclick="removeMuscle('${muscle}')">×</button>
+                `;
+                badgeContainer.appendChild(badge);
+            });
+        }
+
+        function removeMuscle(muscle) {
+            selectedMuscles.delete(muscle);
+            const card = document.querySelector(`[data-muscle="${muscle}"]`);
+            if (card) {
+                card.classList.remove('selected');
+            }
+            updateSelectionUI();
+            if (selectedMuscles.size > 0) {
+                showSuggestions();
+            } else {
+                hideSuggestions();
+            }
+        }
+
+        function showSuggestions() {
+            const section = document.getElementById('suggestionsSection');
+            section.classList.add('active');
+
+            loadSuggestions();
+        }
+
+        function hideSuggestions() {
+            const section = document.getElementById('suggestionsSection');
+            section.classList.remove('active');
+        }
+
+        async function loadSuggestions() {
+            const container = document.getElementById('exercisesContainer');
+            container.innerHTML = '<div class="empty-state"><div class="skeleton-spinner"></div><p>Loading workout suggestions...</p></div>';
+
+            // Collect exercises from all selected muscles
+            let allSelectedExercises = [];
+            selectedMuscles.forEach(muscle => {
+                if (allExercises[muscle]) {
+                    allSelectedExercises = allSelectedExercises.concat(allExercises[muscle]);
+                }
+            });
+
+            if (allSelectedExercises.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>No exercises found</h3>
+                        <p>Exercises will be added soon!</p>
+                    </div>
+                `;
+                document.getElementById('startWorkoutBtn').disabled = true;
+                return;
+            }
+
+            // Display exercises
+            container.innerHTML = '';
+            container.className = 'exercises-grid';
+
+            // Display exercises with local GIFs
+            for (let index = 0; index < allSelectedExercises.length; index++) {
+                const exercise = allSelectedExercises[index];
+                const difficulty = exercise.difficulty || 'beginner';
+                const sets = exercise.sets || 3;
+                const reps = exercise.reps || 10;
+                const exerciseId = `exercise-${index}`;
+                const gifUrl = exercise.gif || '';
+
+                // Build GIF HTML - show image if GIF exists, otherwise show placeholder
+                const gifHTML = gifUrl
+                    ? `<img src="${gifUrl}" alt="${exercise.name}" style="width: 100%; height: auto; border-radius: 12px;" onerror="this.style.display='none';">`
+                    : `<div style="color: #9CA3AF; text-align: center; padding: 40px;">GIF not available</div>`;
+
+                const exerciseHTML = `
+                    <div class="exercise-card" id="${exerciseId}" data-exercise-index="${index}" data-gif="${gifUrl}">
+                        <div class="exercise-selected-badge">✓ SELECTED</div>
+                        <div class="exercise-header">
+                            <h3 class="exercise-name">${exercise.name}</h3>
+                            <span class="difficulty-badge difficulty-${difficulty}">${difficulty}</span>
+                        </div>
+                        <p class="exercise-description">${exercise.description || 'Great exercise for building strength and muscle.'}</p>
+                        <div class="exercise-info">
+                            <div class="info-item">
+                                <span class="info-value">${sets}</span>
+                                <span class="info-label">Sets</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-value">${reps}</span>
+                                <span class="info-label">Reps</span>
+                            </div>
+                        </div>
+                        <div class="gif-placeholder" style="min-height: 200px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; border-radius: 12px; margin-top: 15px;">
+                            ${gifHTML}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += exerciseHTML;
+            }
+
+            // Add click handlers to exercise cards
+            document.querySelectorAll('.exercise-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    const index = parseInt(card.getAttribute('data-exercise-index'));
+                    toggleExerciseSelection(index);
+                });
+            });
+
+            updateSelectionCount();
+            document.getElementById('startWorkoutBtn').disabled = (selectedExercises.size === 0);
+        }
+
+        function toggleExerciseSelection(index) {
+            const card = document.getElementById(`exercise-${index}`);
+
+            if (selectedExercises.has(index)) {
+                // Already selected, so deselect it
+                selectedExercises.delete(index);
+                if (card) card.classList.remove('selected');
+            } else {
+                // Not selected, so select it
+                selectedExercises.add(index);
+                if (card) card.classList.add('selected');
+            }
+
+            updateSelectionCount();
+        }
+
+        function updateSelectionCount() {
+            const count = selectedExercises.size;
+            document.getElementById('selectedExerciseCount').textContent = count;
+            document.getElementById('startWorkoutBtn').disabled = count === 0;
+        }
+
+        function startWorkout() {
+            if (selectedExercises.size === 0) {
+                alert('Please select at least one exercise to start your workout');
+                return;
+            }
+
+            const currentUser = storage.getCurrentUser();
+            if (!currentUser) {
+                alert('Please login to start workouts');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Collect all selected exercises from the UI
+            const allSelectedExercises = [];
+
+            // Iterate through all displayed exercise cards and collect the selected ones
+            document.querySelectorAll('.exercise-card').forEach((card) => {
+                const dataIndex = parseInt(card.getAttribute('data-exercise-index'));
+
+                // Check if this exercise is in selectedExercises set
+                if (selectedExercises.has(dataIndex)) {
+                    const exerciseName = card.querySelector('.exercise-name').textContent;
+                    const description = card.querySelector('.exercise-description').textContent;
+                    const difficulty = card.querySelector('.difficulty-badge').textContent;
+                    const infoValues = card.querySelectorAll('.info-value');
+                    const setsValue = infoValues[0]?.textContent || '3';
+                    const repsValue = infoValues[1]?.textContent || '10';
+
+                    // Get the muscle group and GIF URL
+                    let muscleName = '';
+                    const gifUrl = card.getAttribute('data-gif') || null;
+
+                    // Find which muscle group this exercise belongs to (for metadata only)
+                    for (let muscle of selectedMuscles) {
+                        if (allExercises[muscle]) {
+                            const exerciseData = allExercises[muscle].find(e => e.name === exerciseName);
+                            if (exerciseData) {
+                                muscleName = muscle;
+                                break;
+                            }
+                        }
+                    }
+
+                    allSelectedExercises.push({
+                        name: exerciseName,
+                        description: description,
+                        difficulty: difficulty,
+                        sets: parseInt(setsValue),
+                        reps: parseInt(repsValue),
+                        muscleGroup: muscleName || 'General',
+                        gif: gifUrl
+                    });
+                }
+            });
+
+            if (allSelectedExercises.length === 0) {
+                alert('Please select at least one exercise');
+                return;
+            }
+
+            // Prepare workout data
+            const workout = {
+                muscleGroups: Array.from(selectedMuscles),
+                exercises: allSelectedExercises,
+                date: new Date().toISOString().split('T')[0],
+                startTime: new Date().toISOString()
+            };
+
+            console.log('Starting workout:', workout);
+
+            // Store workout in sessionStorage for the workout execution page
+            sessionStorage.setItem('currentWorkout', JSON.stringify(workout));
+
+            // Redirect to workout execution page
+            setTimeout(() => {
+                window.location.href = 'workout-execution.html';
+            }, 100);
+        }
+    </script>
+
+    <style>
+        .skeleton-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #E5E7EB;
+            border-top-color: #1E40AF;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</body>
+
+</html>

@@ -1,0 +1,449 @@
+/* Modern Muscle Skeleton Styles */
+.muscle-selector-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 30px;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+.skeleton-container {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.skeleton-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #1E40AF, #0891B2, #10B981);
+}
+
+.skeleton-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.skeleton-header h2 {
+    color: #1E40AF;
+    font-size: 24px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.view-toggle-btn {
+    padding: 12px 24px;
+    border: 2px solid #E5E7EB;
+    background: white;
+    color: #6B7280;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.view-toggle-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(30, 64, 175, 0.1);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.view-toggle-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.view-toggle-btn.active {
+    background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+    color: white;
+    border-color: #1E40AF;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+/* SVG Skeleton Container */
+.skeleton-svg-container {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 2;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0e7ff 100%);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.skeleton-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Muscle Group Areas - Interactive */
+.muscle-area {
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0.6;
+    stroke-width: 2;
+    stroke: #6B7280;
+    fill: rgba(107, 114, 128, 0.1);
+}
+
+.muscle-area:hover {
+    opacity: 0.9;
+    stroke: #1E40AF;
+    stroke-width: 3;
+    fill: rgba(30, 64, 175, 0.2);
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 8px rgba(30, 64, 175, 0.3));
+}
+
+.muscle-area.active {
+    opacity: 1;
+    stroke: #1E40AF;
+    stroke-width: 4;
+    fill: rgba(30, 64, 175, 0.4);
+    filter: drop-shadow(0 6px 12px rgba(30, 64, 175, 0.5));
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}
+
+.muscle-area.touch-active {
+    transform: scale(0.95);
+    opacity: 0.7;
+}
+
+/* Muscle Labels */
+.muscle-label {
+    pointer-events: none;
+    font-size: 12px;
+    font-weight: 600;
+    fill: #1E40AF;
+    text-anchor: middle;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.muscle-area:hover + .muscle-label,
+.muscle-area.active + .muscle-label {
+    opacity: 1;
+}
+
+/* Exercises Panel */
+.exercises-panel {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    max-height: 800px;
+    overflow-y: auto;
+    position: relative;
+}
+
+.exercises-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.exercises-panel::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.exercises-panel::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #1E40AF, #0891B2);
+    border-radius: 10px;
+}
+
+.exercises-panel::-webkit-scrollbar-thumb:hover {
+    background: #1E40AF;
+}
+
+.selected-muscle-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+    color: white;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.exercise-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border: 2px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.exercise-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, #1E40AF, #0891B2);
+    transform: scaleY(0);
+    transition: transform 0.3s;
+}
+
+.exercise-card:hover {
+    border-color: #1E40AF;
+    box-shadow: 0 8px 24px rgba(30, 64, 175, 0.15);
+    transform: translateY(-2px);
+}
+
+.exercise-card:hover::before {
+    transform: scaleY(1);
+}
+
+.exercise-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 12px;
+}
+
+.exercise-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1E40AF;
+    margin: 0;
+}
+
+.difficulty-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.difficulty-beginner {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.difficulty-intermediate {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.difficulty-advanced {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.exercise-meta {
+    display: flex;
+    gap: 20px;
+    margin-top: 12px;
+    font-size: 14px;
+    color: #6B7280;
+}
+
+.exercise-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.exercise-description {
+    color: #4B5563;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 12px;
+}
+
+.gif-placeholder {
+    margin-top: 15px;
+    padding: 20px;
+    background: #f1f5f9;
+    border-radius: 12px;
+    text-align: center;
+    color: #6B7280;
+    font-size: 13px;
+    border: 2px dashed #CBD5E1;
+}
+
+.start-workout-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.start-workout-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.start-workout-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.start-workout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(30, 64, 175, 0.4);
+}
+
+.start-workout-btn:active {
+    transform: translateY(0);
+}
+
+.start-workout-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #9CA3AF;
+}
+
+.empty-state-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+.empty-state h3 {
+    color: #6B7280;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .muscle-selector-wrapper {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .skeleton-svg-container {
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .muscle-selector-wrapper {
+        padding: 20px;
+        gap: 20px;
+    }
+    
+    .skeleton-container,
+    .exercises-panel {
+        padding: 20px;
+    }
+    
+    .skeleton-svg-container {
+        max-width: 300px;
+    }
+    
+    .exercise-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+/* Touch optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .muscle-area {
+        min-width: 44px;
+        min-height: 44px;
+    }
+    
+    .view-toggle-btn,
+    .start-workout-btn {
+        min-height: 44px;
+    }
+}
+
+/* Loading animation */
+.skeleton-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+}
+
+.skeleton-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #E5E7EB;
+    border-top-color: #1E40AF;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+
+
+

@@ -1,6 +1,4 @@
 // Dashboard management with real-time Socket.IO updates
-import io from 'socket.io-client';
-
 let socket = null;
 let progressUpdateTimeout = null;
 
@@ -56,7 +54,7 @@ function initializeSocket(currentUser) {
 
         socket.on('progressUpdated', async (data) => {
             console.log('📊 Real-time progress update received:', data);
-            
+
             // Clear existing timeout
             if (progressUpdateTimeout) {
                 clearTimeout(progressUpdateTimeout);
@@ -130,7 +128,7 @@ async function updateDashboardStats(currentUser) {
         if (response.ok) {
             const result = await response.json();
             const data = result.data;
-            
+
             console.log('Progress data:', data);
 
             if (data && data.stats) {

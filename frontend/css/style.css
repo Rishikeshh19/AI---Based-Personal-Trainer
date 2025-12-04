@@ -220,7 +220,7 @@ a:hover {
 
 .sidebar-header {
     display: inline-block !important;
-    padding: var(--spacing-lg) var(--spacing-2xl);
+    padding: var(--spacing-md) var(--spacing-xl);
     border-right: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(0, 0, 0, 0.1);
     vertical-align: top;
@@ -230,7 +230,7 @@ a:hover {
 .sidebar-header .logo,
 .sidebar-header a {
     color: var(--text-white);
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 800;
     letter-spacing: -0.5px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -267,7 +267,7 @@ a:hover {
     color: rgba(255, 255, 255, 0.9) !important;
     font-weight: 600;
     font-size: var(--font-size-sm);
-    padding: 18px var(--spacing-xl);
+    padding: 12px var(--spacing-lg);
     transition: all var(--transition-base);
     position: relative;
     border-bottom: 3px solid transparent;
@@ -320,7 +320,7 @@ header {
 
 main {
     max-width: 1400px;
-    margin: 90px auto 80px auto;
+    margin: 80px auto 80px auto;
     padding: 0 var(--spacing-2xl);
     transition: margin-top var(--transition-base);
 }

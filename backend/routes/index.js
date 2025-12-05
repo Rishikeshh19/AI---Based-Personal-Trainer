@@ -11,6 +11,7 @@ const analyticsRoutes = require('./analytics.routes');
 const progressRoutes = require('./progress.routes');
 const aiSuggestionRoutes = require('./ai-suggestion.routes');
 const messageRoutes = require('./message.routes');
+const dietPlanRoutes = require('./diet-plan.routes');
 
 // API routes
 router.use('/auth', authRoutes);
@@ -22,5 +23,6 @@ router.use('/analytics', analyticsRoutes);
 router.use('/progress', progressRoutes);
 router.use('/ai-suggestions', aiSuggestionRoutes);
 router.use('/messages', messageRoutes);
+router.use('/diet-plan', dietPlanRoutes);
 
 module.exports = router;

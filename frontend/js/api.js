@@ -15,7 +15,7 @@ async function apiCall(endpoint, method = 'GET', data = null) {
     }
 
     const response = await fetch(`${API_BASE_URL}${endpoint}`, options);
-    
+
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
     }
@@ -32,7 +32,7 @@ const api = {
     signup: async (userData) => {
         return await apiCall('/auth/signup', 'POST', userData);
     },
-    
+
     // Member endpoints
     member: {
         getProfile: async () => {
@@ -70,7 +70,7 @@ const api = {
             return await apiCall(`/trainers/clients/${clientId}`, 'DELETE');
         }
     },
-    
+
     // Workouts
     addWorkout: async (workoutData) => {
         return await apiCall('/workouts', 'POST', workoutData);
@@ -78,16 +78,19 @@ const api = {
     getMemberWorkouts: async (memberId) => {
         return await apiCall(`/workouts/member/${memberId}`);
     },
-    
+
     // Progress Reports
     getProgressReports: async (memberId) => {
         return await apiCall(`/progress/member/${memberId}`);
     },
-    
+
     // AI Suggestions
     getAISuggestions: async (memberId) => {
         return await apiCall(`/ai-suggestions/member/${memberId}`);
     }
 };
 
-export default api;
+// Expose api globally so it can be used from inline scripts
+if (typeof window !== 'undefined') {
+    window.api = api;
+}

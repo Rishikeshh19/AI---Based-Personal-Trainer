@@ -257,13 +257,20 @@
                 }
 
                 const data = await response.json();
-                const trainers = data.data;
+                let trainers = data.data;
+
+                // Filter to only show trainer named Manoj
+                trainers = trainers.filter(trainer => {
+                    const username = (trainer.username || '').toLowerCase();
+                    const firstName = (trainer.profile?.firstName || '').toLowerCase();
+                    return username === 'manoj' || firstName === 'manoj';
+                });
 
                 if (trainers.length === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
                             <h3>No trainers available</h3>
-                            <p>Trainers will be added soon!</p>
+                            <p>Trainer Manoj is not configured yet. Please contact admin.</p>
                         </div>
                     `;
                     return;

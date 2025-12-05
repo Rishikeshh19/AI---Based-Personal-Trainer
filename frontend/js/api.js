@@ -87,6 +87,25 @@ const api = {
     // AI Suggestions
     getAISuggestions: async (memberId) => {
         return await apiCall(`/ai-suggestions/member/${memberId}`);
+    },
+
+    // Messages
+    messages: {
+        send: async (receiverId, message) => {
+            return await apiCall('/messages', 'POST', { receiverId, message });
+        },
+        getConversation: async (userId) => {
+            return await apiCall(`/messages/${userId}`);
+        },
+        getAll: async () => {
+            return await apiCall('/messages');
+        },
+        markAsRead: async (messageId) => {
+            return await apiCall(`/messages/${messageId}/read`, 'PUT');
+        },
+        getUnreadCount: async () => {
+            return await apiCall('/messages/unread/count');
+        }
     }
 };
 

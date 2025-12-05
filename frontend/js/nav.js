@@ -11,6 +11,7 @@ function updateNavigation(token) {
     const logoutItem = document.getElementById("logout-item");
     const trainerDashboardItem = document.getElementById("trainer-dashboard-item");
     const trainerSelectItem = document.getElementById("trainer-select-item");
+    const messagesItem = document.getElementById("messages-item");
     const homeItem = document.getElementById("home-item");
 
     if (token) {
@@ -36,12 +37,14 @@ function updateNavigation(token) {
             if (trainerDashboardItem) trainerDashboardItem.style.display = "block";
             if (workoutItem) workoutItem.style.display = "none";
             if (trainerSelectItem) trainerSelectItem.style.display = "none";
+            if (messagesItem) messagesItem.style.display = "none";
             if (aiSuggestionsItem) aiSuggestionsItem.style.display = "none";
         } else {
-            // Member or other roles: show workout + select-trainer + AI suggestions, hide trainer dashboard
+            // Member or other roles: show workout + select-trainer + messages + AI suggestions, hide trainer dashboard
             if (trainerDashboardItem) trainerDashboardItem.style.display = "none";
             if (workoutItem) workoutItem.style.display = "block";
             if (trainerSelectItem) trainerSelectItem.style.display = "block";
+            if (messagesItem) messagesItem.style.display = "block";
             if (aiSuggestionsItem) aiSuggestionsItem.style.display = "block";
         }
     } else {

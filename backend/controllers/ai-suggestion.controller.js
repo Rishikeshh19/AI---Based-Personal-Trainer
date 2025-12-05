@@ -3,6 +3,7 @@ const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const logger = require('../utils/logger');
+const geminiService = require('../config/gemini.config');
 
 // @desc    Get AI workout suggestions
 // @route   GET /api/ai-suggestions/workout
@@ -15,13 +16,44 @@ exports.getWorkoutSuggestions = asyncHandler(async (req, res, next) => {
         .sort({ date: -1 })
         .limit(10);
 
-    // Generate suggestions based on user profile and workout history
-    const suggestions = generateWorkoutSuggestions(user, recentWorkouts);
+    try {
+        // Try to use Gemini API first
+        const userData = {
+            fitnessLevel: user.profile?.fitnessLevel || 'beginner',
+            goals: user.profile?.goals || [],
+            age: user.profile?.age,
+            weight: user.profile?.weight,
+            recentWorkouts: recentWorkouts.map(w => ({
+                name: w.name,
+                date: w.date,
+            })),
+        };
 
-    res.status(200).json({
-        success: true,
-        data: suggestions
-    });
+        logger.info(`Generating AI workout suggestions for user: ${user.email}`);
+        const aiSuggestions = await geminiService.generateWorkoutSuggestions(userData);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                suggestions: aiSuggestions,
+                source: 'gemini-ai',
+            }
+        });
+    } catch (error) {
+        logger.error(`Gemini API error, falling back to rule-based: ${error.message}`);
+
+        // Fallback to rule-based suggestions
+        const suggestions = generateWorkoutSuggestions(user, recentWorkouts);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                ...suggestions,
+                source: 'rule-based',
+                note: 'AI service temporarily unavailable, using rule-based suggestions',
+            }
+        });
+    }
 });
 
 // @desc    Get AI nutrition advice
@@ -30,12 +62,39 @@ exports.getWorkoutSuggestions = asyncHandler(async (req, res, next) => {
 exports.getNutritionAdvice = asyncHandler(async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
-    const advice = generateNutritionAdvice(user);
+    try {
+        const userData = {
+            weight: user.profile?.weight,
+            height: user.profile?.height,
+            age: user.profile?.age,
+            goals: user.profile?.goals || [],
+            fitnessLevel: user.profile?.fitnessLevel,
+        };
 
-    res.status(200).json({
-        success: true,
-        data: advice
-    });
+        logger.info(`Generating AI nutrition advice for user: ${user.email}`);
+        const aiAdvice = await geminiService.generateNutritionAdvice(userData);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                advice: aiAdvice,
+                source: 'gemini-ai',
+            }
+        });
+    } catch (error) {
+        logger.error(`Gemini API error, falling back to rule-based: ${error.message}`);
+
+        const advice = generateNutritionAdvice(user);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                ...advice,
+                source: 'rule-based',
+                note: 'AI service temporarily unavailable, using rule-based advice',
+            }
+        });
+    }
 });
 
 // @desc    Get AI recovery tips
@@ -44,12 +103,36 @@ exports.getNutritionAdvice = asyncHandler(async (req, res, next) => {
 exports.getRecoveryTips = asyncHandler(async (req, res, next) => {
     const user = await User.findById(req.user.id);
 
-    const tips = generateRecoveryTips(user);
+    try {
+        const userData = {
+            fitnessLevel: user.profile?.fitnessLevel,
+            age: user.profile?.age,
+        };
 
-    res.status(200).json({
-        success: true,
-        data: tips
-    });
+        logger.info(`Generating AI recovery tips for user: ${user.email}`);
+        const aiTips = await geminiService.generateRecoveryTips(userData);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                tips: aiTips,
+                source: 'gemini-ai',
+            }
+        });
+    } catch (error) {
+        logger.error(`Gemini API error, falling back to rule-based: ${error.message}`);
+
+        const tips = generateRecoveryTips(user);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                ...tips,
+                source: 'rule-based',
+                note: 'AI service temporarily unavailable, using rule-based tips',
+            }
+        });
+    }
 });
 
 // Helper function to generate workout suggestions

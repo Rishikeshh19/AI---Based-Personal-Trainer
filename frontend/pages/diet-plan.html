@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Diet Plan - AI Personal Trainer</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .diet-plan-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.99) 0%, rgba(240, 249, 255, 0.99) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(30, 64, 175, 0.08);
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid rgba(30, 64, 175, 0.12);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Manrope', sans-serif;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #1E40AF;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.08);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(124, 58, 237, 0.1);
+            border-top: 4px solid #7C3AED;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .diet-result {
+            display: none;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.99) 0%, rgba(240, 249, 255, 0.99) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(30, 64, 175, 0.08);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .diet-result.show {
+            display: block;
+        }
+
+        .meal-card {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(30, 64, 175, 0.04) 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(124, 58, 237, 0.12);
+            transition: all 0.3s ease;
+        }
+
+        .meal-card:hover {
+            border-color: rgba(124, 58, 237, 0.3);
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.12);
+            transform: translateY(-4px);
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .meal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .calories-badge {
+            background: linear-gradient(135deg, #7C3AED 0%, #1E40AF 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .meal-content {
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .ai-content {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 20px 0;
+            border: 1px solid rgba(124, 58, 237, 0.1);
+            white-space: pre-wrap;
+            line-height: 1.8;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .button-group .button {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .button-secondary {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.08) 0%, rgba(14, 165, 233, 0.06) 100%);
+            color: var(--text-dark);
+            border: 2px solid rgba(30, 64, 175, 0.25);
+        }
+
+        .button-secondary:hover {
+            background: linear-gradient(135deg, rgba(30, 64, 175, 0.12) 0%, rgba(14, 165, 233, 0.1) 100%);
+            border-color: rgba(30, 64, 175, 0.4);
+        }
+
+        .info-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-section,
+            .diet-result {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+                <h1>⚡ AI Trainer</h1>
+            </a>
+            <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
+                <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
+                <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
+                <li><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
+                <li><a href="progress.html" class="nav-link">View Progress</a></li>
+                <li><a href="profile.html" class="nav-link">Profile</a></li>
+                <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <div class="diet-plan-container">
+            <section>
+                <h2><i class="fas fa-utensils"></i> AI-Powered Indian Diet Plan Generator</h2>
+                <p>Get a personalized 7-day Indian-style meal plan tailored to your fitness goals, powered by Google
+                    Gemini AI. Enjoy traditional Indian cuisine while achieving your health objectives!</p>
+            </section>
+
+            <!-- Form Section -->
+            <div class="form-section" id="diet-form-section">
+                <h3
+                    style="color: var(--text-dark); margin-top: 0; font-family: 'Poppins', sans-serif; font-weight: 700;">
+                    <i class="fas fa-user-circle"></i> Your Information
+                </h3>
+
+                <form id="diet-form" onsubmit="handleSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="current-weight"><i class="fas fa-weight"></i> Current Weight (kg) *</label>
+                            <input type="number" id="current-weight" placeholder="Enter your current weight" min="20"
+                                max="200" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="target-weight"><i class="fas fa-bullseye"></i> Target Weight (kg) *</label>
+                            <input type="number" id="target-weight" placeholder="Enter your target weight" min="20"
+                                max="200" step="0.1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="height"><i class="fas fa-ruler-vertical"></i> Height (cm) *</label>
+                            <input type="number" id="height" placeholder="Enter your height" min="100" max="250"
+                                step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="age"><i class="fas fa-birthday-cake"></i> Age (years) *</label>
+                            <input type="number" id="age" placeholder="Enter your age" min="13" max="100" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fitness-level"><i class="fas fa-dumbbell"></i> Fitness Level *</label>
+                            <select id="fitness-level" required>
+                                <option value="">Select fitness level</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                                <option value="athlete">Athlete</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="goal"><i class="fas fa-trophy"></i> Main Goal *</label>
+                            <select id="goal" required>
+                                <option value="">Select your goal</option>
+                                <option value="weight-loss">Weight Loss</option>
+                                <option value="muscle-gain">Muscle Gain</option>
+                                <option value="maintenance">Maintenance</option>
+                                <option value="athletic-performance">Athletic Performance</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dietary-restrictions"><i class="fas fa-leaf"></i> Dietary Restrictions
+                            (Optional)</label>
+                        <input type="text" id="dietary-restrictions"
+                            placeholder="e.g., Pure Vegetarian, Jain, Satvik, Vegan, No Onion/Garlic, Gluten-free">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="medical-conditions"><i class="fas fa-heartbeat"></i> Medical Conditions
+                            (Optional)</label>
+                        <textarea id="medical-conditions" rows="3"
+                            placeholder="Any medical conditions, allergies, or injuries we should know about"></textarea>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="button">
+                            <i class="fas fa-magic"></i> Generate My Diet Plan
+                        </button>
+                        <a href="dashboard.html" class="button button-secondary">
+                            <i class="fas fa-arrow-left"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading-state">
+                <div class="spinner"></div>
+                <h3 style="color: var(--text-dark);"><i class="fas fa-brain"></i> AI is Creating Your Diet Plan...</h3>
+                <p style="color: var(--text-light);">This may take 10-15 seconds. Please wait...</p>
+            </div>
+
+            <!-- Results Section -->
+            <div class="diet-result" id="diet-result">
+                <h2><i class="fas fa-check-circle"></i> Your Personalized AI Diet Plan <span class="info-badge">Powered
+                        by Gemini AI</span></h2>
+
+                <div id="diet-content" class="ai-content">
+                    <!-- AI-generated content will appear here -->
+                </div>
+
+                <div class="button-group">
+                    <button class="button" onclick="resetForm()">
+                        <i class="fas fa-redo"></i> Generate New Plan
+                    </button>
+                    <button class="button" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Plan
+                    </button>
+                    <a href="dashboard.html" class="button button-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/nav.js"></script>
+    <script>
+        const API_URL = 'http://localhost:8000/api';
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+            updateNavigation(token);
+
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+        });
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            const formData = {
+                currentWeight: parseFloat(document.getElementById("current-weight").value),
+                targetWeight: parseFloat(document.getElementById("target-weight").value),
+                height: parseFloat(document.getElementById("height").value),
+                age: parseInt(document.getElementById("age").value),
+                fitnessLevel: document.getElementById("fitness-level").value,
+                goal: document.getElementById("goal").value,
+                dietaryRestrictions: document.getElementById("dietary-restrictions").value,
+                medicalConditions: document.getElementById("medical-conditions").value,
+            };
+
+            // Show loading
+            document.getElementById("diet-form-section").style.display = "none";
+            document.getElementById("loading-state").classList.add("show");
+
+            try {
+                const token = localStorage.getItem("token");
+                const response = await fetch(`${API_URL}/diet-plan/generate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayDietPlan(result.data);
+                } else {
+                    throw new Error(result.message || 'Failed to generate diet plan');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to generate diet plan. Please try again.');
+                document.getElementById("loading-state").classList.remove("show");
+                document.getElementById("diet-form-section").style.display = "block";
+            }
+        }
+
+        function displayDietPlan(data) {
+            // Hide loading
+            document.getElementById("loading-state").classList.remove("show");
+
+            // Show results
+            document.getElementById("diet-result").classList.add("show");
+
+            // Display the AI-generated content
+            const contentDiv = document.getElementById("diet-content");
+            contentDiv.innerHTML = formatDietPlan(data.dietPlan);
+
+            // Scroll to results
+            document.getElementById("diet-result").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function formatDietPlan(planText) {
+            // Convert markdown-style formatting to HTML
+            let formattedText = planText
+                .replace(/\n/g, '<br>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/#{3,}\s+(.*?)(<br>|$)/g, '<h4 style="color: var(--text-dark); margin-top: 20px; margin-bottom: 10px;">$1</h4>')
+                .replace(/#{2}\s+(.*?)(<br>|$)/g, '<h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">$1</h3>')
+                .replace(/#{1}\s+(.*?)(<br>|$)/g, '<h2 style="color: var(--text-dark); margin-top: 28px; margin-bottom: 14px;">$1</h2>');
+
+            return formattedText;
+        }
+
+        function resetForm() {
+            document.getElementById("diet-form").reset();
+            document.getElementById("diet-result").classList.remove("show");
+            document.getElementById("diet-form-section").style.display = "block";
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+
+</html>

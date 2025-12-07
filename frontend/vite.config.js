@@ -8,8 +8,7 @@ export default defineConfig({
     cors: true,
     hmr: {
       protocol: 'ws',
-      host: 'localhost',
-      port: 5173
+      host: 'localhost'
     }
   },
   build: {

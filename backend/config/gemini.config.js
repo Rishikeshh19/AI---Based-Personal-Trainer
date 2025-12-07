@@ -5,12 +5,12 @@ require('dotenv').config();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Get the Gemini 1.5 Flash model (gemini-pro is deprecated)
-const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 
 // Generation configuration
 const generationConfig = {
-    temperature: 0.7,
-    topP: 0.95,
+    temperature: 0.3,
+    topP: 0.9,
     topK: 40,
     maxOutputTokens: 2048,
 };
@@ -39,7 +39,9 @@ async function generateContent(prompt, config = {}) {
  * @returns {Promise<string>} - Generated diet plan
  */
 async function generateDietPlan(userData) {
-    const prompt = `You are a professional South Indian nutritionist and fitness expert specializing in traditional South Indian cuisine (Tamil Nadu, Kerala, Karnataka, Andhra/Telangana). Create a detailed, personalized 7-day SOUTH INDIAN diet plan based on the following user information:
+    const prompt = `LANGUAGE REQUIREMENT: You MUST respond ONLY in English. Do NOT write in Hindi, Hinglish, or any non-English language. All output must be 100% in English.
+
+You are a professional South Indian nutritionist and fitness expert specializing in traditional South Indian cuisine (Tamil Nadu, Kerala, Karnataka, Andhra/Telangana). Create a detailed, personalized 7-day SOUTH INDIAN diet plan based on the following user information:
 
 **User Profile:**
 - Current Weight: ${userData.currentWeight} kg
@@ -51,52 +53,53 @@ async function generateDietPlan(userData) {
 ${userData.dietaryRestrictions ? `- Dietary Restrictions: ${userData.dietaryRestrictions}` : ''}
 ${userData.medicalConditions ? `- Medical Conditions: ${userData.medicalConditions}` : ''}
 
-**IMPORTANT - SOUTH INDIAN CUISINE REQUIREMENTS:**
-1. **STRICTLY SOUTH INDIAN STYLE ONLY**: Do NOT suggest Roti/Chapati/North Indian dishes unless absolutely necessary for variety (limit to 1-2 times/week). Focus on Rice, Millets, and South Indian preparations.
-2. **NO WESTERN FOOD**: Do not suggest oatmeal, bread, pasta, or salads unless they are South Indian style (e.g., Kosambari, Sundal).
-3. **Cooking Oil**: Recommend Coconut Oil, Gingelly (Sesame) Oil, or Groundnut Oil.
-4. **Breakfast**: 
-   - Idli/Dosa (with Sambar/Chutney - specify portions)
-   - Ragi Malt/Porridge
-   - Upma/Uppumavu (Rava, Semiya, or Millet based)
-   - Pongal (Ven Pongal)
-   - Puttu/Appam / Idiyappam
-   - Adai (high protein lentil dosa)
-   - Pesarattu
-5. **Lunch**: 
-   - Rice (White/Brown/Red Matta Rice) or Millets (Ragi, Thinai, Samai)
-   - Sambar / Rasam / Vatha Kuzhambu / Mor Kuzhambu
-   - Kootu (Lentil + Veg)
-   - Poriyal / Thoran / Avial (Stir fry veg)
-   - Curd / Buttermilk
-6. **Dinner**: 
-   - Lighter options: Idli, Millet Dosa, Uthappam
-   - Ragi Mudde (if appropriate)
-   - Kanji (Rice Porridge)
-7. **Snacks**: 
-   - Sundal (Chickpea/Peanut salad)
-   - Roasted Makhana
-   - Buttermilk (Neer Mor) / Panakam
-   - Fruit Salad
-   - Pori (Puffed rice)
-   - Boiled Peanuts
-8. **Hydration**: emphasize Warm water, Jeera water, or Buttermilk.
+**SOUTH INDIAN CUISINE - English ONLY:**
+Use ONLY English names and descriptions. No Hindi translations.
 
-**Meal Plan Structure:**
-- Create a detailed 7-day plan with:
-  * Early Morning
-  * Breakfast
-  * Mid-Morning Snack
-  * Lunch
-  * Evening Snack
-  * Dinner
-- Include calorie counts for each meal
-- Provide macronutrient breakdown (protein, carbs, fats)
-- Specify portion sizes in South Indian terms (e.g., "2 Idlis", "1 cup Sambar", "1 ladle Rice")
-- **Focus on HIGH PROTEIN** vegetarian sources (Dal, Sundal, Paneer, Soy chunks) if vegetarian. 
-- If non-veg: Chicken Chettinad (less oil), Fish Curry (Kerala/Meen Kuzhambu style), Egg Roast, Pallipalayam Chicken.
+1. **Breakfast Options (in ENGLISH only)**:
+   - Idli with Sambar and Coconut Chutney
+   - Dosa with Sambar and Chutney
+   - Ragi Malt or Finger Millet Porridge
+   - Upma (made with semolina)
+   - Ven Pongal (savory rice and lentil dish)
+   - Puttu with Curry
+   - Appam (fermented rice cake)
+   - Adai (lentil crepe - high protein)
 
-Format the response with clear day-wise sections. Make it culturally authentic to South India.`;
+2. **Lunch Components (in ENGLISH only)**:
+   - Rice (white, brown, or red rice)
+   - Sambar (lentil and vegetable stew)
+   - Rasam (tangy lentil soup)
+   - Curry preparations with coconut
+   - Kootu (mixed vegetables with lentils)
+   - Avial (mixed vegetables in coconut gravy)
+   - Yogurt or Buttermilk
+
+3. **Dinner (in ENGLISH only)**:
+   - Idli or Light Dosa
+   - Rice porridge (Kanji)
+   - Light curry with vegetables
+
+4. **Snacks (in ENGLISH only)**:
+   - Sundal (chickpea or peanut salad)
+   - Roasted peanuts
+   - Buttermilk
+   - Fresh fruit
+
+**Macronutrient Targets (English descriptions only):**
+- Protein per kilogram: 1.2 to 1.5 grams
+- Carbohydrates from rice and millets
+- Healthy fats from coconut oil and ground nut oil
+
+**Format your response:**
+- Write clear day-by-day meal plans
+- Include portion sizes
+- List calories and macros for each meal
+- Use ONLY English throughout
+- Do NOT mix languages
+- Do NOT translate to Hindi
+
+Begin the 7-day meal plan now in ENGLISH:`;
 
     return await generateContent(prompt);
 }
@@ -115,7 +118,6 @@ async function generateWorkoutSuggestions(userData) {
     };
 
     const prompt = `You are a certified professional personal trainer and fitness coach with 10+ years of experience. Provide HIGHLY PERSONALIZED and EFFECTIVE workout recommendations based on:
->>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
 
 **User Profile:**
 - Fitness Level: ${userData.fitnessLevel}
@@ -130,17 +132,6 @@ ${userData.recentWorkouts && userData.recentWorkouts.length > 0
             ? userData.recentWorkouts.map(w => `- ${w.name || 'Workout'} on ${w.date}`).join('\n')
             : 'No recent workouts recorded'}
 
-<<<<<<< HEAD
-**Instructions:**
-1. Recommend 5-7 specific exercises suitable for their fitness level
-2. Include sets, reps, and duration for each exercise
-3. Provide workout tips specific to their goals
-4. Suggest a weekly workout schedule (how many days per week)
-5. Include warm-up and cool-down recommendations
-6. Consider any medical conditions or injuries
-
-Format the response with clear sections for easy reading.`;
-=======
 **COMPREHENSIVE INSTRUCTIONS - PROVIDE DETAILED RECOMMENDATIONS:**
 
 1. **Workout Schedule**: ${fitnessLevelGuide[userData.fitnessLevel] || "4-5 days per week, 45-60 minutes"}
@@ -182,7 +173,6 @@ Format the response with clear sections for easy reading.`;
    - Post-workout nutrition (protein, carbs, timing)
 
 Be SPECIFIC with numbers, timing, and actionable steps. Make it a complete training program that addresses their specific goals and fitness level.`;
->>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
 
     return await generateContent(prompt);
 }
@@ -193,37 +183,13 @@ Be SPECIFIC with numbers, timing, and actionable steps. Make it a complete train
  * @returns {Promise<string>} - Generated nutrition advice
  */
 async function generateNutritionAdvice(userData) {
-<<<<<<< HEAD
-    const prompt = `You are a registered Indian dietitian specializing in nutrition advice based on traditional Indian cuisine. Provide comprehensive nutrition advice for:
-=======
     const prompt = `You are a registered Indian dietitian and nutrition expert specializing in personalized nutrition for fitness goals using traditional Indian cuisine. Provide COMPREHENSIVE and HIGHLY EFFECTIVE nutrition advice:
->>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
 
 **User Information:**
 - Weight: ${userData.weight} kg
 - Height: ${userData.height || 'Not specified'} cm
 - Age: ${userData.age || 'Not specified'} years
 - Goals: ${userData.goals ? userData.goals.join(', ') : 'General health'}
-<<<<<<< HEAD
-- Activity Level: ${userData.fitnessLevel}
-
-**Provide Indian Cuisine-Focused Advice:**
-1. Daily calorie recommendations
-2. Macronutrient targets (protein, carbs, fats in grams) achievable with Indian foods
-3. Meal timing suggestions following Indian eating patterns
-4. Hydration recommendations (include traditional beverages like buttermilk, coconut water, nimbu pani)
-5. Supplement suggestions (if applicable) - consider common deficiencies in Indian diets
-6. **Indian Foods to Prioritize:** 
-   - Protein sources: Dal (various types), Paneer, Curd, Chickpeas, Eggs, Chicken/Fish
-   - Complex carbs: Whole wheat roti, Brown rice, Millets (Jowar, Bajra, Ragi), Quinoa
-   - Healthy fats: Ghee (in moderation), Nuts, Seeds
-   - Vegetables: Seasonal Indian vegetables, leafy greens (palak, methi)
-   - Spices: Turmeric, ginger, garlic, cinnamon for their health benefits
-7. **Foods to Limit:** Deep-fried snacks, excessive white rice, refined flour (maida) products, sugary sweets
-8. Practical nutrition tips for their specific goal using readily available Indian ingredients
-
-Be specific with numbers and actionable advice that works with Indian cooking and eating habits.`;
-=======
 - Activity Level/Fitness Level: ${userData.fitnessLevel}
 ${userData.dietaryRestrictions ? `- Dietary Restrictions: ${userData.dietaryRestrictions}` : ''}
 ${userData.medicalConditions ? `- Medical Conditions: ${userData.medicalConditions}` : ''}
@@ -355,7 +321,6 @@ ${userData.medicalConditions ? `- Medical Conditions: ${userData.medicalConditio
     - When to adjust calories
 
 Be SPECIFIC with actual meal examples, portion sizes in cups/teaspoons, calorie counts, and ACTIONABLE advice that fits Indian cooking and eating culture.`;
->>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
 
     return await generateContent(prompt);
 }
@@ -388,11 +353,6 @@ Make it practical and actionable with specific time durations and frequencies.`;
     return await generateContent(prompt);
 }
 
-<<<<<<< HEAD
-module.exports = {
-    generateContent,
-    generateDietPlan,
-=======
 /**
  * Generate diet plan variation using Gemini
  * @param {object} userData - User profile data
@@ -486,7 +446,9 @@ async function generateDietPlanVariation(userData, variation) {
 `;
     }
     
-    const prompt = `You are a professional nutritionist and fitness expert specializing in ${isSouthIndian ? 'traditional South Indian' : isNorthIndian ? 'traditional North Indian' : 'Indian'} cuisine. Create a detailed, personalized 7-day ${userData.cuisinePreference === 'mixed-indian' ? 'Mixed Indian' : isSouthIndian ? 'SOUTH INDIAN' : 'NORTH INDIAN'} diet plan (${variation.type} variation) based on the following user information:
+    const prompt = `STRICT LANGUAGE REQUIREMENT: You MUST respond ONLY in English. Do NOT write in Hindi, Hinglish, or any non-English language. Every single word must be in English.
+
+You are a professional nutritionist and fitness expert specializing in ${isSouthIndian ? 'traditional South Indian' : isNorthIndian ? 'traditional North Indian' : 'Indian'} cuisine. Create a detailed, personalized 7-day ${userData.cuisinePreference === 'mixed-indian' ? 'Mixed Indian' : isSouthIndian ? 'SOUTH INDIAN' : 'NORTH INDIAN'} diet plan (${variation.type} variation).
 
 **User Profile:**
 - Current Weight: ${userData.currentWeight} kg
@@ -502,20 +464,26 @@ ${additionalGuidance}
 
 ${cuisineSection}
 
-**Meal Plan Structure:**
-- Create a detailed 7-day plan with:
-  * Early Morning (optional light beverage)
-  * Breakfast
-  * Mid-Morning Snack
-  * Lunch
-  * Evening Snack
-  * Dinner
-- Include calorie counts for each meal
-- Provide macronutrient breakdown (protein, carbs, fats)
-- Specify portion sizes clearly (e.g., "2 Idlis", "1 cup", "1 ladle")
-- Make it culturally authentic and practical
+**CRITICAL: Write ONLY in English. No Hindi. No Mixed Language. ENGLISH ONLY.**
 
-Format the response with clear day-wise sections. Start with Day 1 and continue through Day 7. Make it detailed, practical, and easy to follow.`;
+**Meal Plan Structure (in ENGLISH):**
+Create a detailed 7-day plan with daily meals:
+- Early Morning
+- Breakfast
+- Mid-Morning Snack
+- Lunch
+- Evening Snack  
+- Dinner
+
+For each meal provide:
+- Food items (in English)
+- Portion size (in English units like cups, spoons)
+- Calories
+- Protein grams
+- Carbs grams
+- Fats grams
+
+**Start the 7-day meal plan now - ENGLISH ONLY:**`;
 
     return await generateContent(prompt);
 }
@@ -524,7 +492,6 @@ module.exports = {
     generateContent,
     generateDietPlan,
     generateDietPlanVariation,
->>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
     generateWorkoutSuggestions,
     generateNutritionAdvice,
     generateRecoveryTips,

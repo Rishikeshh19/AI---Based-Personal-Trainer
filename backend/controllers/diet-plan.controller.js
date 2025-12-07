@@ -131,127 +131,264 @@ exports.getDailyMeals = asyncHandler(async (req, res, next) => {
     }
 });
 
-<<<<<<< HEAD
-// Helper function for basic diet plan fallback
-=======
 // Helper function for basic diet plan fallback - Indian Style
->>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
 function generateBasicDietPlan(userData) {
-    const { currentWeight, targetWeight, goal } = userData;
+    const { currentWeight, targetWeight, goal, height, age, fitnessLevel, cuisinePreference } = userData;
     const weightDiff = Math.abs(currentWeight - targetWeight);
     const isWeightLoss = currentWeight > targetWeight;
-
+    const bmi = Math.round((currentWeight / ((height / 100) ** 2)) * 10) / 10;
+    
+    // Calculate personalized calories based on fitness level and goal
+    let baseCalorieMultiplier = 24; // base calories per kg
+    if (fitnessLevel === 'beginner') baseCalorieMultiplier = 23;
+    else if (fitnessLevel === 'intermediate') baseCalorieMultiplier = 24;
+    else if (fitnessLevel === 'advanced' || fitnessLevel === 'athlete') baseCalorieMultiplier = 25;
+    
     const dailyCalories = isWeightLoss
-        ? Math.round(currentWeight * 24 * 0.85)
-        : Math.round(currentWeight * 24 * 1.15);
-
+        ? Math.round(currentWeight * baseCalorieMultiplier * 0.85)
+        : Math.round(currentWeight * baseCalorieMultiplier * 1.15);
+    
+    // Personalized macros based on goal
+    let proteinTarget = currentWeight * 1.6; // default
+    let carbPercent = 45, fatPercent = 25;
+    
+    if (goal === 'muscle-gain' || goal === 'strength-building') {
+        proteinTarget = currentWeight * 2.2;
+        carbPercent = 50;
+        fatPercent = 20;
+    } else if (goal === 'weight-loss' || goal === 'fat-loss') {
+        proteinTarget = currentWeight * 1.8;
+        carbPercent = 35;
+        fatPercent = 30;
+    } else if (goal === 'endurance' || goal === 'stamina') {
+        proteinTarget = currentWeight * 1.4;
+        carbPercent = 60;
+        fatPercent = 20;
+    }
+    
+    const carbsTarget = Math.round((dailyCalories * carbPercent / 100) / 4);
+    const fatsTarget = Math.round((dailyCalories * fatPercent / 100) / 9);
+    
+    // Determine cuisine style
+    const isSouthIndian = cuisinePreference === 'south-indian' || !cuisinePreference;
+    const isNorthIndian = cuisinePreference === 'north-indian';
+    let cuisineTitle = 'Indian';
+    if (isSouthIndian) cuisineTitle = 'South Indian';
+    else if (isNorthIndian) cuisineTitle = 'North Indian';
+    else cuisineTitle = 'Mixed Indian';
+    
+    // Get meals based on cuisine
+    let breakfastOptions, lunchOptions, snackOptions, dinnerOptions;
+    
+    if (isSouthIndian) {
+        breakfastOptions = [
+            'Idli (3 pieces) with Sambar and Coconut Chutney',
+            'Ragi Porridge (200ml) with Milk and Honey',
+            'Upma (1 cup) with Vegetables and Chutney',
+            'Ven Pongal (1 cup) with Ginger Chutney',
+            'Dosa (1 medium) with Sambar and Chutney'
+        ];
+        lunchOptions = [
+            'Rice (1 cup cooked) with Sambar, Kootu, and Yogurt',
+            'Rice (1 cup cooked) with Rasam, Avial, and Pappad',
+            'Ragi Mudde (200g) with Dal Curry and Spinach',
+            'Millet Rice (1 cup cooked) with Moraiyu and Vegetables',
+            'Lentil Rice (1 cup) with Curry and Poriyal'
+        ];
+        snackOptions = [
+            'Sundal (150g) with Lemon and Chutney',
+            'Roasted Makhana (30g) with Salt',
+            'Buttermilk (200ml) with Curry Leaves',
+            'Boiled Chickpea Salad (150g)'
+        ];
+        dinnerOptions = [
+            'Idli (2 pieces) with Light Sambar',
+            'Ragi Dosa (1) with Chutney',
+            'Kanji (Rice Water - 1 bowl) with Light Vegetable Curry',
+            'Roti (2) with Light Dal and Vegetables',
+            'Uthappam (1) with Tomato and Vegetable'
+        ];
+    } else if (isNorthIndian) {
+        breakfastOptions = [
+            'Paratha (1-2 pieces) with Yogurt',
+            'Poha (1.5 cups) with Vegetables and Peanuts',
+            'Upma (1 cup) with Semolina and Vegetables',
+            'Daliya (1 cup) Porridge with Milk',
+            'Oats Khichdi (1 cup) with Vegetables'
+        ];
+        lunchOptions = [
+            'Roti (2) with Dal Tadka and Aloo Gobi',
+            'Brown Rice (1 cup) with Rajma and Cucumber Salad',
+            'Roti (2) with Paneer Curry and Yogurt',
+            'Roti (2) with Chole and Onion Salad',
+            'Rice (1 cup) with Baingan Curry and Salad'
+        ];
+        snackOptions = [
+            'Roasted Chana (40g) with Salt and Lemon',
+            'Yogurt (150ml) with Dry Fruits',
+            'Homemade Ladoo (1-2 pieces)',
+            'Milk with Honey (200ml)'
+        ];
+        dinnerOptions = [
+            'Roti (2) with Light Dal and Steamed Vegetables',
+            'Khichdi (1.5 cups) with Yogurt',
+            'Roti (2) with Moong Dal and Spinach',
+            'Light Pulao (1 cup) with Raita',
+            'Roti (1) with Vegetable Curry'
+        ];
+    } else {
+        breakfastOptions = [
+            'Idli (2) with Sambar OR Poha (1.5 cups) with Vegetables',
+            'Ragi Porridge (200ml) with Milk OR Paratha (1) with Yogurt',
+            'Upma (1 cup) with Vegetables and Chutney',
+            'Ven Pongal (1 cup) OR Daliya Porridge (1 cup)',
+            'Mixed Vegetable Dosa (1) OR Whole Wheat Toast (2 slices)'
+        ];
+        lunchOptions = [
+            'Rice (1 cup) with Sambar, Kootu OR Roti (2) with Dal Tadka, Vegetables',
+            'Millet Rice (1 cup) with Curry OR Brown Rice (1 cup) with Rajma',
+            'Rice (1 cup) with Rasam, Poriyal OR Roti (2) with Paneer Curry',
+            'Ragi Mudde (150g) with Curry OR Whole Wheat Pasta (1.5 cups) with Sauce',
+            'Lentil Rice (1 cup) with Vegetables OR Roti (2) with Chole Curry'
+        ];
+        snackOptions = [
+            'Sundal (150g) OR Roasted Chana (40g)',
+            'Buttermilk (200ml) with Curry Leaves OR Yogurt (150ml)',
+            'Makhana (30g) OR Dry Fruits (30g)',
+            'Fresh Fruit (1 medium) OR Vegetable Salad (150g)'
+        ];
+        dinnerOptions = [
+            'Idli (2) with Light Sambar OR Roti (1) with Light Dal',
+            'Rice Water/Kanji (1 bowl) OR Light Khichdi (1 cup)',
+            'Light Rasam (1.5 cups) with Roti (1) OR Light Vegetable Soup',
+            'Uthappam (1) with Tomato Chutney OR Roti (1) with Moong Dal',
+            'Ragi Dosa (1) OR Light Rice Preparation (1 cup)'
+        ];
+    }
+    
+    // Select appropriate option based on fitness level
+    const optionIndex = fitnessLevel === 'beginner' ? 0 : fitnessLevel === 'intermediate' ? 1 : 2;
+    
     return `
-<<<<<<< HEAD
-# Basic 7-Day Diet Plan
+# Personalized ${cuisineTitle} Diet Plan
 
-**Goal:** ${goal || (isWeightLoss ? 'Weight Loss' : 'Weight Gain')}
-**Daily Calorie Target:** ${dailyCalories} calories
-**Weight Change Target:** ${weightDiff.toFixed(1)} kg
+## Your Profile
+- **Age:** ${age} years
+- **Current Weight:** ${currentWeight} kg
+- **Target Weight:** ${targetWeight} kg  
+- **Height:** ${height} cm
+- **BMI:** ${bmi}
+- **Fitness Level:** ${fitnessLevel}
+- **Goal:** ${goal || (isWeightLoss ? 'Weight Loss' : 'Weight Gain')}
+- **Weight Change Target:** ${weightDiff.toFixed(1)} kg
 
-## Daily Meal Structure:
+## Daily Nutrition Targets
+- **Daily Calorie Target:** ${dailyCalories} calories
+- **Protein:** ${Math.round(proteinTarget)}g per day (${(proteinTarget / dailyCalories * 400).toFixed(0)}% calories)
+- **Carbohydrates:** ${carbsTarget}g per day (${carbPercent}% calories)
+- **Fats:** ${fatsTarget}g per day (${fatPercent}% calories)
+- **Fiber:** 25-35g per day
 
-### Breakfast (${Math.round(dailyCalories * 0.25)} calories)
-- Oatmeal with fruits and nuts
-- Greek yogurt with berries
-- Whole grain toast with avocado
+## Daily Meal Plan
 
-### Lunch (${Math.round(dailyCalories * 0.35)} calories)
-- Grilled chicken with quinoa and vegetables
-- Salmon with brown rice and salad
-- Turkey wrap with whole grain tortilla
+### Early Morning (5-6 AM) - Optional: 100 calories
+- Warm water with lemon and honey OR warm milk
 
-### Dinner (${Math.round(dailyCalories * 0.30)} calories)
-- Lean protein (fish, chicken, tofu) with vegetables
-- Stir-fry with lean meat and mixed vegetables
-- Vegetable soup with whole grain bread
+### Breakfast - ${Math.round(dailyCalories * 0.20)} calories
+- ${breakfastOptions[optionIndex]}
 
-### Snacks (${Math.round(dailyCalories * 0.10)} calories each)
-- Nuts and seeds
-- Fruit
-- Protein shake
-- Vegetable sticks with hummus
+### Mid-Morning Snack - ${Math.round(dailyCalories * 0.10)} calories
+- ${snackOptions[optionIndex]}
 
-## Macronutrient Targets:
-- Protein: ${Math.round(currentWeight * 2)}g per day
-- Carbohydrates: ${Math.round(dailyCalories * 0.4 / 4)}g per day
-- Fats: ${Math.round(dailyCalories * 0.25 / 9)}g per day
+### Lunch - ${Math.round(dailyCalories * 0.35)} calories
+- ${lunchOptions[optionIndex]}
 
-## Tips:
-- Drink 2-3 liters of water daily
-- Eat every 3-4 hours
-- Prepare meals in advance
-- Track your food intake
-- Adjust portions based on progress
+### Evening Snack - ${Math.round(dailyCalories * 0.10)} calories
+- ${snackOptions[(optionIndex + 1) % snackOptions.length]}
 
-*Note: This is a basic plan. For personalized recommendations, ensure AI service is available.*
-=======
-# 🇮🇳 भारतीय आहार योजना (Indian Diet Plan) - 7 Days
+### Dinner - ${Math.round(dailyCalories * 0.25)} calories
+- ${dinnerOptions[optionIndex]}
 
-**लक्ष्य (Goal):** ${goal || (isWeightLoss ? 'वजन घटाना (Weight Loss)' : 'वजन बढ़ाना (Weight Gain)')}
-**दैनिक कैलोरी लक्ष्य (Daily Calorie Target):** ${dailyCalories} calories
-**वजन परिवर्तन लक्ष्य (Weight Change Target):** ${weightDiff.toFixed(1)} kg
+### Before Bed (Optional)
+- Warm milk with turmeric or chamomile tea
 
-## दैनिक भोजन संरचना (Daily Meal Structure):
+## Personalized Recommendations
 
-### नाश्ता (Breakfast) - ${Math.round(dailyCalories * 0.25)} calories
-☀️ विकल्प 1: इडली + सांभार + नारियल की चटनी
-☀️ विकल्प 2: दलिया + दूध + गुड़ + मेवे
-☀️ विकल्प 3: उपमा + नारियल की चटनी + एक संतरा
-☀️ विकल्प 4: पोहा (चिड़वा) + अंडा (या दही)
-☀️ विकल्प 5: रागी का पोरिज + दूध + शहद
+${isWeightLoss ? `
+**Weight Loss Focus:**
+- Eat high protein to preserve muscle during weight loss
+- Drink 3-4 liters of water daily
+- Avoid fried foods, sugary drinks, and processed snacks
+- Include fiber-rich foods for satiety
+- Walk for 30-45 minutes daily
+- Eat slowly and chew thoroughly (20-30 minutes per meal)
+` : `
+**Weight Gain Focus:**
+- Eat calorie-dense healthy foods like nuts, ghee, and whole grains
+- Include protein-rich foods at every meal
+- Eat 5-6 smaller meals throughout the day
+- Add healthy fats from coconut oil, groundnut oil, and ghee
+- Strength training 4-5 days per week is essential
+- Sleep 7-9 hours daily for optimal muscle gain
+`}
 
-### दोपहर का खाना (Lunch) - ${Math.round(dailyCalories * 0.35)} calories
-🍛 विकल्प 1: चिकन करी + भूरे चावल + सलाद
-🍛 विकल्प 2: दाल (तड़का) + रोटी (मल्टीग्रेन) + उबली सब्जियां
-🍛 विकल्प 3: मछली करी (कम तेल) + बासमती चावल + ककड़ी का सलाद
-🍛 विकल्प 4: छोले की सब्जी + ज्वार की रोटी + प्याज
-🍛 विकल्प 5: पनीर सब्जी (कम तेल) + गेहूं की रोटी + दही
+${fitnessLevel === 'beginner' ? `
+**Beginner Fitness Tips:**
+- Start with simple, familiar foods
+- Gradually increase workout intensity
+- Focus on consistency over intensity
+- Drink water throughout the day
+- Avoid skipping meals
+- Get 7-8 hours of sleep daily
+` : fitnessLevel === 'advanced' || fitnessLevel === 'athlete' ? `
+**Advanced Athlete Nutrition:**
+- Time carbs around workouts for optimal performance
+- Include variety in protein sources for complete amino acids
+- Track your macros carefully for competition
+- Consider timing meals 2-3 hours before intense workouts
+- Hydrate well before, during, and after workouts
+- Recovery nutrition (protein + carbs) within 30 mins post-workout
+` : `
+**Intermediate Level Tips:**
+- Balance all macronutrients evenly
+- Maintain consistent meal timing
+- Adjust portions based on weekly progress
+- Include variety to prevent boredom
+- Monitor energy levels and appetite
+- Adjust as needed every 2 weeks
+`}
 
-### शाम का नाश्ता (Evening Snack) - ${Math.round(dailyCalories * 0.10)} calories
-🥤 विकल्प 1: छाछ + मखाने
-🥤 विकल्प 2: अंकुरित मूंग + नींबू
-🥤 विकल्प 3: दही + सूखे मेवे
-🥤 विकल्प 4: चाय + बिस्किट (कम मीठा)
+## ${cuisineTitle} Diet Tips
+✅ Drink 2-3 liters of water daily (more if exercising)
+✅ Use spices regularly - Turmeric, Ginger, Cumin, Coriander (aids digestion)
+✅ Use cooking oil in minimal quantities (2-3 teaspoons per day)
+✅ Include multigrain and whole grains daily
+✅ Consume yogurt and buttermilk for probiotics
+✅ Make lentils a part of your daily diet
+✅ Eat seasonal vegetables and fruits
+✅ Reduce fried foods like samosa, pakora, and chips
+✅ Eat something every 3-4 hours to keep metabolism active
+✅ Eat light meals 2-3 hours before sleep
+✅ Chew food thoroughly (at least 20-30 chews per bite)
+✅ Avoid sugary drinks and processed foods
 
-### रात का खाना (Dinner) - ${Math.round(dailyCalories * 0.30)} calories
-🌙 विकल्प 1: मछली का सूप + मल्टीग्रेन रोटी
-🌙 विकल्प 2: दाल + सब्जी (मेथी, पालक, लौकी)
-🌙 विकल्प 3: चिकन टिक्का (भूनी हुई) + गेहूं की रोटी
-🌙 विकल्प 4: राजमा (कम तेल) + ब्राउन राइस
-🌙 विकल्प 5: सब्जी का हल्का सूप + मल्टीग्रेन रोटी
+## Main Indian Protein Sources
+- **Lentils:** Moong Dal, Chana Dal, Masoor Dal, Black Lentils, Arhar Dal
+- **Dairy:** Yogurt, Paneer, Buttermilk, Milk, Cheese
+- **Meat:** Chicken (skinless), Fish, Eggs, Turkey
+- **Vegetarian:** Soy, Chickpeas, Kidney Beans, Sprouted Grains, Seeds (Pumpkin, Sunflower)
+- **Nuts:** Peanuts, Almonds, Cashews (in moderation)
 
-## मैक्रोन्यूट्रिएंट लक्ष्य (Macronutrient Targets):
-💪 प्रोटीन (Protein): ${Math.round(currentWeight * 1.8)}g प्रति दिन
-🍚 कार्बोहाइड्रेट (Carbohydrates): ${Math.round(dailyCalories * 0.4 / 4)}g प्रति दिन
-🥥 वसा (Fats): ${Math.round(dailyCalories * 0.25 / 9)}g प्रति दिन
-🥬 रेशा (Fiber): 25-30g प्रति दिन
+## Progress Tracking
+- Weigh yourself weekly at the same time (morning, after bathroom)
+- Track body measurements (chest, waist, hips, arms, thighs)
+- Take progress photos every 2 weeks
+- Monitor energy levels and workout performance
+- Adjust calorie intake if no progress after 2-3 weeks
+- Celebrate non-scale victories (strength, endurance, mood)
 
-## भारतीय आहार संबंधी सुझाव (Indian Diet Tips):
-✅ 2-3 लीटर पानी रोज़ पिएं
-✅ मसालों का उपयोग करें - हल्दी, अदरक, जीरा, धनिया (पाचन में मदद)
-✅ घी/तेल कम से कम मात्रा में इस्तेमाल करें
-✅ रोज़ मल्टीग्रेन/साबुत अनाज खाएं
-✅ दही और छाछ नियमित रूप से लें
-✅ दालें हर दिन का हिस्सा बनाएं
-✅ मौसमी सब्जियां और फल खाएं
-✅ पानीपूरी, समोसे, तेल में तली चीजें कम करें
-✅ 3-4 घंटे में कुछ न कुछ खाएं
-✅ सोने से 2-3 घंटे पहले हल्का खाना खाएं
-
-## मुख्य भारतीय प्रोटीन स्रोत (Protein Sources):
-🌾 दालें: मूंग दाल, चने की दाल, मसूर दाल, काली दाल
-🥛 दुग्ध पदार्थ: दही, पनीर, छाछ, दूध
-🍗 मांस: चिकन (त्वचा हटाकर), मछली, अंडे
-🌱 पौधे: सोया, अंकुरित अनाज, सीड्स
-
-*नोट: यह एक मूल योजना है। बेहतर सलाह के लिए पोषण विशेषज्ञ से मिलें।*
-*Note: This is a basic plan. For personalized recommendations, consult a nutritionist.*
->>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
+**Generated:** Personalized plan based on your unique stats (${currentWeight}kg, ${height}cm, ${goal})
+**Note:** This is a basic algorithm-based plan. For maximum results with AI recommendations, ensure Gemini API access is available.
     `;
 }
 

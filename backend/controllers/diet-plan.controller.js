@@ -20,6 +20,7 @@ exports.generateDietPlan = asyncHandler(async (req, res, next) => {
             goal: req.body.goal || (user.profile?.goals && user.profile.goals[0]),
             dietaryRestrictions: req.body.dietaryRestrictions || '',
             medicalConditions: req.body.medicalConditions || '',
+            cuisinePreference: req.body.cuisinePreference || 'south-indian',
         };
 
         // Validate required fields
@@ -27,15 +28,31 @@ exports.generateDietPlan = asyncHandler(async (req, res, next) => {
             return next(new ErrorResponse('Please provide current weight, target weight, and height', 400));
         }
 
-        logger.info(`Generating multiple diet plans for user: ${user.email}`);
+        logger.info(`Generating diet plan (${userData.cuisinePreference}) for user: ${user.email}`);
 
-        // Generate 3 different diet plan variations - Indian Style
+        // Generate diet plan based on cuisine preference
         const dietPlans = [];
-        const variations = [
-            { type: 'Traditional Indian', focus: 'traditional Indian cuisine with rice, dals, vegetables and authentic Indian spices' },
-            { type: 'High-Protein Indian', focus: 'high protein Indian options with protein-rich dals, paneer, eggs and plant-based sources' },
-            { type: 'Light & Healthy Indian', focus: 'light and easy-to-digest Indian options with focus on seasonal vegetables and minimal oil' }
-        ];
+        let variations = [];
+        
+        if (userData.cuisinePreference === 'south-indian') {
+            variations = [
+                { type: 'Traditional South Indian', focus: 'traditional South Indian cuisine with Idli, Dosa, Sambar, and authentic South Indian spices' },
+                { type: 'High-Protein South Indian', focus: 'high protein South Indian options with Sundals, Dals, and traditional protein sources' },
+                { type: 'Light & Healthy South Indian', focus: 'light and easy-to-digest South Indian options with minimal oil' }
+            ];
+        } else if (userData.cuisinePreference === 'north-indian') {
+            variations = [
+                { type: 'Traditional North Indian', focus: 'traditional North Indian cuisine with Roti, Dal, and authentic North Indian spices' },
+                { type: 'High-Protein North Indian', focus: 'high protein North Indian options with Paneer, Chickpea, and Lentil-based dishes' },
+                { type: 'Light & Healthy North Indian', focus: 'light and easy-to-digest North Indian options with whole wheat and minimal oil' }
+            ];
+        } else {
+            variations = [
+                { type: 'Traditional Mixed Indian', focus: 'mix of both North and South Indian cuisine' },
+                { type: 'High-Protein Mixed Indian', focus: 'high protein options from both North and South India' },
+                { type: 'Light & Healthy Mixed Indian', focus: 'light options combining best of both Indian cuisines' }
+            ];
+        }
 
         for (const variation of variations) {
             try {
@@ -56,7 +73,8 @@ exports.generateDietPlan = asyncHandler(async (req, res, next) => {
                 dietPlans: dietPlans.length > 0 ? dietPlans : [{ type: 'Standard', plan: generateBasicDietPlan(req.body), description: 'Basic plan' }],
                 userData,
                 generatedAt: new Date(),
-                totalPlans: dietPlans.length
+                totalPlans: dietPlans.length,
+                cuisinePreference: userData.cuisinePreference
             }
         });
     } catch (error) {

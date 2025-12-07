@@ -401,32 +401,92 @@ module.exports = {
  */
 async function generateDietPlanVariation(userData, variation) {
     let additionalGuidance = '';
+    let cuisineSection = '';
     
-    if (variation.type === 'High-Protein') {
+    // Determine cuisine type
+    const isSouthIndian = userData.cuisinePreference === 'south-indian' || !userData.cuisinePreference;
+    const isNorthIndian = userData.cuisinePreference === 'north-indian';
+    
+    // Add variation-specific guidance
+    if (variation.type.includes('High-Protein')) {
         additionalGuidance = `
 **PROTEIN-FOCUSED EMPHASIS:**
-- Include high-protein South Indian items in every meal
-- Sundals: Chickpea, Moong, Black Chickpea varieties
-- Pulses: Moong Dal, Arhar, Masoor in various preparations
-- Non-veg: Chicken, Fish, Eggs if applicable
-- Paneer dishes if vegetarian
-- Include protein powder alternatives like Raggi flour, Chikhalwali
+- Include high-protein items in every meal
 - Aim for 1.2-1.5g protein per kg body weight
+- ${isSouthIndian ? 'Sundals, Dals, Paneer, Eggs, Fish (Kerala style)' : 'Paneer, Chickpea, Lentils, Eggs, Chicken'}
+- Focus on plant-based and animal-based protein sources
 `;
-    } else if (variation.type === 'Light & Healthy') {
+    } else if (variation.type.includes('Light & Healthy')) {
         additionalGuidance = `
 **LIGHT & EASY-TO-DIGEST EMPHASIS:**
 - Focus on steamed and boiled preparations
-- Lighter versions: Vegetable Sambar, Rasam, clear broths
-- Include plenty of seasonal vegetables
 - Minimal oil and spices
-- Include Kanji (Rice water) and warm liquids
+- Include plenty of seasonal vegetables
 - Evening meals should be very light
-- Focus on plant-based, easy-to-digest foods
+- ${isSouthIndian ? 'Kanji (Rice water), warm buttermilk, light rasam' : 'Clear broths, light dal, steamed vegetables'}
 `;
     }
     
-    const prompt = `You are a professional South Indian nutritionist and fitness expert specializing in traditional South Indian cuisine. Create a detailed, personalized 7-day SOUTH INDIAN diet plan (${variation.type} variation) based on the following user information:
+    // Build cuisine-specific requirements
+    if (isSouthIndian) {
+        cuisineSection = `
+**IMPORTANT - SOUTH INDIAN CUISINE REQUIREMENTS:**
+1. **STRICTLY SOUTH INDIAN STYLE ONLY**: Focus on Rice, Millets, and South Indian preparations.
+2. **NO WESTERN FOOD**: Avoid oatmeal, bread, pasta unless South Indian style (Kosambari, Sundal).
+3. **Cooking Oil**: Coconut Oil, Gingelly (Sesame) Oil, or Groundnut Oil.
+4. **Breakfast Options**: 
+   - Idli/Dosa with Sambar/Chutney
+   - Ragi Malt/Porridge
+   - Upma/Uppumavu
+   - Pongal (Ven Pongal)
+   - Puttu/Appam/Idiyappam
+   - Adai (high protein lentil dosa)
+   - Pesarattu
+5. **Lunch Components**: 
+   - Rice (White/Brown/Red Matta Rice) or Millets (Ragi, Thinai, Samai)
+   - Sambar/Rasam/Vatha Kuzhambu/Mor Kuzhambu
+   - Kootu (Lentil + Veg)
+   - Poriyal/Thoran/Avial
+   - Curd/Buttermilk
+6. **Dinner**: Idli, Millet Dosa, Uthappam, Ragi Mudde, or Kanji
+7. **Snacks**: Sundal, Roasted Makhana, Buttermilk, Pori (Puffed rice), Boiled Peanuts
+8. **Hydration**: Warm water, Jeera water, Buttermilk
+`;
+    } else if (isNorthIndian) {
+        cuisineSection = `
+**IMPORTANT - NORTH INDIAN CUISINE REQUIREMENTS:**
+1. **FOCUS ON NORTH INDIAN STYLE**: Use whole wheat Roti/Chapati, Bajra, Jowar preparations.
+2. **Cooking Oil**: Mustard Oil, Ghee, or Refined Oil.
+3. **Breakfast Options**:
+   - Paratha (Plain/Vegetable/Egg)
+   - Poha
+   - Upma (with suji/semolina)
+   - Daliya (broken wheat porridge)
+   - Khichdi
+   - Stuffed Aloo Parathas
+4. **Lunch Components**:
+   - Whole wheat Roti/Chapati
+   - White/Basmati Rice (moderate)
+   - Dal preparations (Tadka, Makhni, Chana)
+   - Curries (Aloo Gobi, Rajma, Chole, Paneer)
+   - Plain yogurt/Lassi
+5. **Dinner**: Light roti, khichdi, or dal preparation
+6. **Snacks**: Chickpea salad, Roasted chana, Homemade laddoos
+7. **Hydration**: Water, herbal teas, fresh juices
+`;
+    } else {
+        cuisineSection = `
+**IMPORTANT - MIXED INDIAN CUISINE REQUIREMENTS:**
+1. **MIX OF NORTH AND SOUTH**: Alternate between regional styles throughout the week.
+2. **Balance**: Use variety of cooking methods and regional specialties.
+3. **Cooking Oil**: Mix of Coconut Oil, Mustard Oil, Groundnut Oil, Ghee.
+4. **Breakfast Options**: Rotate between South Indian (Idli, Dosa) and North Indian (Paratha, Poha)
+5. **Lunch**: Mix Rice and Roti preparations with regional curries
+6. **Dinner**: Light preparations from both regions
+`;
+    }
+    
+    const prompt = `You are a professional nutritionist and fitness expert specializing in ${isSouthIndian ? 'traditional South Indian' : isNorthIndian ? 'traditional North Indian' : 'Indian'} cuisine. Create a detailed, personalized 7-day ${userData.cuisinePreference === 'mixed-indian' ? 'Mixed Indian' : isSouthIndian ? 'SOUTH INDIAN' : 'NORTH INDIAN'} diet plan (${variation.type} variation) based on the following user information:
 
 **User Profile:**
 - Current Weight: ${userData.currentWeight} kg
@@ -440,40 +500,11 @@ ${userData.medicalConditions ? `- Medical Conditions: ${userData.medicalConditio
 
 ${additionalGuidance}
 
-**IMPORTANT - SOUTH INDIAN CUISINE REQUIREMENTS:**
-1. **STRICTLY SOUTH INDIAN STYLE ONLY**: Do NOT suggest Roti/Chapati/North Indian dishes unless absolutely necessary for variety (limit to 1-2 times/week). Focus on Rice, Millets, and South Indian preparations.
-2. **NO WESTERN FOOD**: Do not suggest oatmeal, bread, pasta, or salads unless they are South Indian style (e.g., Kosambari, Sundal).
-3. **Cooking Oil**: Recommend Coconut Oil, Gingelly (Sesame) Oil, or Groundnut Oil.
-4. **Breakfast**: 
-   - Idli/Dosa (with Sambar/Chutney - specify portions)
-   - Ragi Malt/Porridge
-   - Upma/Uppumavu (Rava, Semiya, or Millet based)
-   - Pongal (Ven Pongal)
-   - Puttu/Appam / Idiyappam
-   - Adai (high protein lentil dosa)
-   - Pesarattu
-5. **Lunch**: 
-   - Rice (White/Brown/Red Matta Rice) or Millets (Ragi, Thinai, Samai)
-   - Sambar / Rasam / Vatha Kuzhambu / Mor Kuzhambu
-   - Kootu (Lentil + Veg)
-   - Poriyal / Thoran / Avial (Stir fry veg)
-   - Curd / Buttermilk
-6. **Dinner**: 
-   - Lighter options: Idli, Millet Dosa, Uthappam
-   - Ragi Mudde (if appropriate)
-   - Kanji (Rice Porridge)
-7. **Snacks**: 
-   - Sundal (Chickpea/Peanut salad)
-   - Roasted Makhana
-   - Buttermilk (Neer Mor) / Panakam
-   - Fruit Salad
-   - Pori (Puffed rice)
-   - Boiled Peanuts
-8. **Hydration**: emphasize Warm water, Jeera water, or Buttermilk.
+${cuisineSection}
 
 **Meal Plan Structure:**
 - Create a detailed 7-day plan with:
-  * Early Morning
+  * Early Morning (optional light beverage)
   * Breakfast
   * Mid-Morning Snack
   * Lunch
@@ -481,10 +512,10 @@ ${additionalGuidance}
   * Dinner
 - Include calorie counts for each meal
 - Provide macronutrient breakdown (protein, carbs, fats)
-- Specify portion sizes in South Indian terms (e.g., "2 Idlis", "1 cup Sambar", "1 ladle Rice")
-- Focus on culturally authentic South Indian preparations
+- Specify portion sizes clearly (e.g., "2 Idlis", "1 cup", "1 ladle")
+- Make it culturally authentic and practical
 
-Format the response with clear day-wise sections. Make it culturally authentic to South India. Start with Day 1 and continue through Day 7.`;
+Format the response with clear day-wise sections. Start with Day 1 and continue through Day 7. Make it detailed, practical, and easy to follow.`;
 
     return await generateContent(prompt);
 }

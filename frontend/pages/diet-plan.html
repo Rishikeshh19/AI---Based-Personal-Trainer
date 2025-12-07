@@ -525,6 +525,16 @@
                             placeholder="Any medical conditions, allergies, or injuries we should know about"></textarea>
                     </div>
 
+                    <div class="form-group">
+                        <label for="cuisine-preference"><i class="fas fa-utensils"></i> Cuisine Preference *</label>
+                        <select id="cuisine-preference" required>
+                            <option value="">Select your preferred cuisine</option>
+                            <option value="south-indian" selected>South Indian (Idli, Dosa, Sambar)</option>
+                            <option value="north-indian">North Indian (Roti, Dal, Curry)</option>
+                            <option value="mixed-indian">Mixed Indian</option>
+                        </select>
+                    </div>
+
                     <div class="button-group">
                         <button type="submit" class="button">
                             <i class="fas fa-magic"></i> Generate My Diet Plan
@@ -695,9 +705,10 @@
             const goal = document.getElementById("goal").value;
             const dietaryRestrictions = document.getElementById("dietary-restrictions").value;
             const medicalConditions = document.getElementById("medical-conditions").value;
+            const cuisinePreference = document.getElementById("cuisine-preference").value;
 
             // Validate all required fields
-            if (!currentWeight || !targetWeight || !height || !age || !fitnessLevel || !goal) {
+            if (!currentWeight || !targetWeight || !height || !age || !fitnessLevel || !goal || !cuisinePreference) {
                 alert("❌ Please fill in all required fields. Complete your profile if data is missing.");
                 return;
             }
@@ -716,6 +727,7 @@
                 goal,
                 dietaryRestrictions,
                 medicalConditions,
+                cuisinePreference,
 >>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
             };
 

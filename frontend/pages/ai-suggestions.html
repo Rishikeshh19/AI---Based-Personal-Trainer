@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Suggestions - AI Personal Trainer Assistant</title>
+    <link rel="stylesheet" href="../css/style-premium.css">
+    <link rel="stylesheet" href="../css/dashboard-premium.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <script>
+        // Check authentication immediately
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/pages/login.html';
+            }
+        })();
+    </script>
+    <style>
+        :root {
+            --primary-color: #5A00FF;
+            --secondary-color: #32FF7E;
+            --accent-color: #00D9FF;
+            --text-dark: #FFFFFF;
+        }
+        .ai-suggestions-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, rgba(90, 0, 255, 0.05) 0%, rgba(50, 255, 126, 0.05) 100%);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 24px rgba(90, 0, 255, 0.1);
+            border: 2px solid var(--primary-color);
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--primary-color);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Urbanist', sans-serif;
+            color: #FFFFFF;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.6);
+        }
+        
+        .form-group input::placeholder,
+        .form-group select::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 0 0 3px rgba(50, 255, 126, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .member-info-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid var(--secondary-color);
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .member-info-card h4 {
+            color: white;
+            margin: 0 0 12px 0;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .button-group .button {
+            flex: 1;
+            min-width: 150px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .button-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-dark);
+            border: 2px solid var(--primary-color);
+        }
+
+        .button-secondary:hover {
+            background: rgba(90, 0, 255, 0.1);
+            border-color: var(--secondary-color);
+        }
+
+        .suggestions-result {
+            background: linear-gradient(135deg, rgba(90, 0, 255, 0.05) 0%, rgba(0, 217, 255, 0.05) 100%);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 24px rgba(90, 0, 255, 0.1);
+            border: 2px solid var(--primary-color);
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .suggestions-result.show {
+            display: block;
+        }
+
+        .suggestion-card {
+            background: linear-gradient(135deg, rgba(90, 0, 255, 0.08) 0%, rgba(50, 255, 126, 0.08) 100%);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .suggestion-card:hover {
+            border-left-color: var(--secondary-color);
+            box-shadow: 0 4px 16px rgba(90, 0, 255, 0.15);
+            transform: translateX(5px);
+        }
+
+        .suggestion-title {
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suggestion-description {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .weight-tracker {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 25px 0;
+            border: 2px solid var(--secondary-color);
+            color: white;
+        }
+
+        .weight-tracker h4 {
+            color: white;
+            margin: 0 0 16px 0;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+        }
+
+        .weight-progress {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .weight-box {
+            flex: 1;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .weight-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .weight-number {
+            color: white;
+            font-size: 28px;
+            font-weight: 800;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .weight-unit {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            margin-top: 2px;
+        }
+
+        .arrow {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .progress-percentage {
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .empty-state h3 {
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(124, 58, 237, 0.1);
+            border-top: 4px solid #7C3AED;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group .button {
+                width: 100%;
+            }
+
+            .form-section {
+                padding: 25px;
+            }
+
+            .weight-progress {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* AI Response Content Styling */
+        .ai-response-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .ai-response-content {
+            background: rgba(31, 31, 31, 0.8);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(90, 0, 255, 0.3);
+        }
+
+        .ai-response-content p {
+            color: #FFFFFF;
+            line-height: 1.8;
+            margin: 10px 0;
+        }
+
+        .ai-response-content ul,
+        .ai-response-content ol {
+            color: #FFFFFF;
+            margin: 12px 0;
+            padding-left: 30px;
+        }
+
+        .ai-response-content li {
+            margin: 8px 0;
+            line-height: 1.7;
+            color: #FFFFFF;
+        }
+
+        .ai-response-content strong {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        .suggestion-content {
+            color: #FFFFFF;
+            line-height: 1.8;
+            font-size: 14px;
+            background: rgba(31, 31, 31, 0.8);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 1px solid rgba(90, 0, 255, 0.3);
+        }
+
+        .suggestion-content p {
+            margin: 10px 0;
+            color: #FFFFFF;
+        }
+
+        .suggestion-content ul {
+            margin: 12px 0;
+            padding-left: 25px;
+        }
+
+        .suggestion-content li {
+            margin: 6px 0;
+            line-height: 1.6;
+            color: #FFFFFF;
+        }
+
+        .suggestions-metadata {
+            background: rgba(90, 0, 255, 0.1);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 30px;
+            border-left: 4px solid var(--primary-color);
+            text-align: center;
+            color: var(--text-dark);
+        }
+
+        .suggestions-metadata p {
+            margin: 8px 0;
+        }
+
+        .info-value {
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+                <h1>AI Trainer</h1>
+            </a>
+            <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
+                <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
+                <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
+                <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
+                <li><a href="progress.html" class="nav-link">View Progress</a></li>
+                <li><a href="profile.html" class="nav-link">Profile</a></li>
+                <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <div class="ai-suggestions-container">
+            <section>
+                <h2><i class="fas fa-brain"></i> AI-Powered Fitness Recommendations</h2>
+                <p>Get personalized suggestions from our advanced AI based on your fitness profile. Our system analyzes your goals and provides actionable recommendations for weight management, workouts, and nutrition.</p>
+            </section>
+
+            <!-- Member Information Form -->
+            <div class="form-section">
+                <h3
+                    style="color: var(--text-dark); margin-top: 0; font-family: 'Poppins', sans-serif; font-weight: 700;">
+                    <i class="fas fa-user-circle"></i> Your Information</h3>
+
+                <div id="member-info" class="member-info-card" style="display: none;">
+                    <h4>Current Profile</h4>
+                    <div class="info-item">
+                        <span class="info-label">Name:</span>
+                        <span class="info-value" id="display-name">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Email:</span>
+                        <span class="info-value" id="display-email">-</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Role:</span>
+                        <span class="info-value"><span class="badge" id="display-role">Member</span></span>
+                    </div>
+                </div>
+
+                <form id="ai-form" onsubmit="handleSubmit(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="current-weight">Current Weight (kg) *</label>
+                            <input type="number" id="current-weight" placeholder="Enter your current weight" min="20"
+                                max="200" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="desired-weight">Desired Weight (kg) *</label>
+                            <input type="number" id="desired-weight" placeholder="Enter your target weight" min="20"
+                                max="200" step="0.1" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="height">Height (cm) *</label>
+                            <input type="number" id="height" placeholder="Enter your height" min="100" max="250"
+                                step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age (years) *</label>
+                            <input type="number" id="age" placeholder="Enter your age" min="13" max="100" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fitness-level">Current Fitness Level *</label>
+                            <select id="fitness-level" required>
+                                <option value="">Select your fitness level</option>
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                                <option value="athlete">Athlete</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fitness-goal">Main Fitness Goal *</label>
+                            <select id="fitness-goal" required>
+                                <option value="">Select your goal</option>
+                                <option value="weight-loss">Weight Loss</option>
+                                <option value="muscle-gain">Muscle Gain</option>
+                                <option value="strength">Strength Building</option>
+                                <option value="endurance">Endurance</option>
+                                <option value="flexibility">Flexibility</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="medical-conditions">Medical Conditions or Injuries (Optional)</label>
+                        <input type="text" id="medical-conditions" placeholder="e.g., Back pain, Knee injury, Asthma">
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="button">
+                            <span>Get AI Suggestions</span>
+                        </button>
+                        <a href="dashboard.html" class="button button-secondary">
+                            <span>Back to Dashboard</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading" id="loading-state">
+                <div class="spinner"></div>
+                <h3 style="color: var(--text-dark);">Analyzing your profile...</h3>
+                <p style="color: var(--text-light);">Our AI is generating personalized recommendations for you.</p>
+            </div>
+
+            <!-- Results Section -->
+            <div class="suggestions-result" id="suggestions-result">
+                <h2><i class="fas fa-check-circle"></i> Your Personalized Recommendations <span class="info-badge">AI Generated</span></h2>
+
+                <div class="weight-tracker">
+                    <h4>📊 Weight Goal Progress</h4>
+                    <div class="weight-progress">
+                        <div class="weight-box">
+                            <div class="weight-label">Current Weight</div>
+                            <div class="weight-number" id="result-current-weight">0</div>
+                            <div class="weight-unit">kg</div>
+                        </div>
+                        <div class="arrow">→</div>
+                        <div class="weight-box">
+                            <div class="weight-label">Target Weight</div>
+                            <div class="weight-number" id="result-desired-weight">0</div>
+                            <div class="weight-unit">kg</div>
+                        </div>
+                        <div style="flex: 1; text-align: center;">
+                            <div class="weight-label">Weight to Change</div>
+                            <div class="progress-percentage" id="weight-difference">0 kg</div>
+                            <div class="weight-unit" id="change-type">Loss</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="ai-suggestions-container">
+                    <!-- AI suggestions will be rendered here -->
+                    <div class="empty-state">
+                        <p>Waiting for LLM response... This feature will integrate with your LLM API.</p>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button class="button" onclick="resetForm()">
+                        <i class="fas fa-refresh"></i> Get New Suggestions
+                    </button>
+                    <button class="button" onclick="downloadSuggestions()">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="button" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print
+                    </button>
+                    <a href="dashboard.html" class="button button-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/nav.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const logoutLink = document.getElementById("logout-link");
+            if (logoutLink) {
+                logoutLink.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    logout();
+                });
+            }
+
+            // Load and display member info
+            loadMemberInfo();
+            // Auto-fill form from user profile
+            autoFillFormFromProfile();
+        });
+
+        function loadMemberInfo() {
+            const memberInfo = document.getElementById("member-info");
+            if (memberInfo) {
+                // Get current user from storage
+                const currentUser = storage.getCurrentUser();
+                console.log("AI Suggestions - Current User:", currentUser);
+
+                if (currentUser) {
+                    memberInfo.style.display = "block";
+                    // Try multiple possible name fields
+                    const name = currentUser.name || currentUser.username || currentUser.firstName || "Member";
+                    document.getElementById("display-name").textContent = name;
+                    document.getElementById("display-email").textContent = currentUser.email || "member@example.com";
+
+                    const roleElement = document.getElementById("display-role");
+                    if (roleElement) {
+                        roleElement.textContent = (currentUser.role || "Member").charAt(0).toUpperCase() + (currentUser.role || "member").slice(1);
+                    }
+                } else {
+                    console.warn("No current user found in storage");
+                }
+            }
+        }
+
+        async function autoFillFormFromProfile() {
+            try {
+                const currentUser = storage.getCurrentUser();
+                if (!currentUser) {
+                    console.warn("No user found in storage");
+                    return;
+                }
+
+                const userData = currentUser;
+                
+                // Auto-fill available data without mandatory checks
+                if (userData.weight) {
+                    document.getElementById('current-weight').value = userData.weight;
+                }
+                if (userData.height) {
+                    document.getElementById('height').value = userData.height;
+                }
+                if (userData.age) {
+                    document.getElementById('age').value = userData.age;
+                }
+                if (userData.fitnessLevel) {
+                    document.getElementById('fitness-level').value = userData.fitnessLevel;
+                }
+
+                // Set fitness goal based on user's goals if available
+                if (userData.goals && userData.goals.length > 0) {
+                    const goal = userData.goals[0];
+                    document.getElementById('fitness-goal').value = goal;
+                }
+
+                console.log("✅ Profile data auto-filled successfully");
+            } catch (error) {
+                console.error("Error auto-filling profile:", error);
+            }
+        }
+
+        function showProfileIncompleteAlert(missingFields) {
+            // No longer showing alerts for missing profile data
+            // User can fill form manually or with whatever data is available
+            return;
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            const currentWeight = parseFloat(document.getElementById("current-weight").value);
+            const height = parseFloat(document.getElementById("height").value);
+            const age = parseInt(document.getElementById("age").value);
+            const fitnessLevel = document.getElementById("fitness-level").value;
+            const fitnessGoal = document.getElementById("fitness-goal").value;
+            const medicalConditions = document.getElementById("medical-conditions").value;
+
+            // Validate all required fields
+            if (!currentWeight || !height || !age || !fitnessLevel || !fitnessGoal) {
+                alert("❌ Please fill in all required fields. Complete your profile if data is missing.");
+                return;
+            }
+
+            // Validate inputs
+            if (currentWeight <= 0 || height <= 0 || age <= 0) {
+                alert("❌ Please enter valid weight, height, and age values.");
+                return;
+            }
+
+            // Show loading state
+            document.getElementById("ai-form").style.display = "none";
+            document.getElementById("loading-state").classList.add("show");
+
+            try {
+                // Call backend API with LLM
+                const token = localStorage.getItem("token");
+                const response = await fetch("http://localhost:8000/api/ai-suggestions/personalized", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        currentWeight,
+                        height,
+                        age,
+                        fitnessLevel,
+                        fitnessGoal,
+                        medicalConditions
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Display AI-generated suggestions
+                    displayAISuggestions(data.data, currentWeight, height);
+                } else {
+                    throw new Error(data.message || "Failed to generate suggestions");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("❌ Error generating suggestions: " + error.message);
+                document.getElementById("loading-state").classList.remove("show");
+                document.getElementById("ai-form").style.display = "block";
+            }
+        }
+
+        function displayAISuggestions(data, currentWeight, height) {
+            // Hide loading, show results
+            document.getElementById("loading-state").classList.remove("show");
+            document.getElementById("suggestions-result").classList.add("show");
+
+            // Update weight info
+            document.getElementById("result-current-weight").textContent = currentWeight;
+            document.getElementById("result-desired-weight").textContent = height; // Using height temporarily
+
+            // Build HTML for AI suggestions
+            const suggestionsHTML = buildSuggestionsHTML(data);
+            const container = document.getElementById("ai-suggestions-container");
+            container.innerHTML = suggestionsHTML;
+
+            // Scroll to results
+            document.getElementById("suggestions-result").scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function buildSuggestionsHTML(data) {
+            const suggestions = data.suggestions || '';
+            const level = data.fitnessLevel || 'intermediate';
+            const goal = data.fitnessGoal || 'general';
+
+            // Format the AI response as beautiful HTML sections
+            let html = `<div class="ai-response-content">`;
+            
+            // Split by headers and create sections
+            const sections = suggestions.split('\n**').filter(s => s.trim());
+            
+            sections.forEach((section, index) => {
+                const lines = section.split('\n').filter(l => l.trim());
+                if (lines.length === 0) return;
+                
+                const firstLine = lines[0].replace(/\*\*/g, '');
+                const content = lines.slice(1).join('\n');
+                
+                // Determine icon based on section title
+                let icon = '📋';
+                if (firstLine.toLowerCase().includes('workout') || firstLine.toLowerCase().includes('exercise')) icon = '💪';
+                if (firstLine.toLowerCase().includes('nutrition') || firstLine.toLowerCase().includes('meal')) icon = '🍗';
+                if (firstLine.toLowerCase().includes('recovery') || firstLine.toLowerCase().includes('sleep')) icon = '😴';
+                if (firstLine.toLowerCase().includes('tracking') || firstLine.toLowerCase().includes('progress')) icon = '📈';
+                if (firstLine.toLowerCase().includes('strategy') || firstLine.toLowerCase().includes('avoid')) icon = '⚠️';
+                if (firstLine.toLowerCase().includes('goal') || firstLine.toLowerCase().includes('week')) icon = '🎯';
+                if (firstLine.toLowerCase().includes('schedule') || firstLine.toLowerCase().includes('plan')) icon = '📅';
+                if (firstLine.toLowerCase().includes('technique') || firstLine.toLowerCase().includes('form')) icon = '🎓';
+                
+                html += `
+                    <div class="suggestion-card">
+                        <h4 class="suggestion-title">${icon} ${firstLine}</h4>
+                        <div class="suggestion-content">
+                            ${formatSuggestionContent(content)}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            
+            // Add metadata footer
+            html += `
+                <div class="suggestions-metadata">
+                    <p><strong>📊 Level:</strong> ${level.charAt(0).toUpperCase() + level.slice(1)} | 
+                    <strong>🎯 Goal:</strong> ${goal.charAt(0).toUpperCase() + goal.slice(1).replace(/-/g, ' ')}</p>
+                    <p style="font-size: 12px; color: var(--text-light);">Generated by AI on ${new Date().toLocaleString()}</p>
+                </div>
+            `;
+            
+            return html;
+        }
+
+        function formatSuggestionContent(content) {
+            let formatted = content;
+            
+            // Convert bullet points
+            formatted = formatted.replace(/^- /gm, '<li>');
+            if (formatted.includes('<li>')) {
+                formatted = '<ul>' + formatted.replace(/(<li>.*?)($|\n)/gm, '$1</li>') + '</ul>';
+            }
+            
+            // Convert numbered lists
+            formatted = formatted.replace(/^\d+\. /gm, '<li>');
+            if (formatted.includes('<li>')) {
+                formatted = formatted.replace(/^<ul>/, '<ol>').replace(/<\/ul>$/, '</ol>');
+            }
+            
+            // Add line breaks between paragraphs
+            formatted = formatted.replace(/\n\n+/g, '</p><p>');
+            formatted = '<p>' + formatted + '</p>';
+            
+            return formatted;
+        }
+
+        function resetForm() {
+            document.getElementById("ai-form").reset();
+            document.getElementById("ai-form").style.display = "block";
+            document.getElementById("suggestions-result").classList.remove("show");
+            // Re-fill with profile data
+            autoFillFormFromProfile();
+        }
+
+        function downloadSuggestions() {
+            const content = document.getElementById('ai-suggestions-container').innerText;
+            const level = document.getElementById('fitness-level').value;
+            const goal = document.getElementById('fitness-goal').value;
+            const weight = document.getElementById('current-weight').value;
+            
+            const header = `AI FITNESS SUGGESTIONS\n` +
+                          `========================\n` +
+                          `Generated: ${new Date().toLocaleString()}\n` +
+                          `Fitness Level: ${level}\n` +
+                          `Goal: ${goal}\n` +
+                          `Current Weight: ${weight} kg\n\n`;
+            
+            const fullContent = header + content;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(fullContent));
+            element.setAttribute('download', 'ai-suggestions-' + new Date().toISOString().slice(0,10) + '.txt');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function logout() {
+            localStorage.removeItem("token");
+            window.location.href = "login.html";
+        }
+    </script>
+</body>
+
+</html>

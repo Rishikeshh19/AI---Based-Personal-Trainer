@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - AI Personal Trainer</title>
+    <link rel="stylesheet" href="../css/style-premium.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <script>
+        // Check authentication immediately
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/pages/login.html';
+            }
+        })();
+    </script>
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 30px;
+            background: rgba(31, 31, 31, 0.8);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin: 0 auto 20px;
+            color: white;
+        }
+
+        .profile-section {
+            margin-bottom: 30px;
+        }
+
+        .profile-section h3 {
+            color: #FFFFFF;
+            margin-bottom: 20px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .profile-field {
+            margin-bottom: 15px;
+        }
+
+        .profile-field label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .profile-field input,
+        .profile-field select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+            color: #FFFFFF;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .profile-field input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .profile-field input:focus,
+        .profile-field select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+
+        .profile-field input:disabled {
+            background: rgba(255, 255, 255, 0.05);
+            cursor: not-allowed;
+        }
+
+        .profile-value {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            color: #FFFFFF;
+            font-size: 16px;
+        }
+
+        .goals-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .goal-tag {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .edit-mode .profile-value {
+            display: none;
+        }
+
+        .view-mode input,
+        .view-mode select {
+            display: none;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-trainer {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .badge-member {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" style="text-decoration: none; color: inherit;">
+                <h1>⚡ AI Trainer</h1>
+            </a>
+            <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+        </div>
+        <nav>
+            <ul>
+                <!-- Navigation items will be injected by nav.js -->
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <div class="profile-container view-mode" id="profileContainer">
+            <div class="alert alert-success" id="successAlert"></div>
+            <div class="alert alert-error" id="errorAlert"></div>
+
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <h2 id="profileName">Loading...</h2>
+                <p id="profileEmail" style="color: #666;"></p>
+                <span class="badge" id="roleBadge"></span>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="profile-section">
+                <h3>📋 Personal Information</h3>
+                <div class="profile-grid">
+                    <div class="profile-field">
+                        <label>First Name</label>
+                        <div class="profile-value" id="firstNameValue">-</div>
+                        <input type="text" id="firstName" placeholder="Enter first name">
+                    </div>
+                    <div class="profile-field">
+                        <label>Last Name</label>
+                        <div class="profile-value" id="lastNameValue">-</div>
+                        <input type="text" id="lastName" placeholder="Enter last name">
+                    </div>
+                    <div class="profile-field">
+                        <label>Age</label>
+                        <div class="profile-value" id="ageValue">-</div>
+                        <input type="number" id="age" placeholder="Enter age" min="1" max="120">
+                    </div>
+                    <div class="profile-field">
+                        <label>Gender</label>
+                        <div class="profile-value" id="genderValue">-</div>
+                        <select id="gender">
+                            <option value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer not to say">Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Physical Stats -->
+            <div class="profile-section">
+                <h3>📏 Physical Stats</h3>
+                <div class="profile-grid">
+                    <div class="profile-field">
+                        <label>Height (cm)</label>
+                        <div class="profile-value" id="heightValue">-</div>
+                        <input type="number" id="height" placeholder="Enter height in cm" min="1">
+                    </div>
+                    <div class="profile-field">
+                        <label>Weight (kg)</label>
+                        <div class="profile-value" id="weightValue">-</div>
+                        <input type="number" id="weight" placeholder="Enter weight in kg" min="1">
+                    </div>
+                    <div class="profile-field">
+                        <label>Fitness Level</label>
+                        <div class="profile-value" id="fitnessLevelValue">-</div>
+                        <select id="fitnessLevel">
+                            <option value="">Select fitness level</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fitness Goals -->
+            <div class="profile-section">
+                <h3>🎯 Fitness Goals</h3>
+                <div class="profile-field">
+                    <label>Select Your Goals</label>
+                    <div class="goals-container" id="goalsDisplay"></div>
+                    <select id="goals" multiple style="height: 120px; display: none;">
+                        <option value="weight loss">Weight Loss</option>
+                        <option value="muscle gain">Muscle Gain</option>
+                        <option value="endurance">Endurance</option>
+                        <option value="strength">Strength</option>
+                        <option value="flexibility">Flexibility</option>
+                        <option value="general fitness">General Fitness</option>
+                    </select>
+                    <p style="font-size: 12px; color: #666; margin-top: 5px; display: none;" id="goalsHint">Hold Ctrl
+                        (Cmd on Mac) to select multiple goals</p>
+                </div>
+            </div>
+
+            <!-- Trainer Information -->
+            <div class="profile-section" id="trainerSection" style="display: none;">
+                <h3>👨‍🏫 Trainer Information</h3>
+                <div class="profile-grid">
+                    <div class="profile-field">
+                        <label>Specialization</label>
+                        <div class="profile-value" id="specializationValue">-</div>
+                        <input type="text" id="specialization" placeholder="e.g. Weight Loss, Bodybuilding">
+                    </div>
+                    <div class="profile-field">
+                        <label>Years of Experience</label>
+                        <div class="profile-value" id="experienceValue">-</div>
+                        <input type="number" id="yearsOfExperience" placeholder="Years" min="0">
+                    </div>
+                    <div class="profile-field">
+                        <label>Hourly Rate ($)</label>
+                        <div class="profile-value" id="hourlyRateValue">-</div>
+                        <input type="number" id="hourlyRate" placeholder="Rate per hour" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bio -->
+            <div class="profile-section">
+                <h3>✍️ About Me</h3>
+                <div class="profile-field">
+                    <label>Bio</label>
+                    <div class="profile-value" id="bioValue">-</div>
+                    <input type="text" id="bio" placeholder="Tell us about yourself" maxlength="200">
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="button-group">
+                <button class="btn btn-primary" id="editBtn" onclick="toggleEditMode()">✏️ Edit Profile</button>
+                <button class="btn btn-primary" id="saveBtn" onclick="saveProfile()" style="display: none;">💾 Save
+                    Changes</button>
+                <button class="btn btn-secondary" id="cancelBtn" onclick="cancelEdit()" style="display: none;">❌
+                    Cancel</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="footer">
+        <p>&copy; 2025 AI Personal Trainer Assistant. All rights reserved.</p>
+    </div>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/nav.js?v=3"></script>
+    <script>
+        const API_URL = 'http://localhost:8000/api';
+        let currentUserData = null;
+
+        // Load profile on page load
+        document.addEventListener('DOMContentLoaded', async function () {
+            const token = storage.getToken();
+            if (!token) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Update navigation based on user role
+            if (typeof updateNavigation === 'function') {
+                updateNavigation(token);
+            }
+
+            await loadProfile();
+            setupLogout();
+        });
+
+        async function loadProfile() {
+            try {
+                const token = storage.getToken();
+                const response = await fetch(`${API_URL}/members/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to load profile');
+
+                const data = await response.json();
+                currentUserData = data.data;
+                displayProfile(currentUserData);
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showError('Failed to load profile. Please try again.');
+            }
+        }
+
+        function displayProfile(user) {
+            // Header
+            document.getElementById('profileName').textContent = user.username || 'User';
+            document.getElementById('profileEmail').textContent = user.email || '';
+
+            const avatar = document.getElementById('profileAvatar');
+            avatar.textContent = user.username ? user.username.charAt(0).toUpperCase() : '👤';
+
+            const roleBadge = document.getElementById('roleBadge');
+            roleBadge.textContent = user.role || 'member';
+            roleBadge.className = `badge badge-${user.role || 'member'}`;
+
+            // Personal Info
+            const profile = user.profile || {};
+            document.getElementById('firstNameValue').textContent = profile.firstName || '-';
+            document.getElementById('firstName').value = profile.firstName || '';
+
+            document.getElementById('lastNameValue').textContent = profile.lastName || '-';
+            document.getElementById('lastName').value = profile.lastName || '';
+
+            document.getElementById('ageValue').textContent = profile.age || '-';
+            document.getElementById('age').value = profile.age || '';
+
+            document.getElementById('genderValue').textContent = profile.gender || '-';
+            document.getElementById('gender').value = profile.gender || '';
+
+            // Physical Stats
+            document.getElementById('heightValue').textContent = profile.height ? `${profile.height} cm` : '-';
+            document.getElementById('height').value = profile.height || '';
+
+            document.getElementById('weightValue').textContent = profile.weight ? `${profile.weight} kg` : '-';
+            document.getElementById('weight').value = profile.weight || '';
+
+            document.getElementById('fitnessLevelValue').textContent = profile.fitnessLevel || '-';
+            document.getElementById('fitnessLevel').value = profile.fitnessLevel || '';
+
+            // Goals
+            displayGoals(profile.goals || []);
+
+            // Bio
+            document.getElementById('bioValue').textContent = profile.bio || '-';
+            document.getElementById('bio').value = profile.bio || '';
+        }
+
+        function displayGoals(goals) {
+            const goalsDisplay = document.getElementById('goalsDisplay');
+            const goalsSelect = document.getElementById('goals');
+
+            if (goals && goals.length > 0) {
+                goalsDisplay.innerHTML = goals.map(goal =>
+                    `<span class="goal-tag">${goal}</span>`
+                ).join('');
+
+                // Set selected options
+                Array.from(goalsSelect.options).forEach(option => {
+                    option.selected = goals.includes(option.value);
+                });
+            } else {
+                goalsDisplay.innerHTML = '<span style="color: #999;">No goals set</span>';
+            }
+        }
+
+        function toggleEditMode() {
+            const container = document.getElementById('profileContainer');
+            container.classList.remove('view-mode');
+            container.classList.add('edit-mode');
+
+            document.getElementById('editBtn').style.display = 'none';
+            document.getElementById('saveBtn').style.display = 'inline-block';
+            document.getElementById('cancelBtn').style.display = 'inline-block';
+            document.getElementById('goals').style.display = 'block';
+            document.getElementById('goalsHint').style.display = 'block';
+            document.getElementById('goalsDisplay').style.display = 'none';
+        }
+
+        function cancelEdit() {
+            const container = document.getElementById('profileContainer');
+            container.classList.remove('edit-mode');
+            container.classList.add('view-mode');
+
+            document.getElementById('editBtn').style.display = 'inline-block';
+            document.getElementById('saveBtn').style.display = 'none';
+            document.getElementById('cancelBtn').style.display = 'none';
+            document.getElementById('goals').style.display = 'none';
+            document.getElementById('goalsHint').style.display = 'none';
+            document.getElementById('goalsDisplay').style.display = 'flex';
+
+            // Reset form
+            displayProfile(currentUserData);
+        }
+
+        async function saveProfile() {
+            try {
+                const token = storage.getToken();
+
+                // Get selected goals
+                const goalsSelect = document.getElementById('goals');
+                const selectedGoals = Array.from(goalsSelect.selectedOptions).map(opt => opt.value);
+
+                const profileData = {
+                    firstName: document.getElementById('firstName').value,
+                    lastName: document.getElementById('lastName').value,
+                    age: parseInt(document.getElementById('age').value) || undefined,
+                    gender: document.getElementById('gender').value,
+                    height: parseInt(document.getElementById('height').value) || undefined,
+                    weight: parseInt(document.getElementById('weight').value) || undefined,
+                    fitnessLevel: document.getElementById('fitnessLevel').value,
+                    goals: selectedGoals.length > 0 ? selectedGoals : undefined,
+                    bio: document.getElementById('bio').value
+                };
+
+                const response = await fetch(`${API_URL}/members/profile`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(profileData)
+                });
+
+                if (!response.ok) throw new Error('Failed to update profile');
+
+                const data = await response.json();
+                currentUserData = data.data;
+
+                showSuccess('Profile updated successfully!');
+                displayProfile(currentUserData);
+                cancelEdit();
+            } catch (error) {
+                console.error('Error saving profile:', error);
+                showError('Failed to save profile. Please try again.');
+            }
+        }
+
+        function showSuccess(message) {
+            const alert = document.getElementById('successAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
+
+        function showError(message) {
+            const alert = document.getElementById('errorAlert');
+            alert.textContent = message;
+            alert.style.display = 'block';
+            setTimeout(() => alert.style.display = 'none', 3000);
+        }
+
+        function setupLogout() {
+            const logoutLink = document.getElementById('logout-link');
+            if (logoutLink) {
+                logoutLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    storage.clearSession();
+                    window.location.href = 'login.html';
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>

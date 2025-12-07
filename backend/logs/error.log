@@ -22,3 +22,23 @@
 2025-12-07 18:59:13 [[31merror[39m]: Error generating Traditional North Indian plan: Failed to generate content: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [403 Forbidden] Your API key was reported as leaked. Please use another API key.
 2025-12-07 18:59:13 [[31merror[39m]: Error generating High-Protein North Indian plan: Failed to generate content: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [403 Forbidden] Your API key was reported as leaked. Please use another API key.
 2025-12-07 18:59:14 [[31merror[39m]: Error generating Light & Healthy North Indian plan: Failed to generate content: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [403 Forbidden] Your API key was reported as leaked. Please use another API key.
+2025-12-07 21:55:48 [[31merror[39m]: Uncaught Exception: listen EADDRINUSE: address already in use :::8000
+{
+  "code": "EADDRINUSE",
+  "errno": -4091,
+  "syscall": "listen",
+  "address": "::",
+  "port": 8000,
+  "stack": "Error: listen EADDRINUSE: address already in use :::8000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (C:\\Users\\HP\\Downloads\\AI---Based-Personal-Trainer-main (2)\\AI---Based-Personal-Trainer-main\\backend\\app.js:142:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-12-07 21:56:24 [[31merror[39m]: Error: Invalid credentials
+    at C:\Users\HP\Downloads\AI---Based-Personal-Trainer-main (2)\AI---Based-Personal-Trainer-main\backend\controllers\auth.controller.js:49:21
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-12-07 21:56:24 [[31merror[39m]: Error: Invalid credentials
+{
+  "statusCode": 401,
+  "path": "/api/auth/login",
+  "method": "POST",
+  "ip": "::1",
+  "user": "unauthenticated"
+}

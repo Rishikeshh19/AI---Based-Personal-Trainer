@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Personal Trainer</title>
+    <link rel="stylesheet" href="css/style-premium.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #4895ef;
+            --secondary: #3f37c9;
+            --accent: #4cc9f0;
+            --text: #2b2d42;
+            --text-light: #8d99ae;
+            --background: #f8f9fa;
+            --white: #ffffff;
+            --gray: #e9ecef;
+            --success: #4bb543;
+            --warning: #f9c74f;
+            --danger: #ef476f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--background);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text);
+        }
+
+        .section-subtitle {
+            color: var(--primary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar glass">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-dumbbell"></i>
+                <h1>AI Trainer Pro</h1>
+            </div>
+            <button class="mobile-menu-toggle" type="button" aria-label="Toggle menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link active"><i class="fas fa-home"></i> Home</a></li>
+                <li id="login-item"><a href="pages/login.html" class="nav-link"><i class="fas fa-sign-in-alt"></i>
+                        Login</a></li>
+                <li id="signup-item"><a href="pages/signup.html" class="nav-link btn-signup"><i
+                            class="fas fa-user-plus"></i> Sign Up</a></li>
+                <li id="dashboard-item" style="display: none;"><a href="pages/dashboard.html" class="nav-link"><i
+                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li id="ai-suggestions-item" style="display: none;"><a href="pages/ai-suggestions.html"
+                        class="nav-link"><i class="fas fa-robot"></i> AI Coach</a></li>
+                <li id="progress-item" style="display: none;"><a href="pages/progress.html" class="nav-link"><i
+                            class="fas fa-chart-line"></i> Progress</a></li>
+                <li id="logout-item" style="display: none;"><a href="#" class="nav-link" id="logout-link"><i
+                            class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </nav>
+        <div class="social-links">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero" data-aos="fade-up">
+            <div class="hero-content text-center">
+                <h1 class="hero-title">Welcome to <span class="gradient-text">AI Trainer Pro</span></h1>
+                <p class="hero-subtitle">Your personal AI-powered fitness companion. Track workouts, get insights, and
+                    achieve your goals.</p>
+                <div class="hero-buttons">
+                    <a href="pages/login.html" class="btn btn-primary btn-lg">Login</a>
+                    <a href="pages/signup.html" class="btn btn-outline btn-lg">Sign Up</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="section-padding" data-aos="fade-up">
+            <div class="section-header">
+                <h2 class="section-title">Features</h2>
+                <div class="section-divider"></div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <h3>Workout Tracking</h3>
+                    <p>Log your exercises and keep track of your progress.</p>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Analytics</h3>
+                    <p>Visualize your performance with simple charts.</p>
+                </div>
+
+                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Coach</h3>
+                    <p>Get smart recommendations for your workouts.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us Section -->
+        <section id="why-choose-us" class="section-padding bg-light" data-aos="fade-up">
+            <div class="container">
+                <div class="section-header text-center">
+                    <h2 class="section-title">Why Choose AI Trainer Pro?</h2>
+                    <div class="section-divider mx-auto"></div>
+                </div>
+                <div class="why-us-grid">
+                    <div class="why-us-item">
+                        <div class="icon-box">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Smarter Training</h3>
+                        <p>Our AI adapts to your performance in real-time, ensuring you're always challenged just
+                            enough.</p>
+                    </div>
+                    <div class="why-us-item">
+                        <div class="icon-box">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3>Time Efficient</h3>
+                        <p>Get maximum results in minimum time with optimized workout plans tailored to your schedule.
+                        </p>
+                    </div>
+                    <div class="why-us-item">
+                        <div class="icon-box">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Data Privacy</h3>
+                        <p>Your health data is yours alone. We use enterprise-grade encryption to keep it secure.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content text-center">
+            <p>&copy; 2025 AI Trainer Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        // Auth Check - Redirect if logged in
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = localStorage.getItem('token');
+            if (token) {
+                // Load storage first to check user role
+                const userStr = localStorage.getItem('current_user');
+                if (userStr) {
+                    try {
+                        const currentUser = JSON.parse(userStr);
+                        // Redirect trainer to trainer-dashboard, everyone else to member dashboard
+                        if (currentUser.role === 'trainer') {
+                            window.location.href = 'pages/trainer-dashboard.html';
+                        } else {
+                            window.location.href = 'pages/dashboard.html';
+                        }
+                    } catch (e) {
+                        window.location.href = 'pages/dashboard.html';
+                    }
+                } else {
+                    window.location.href = 'pages/dashboard.html';
+                }
+            }
+        });
+
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 800,
+            once: true,
+            easing: 'ease-in-out',
+            mirror: false
+        });
+
+        // Back to Top Button
+        const backToTopButton = document.getElementById('back-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.classList.add('show');
+            } else {
+                backToTopButton.classList.remove('show');
+            }
+        });
+
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+        mobileMenuToggle?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            sidebar.classList.toggle('sidebar-collapsed');
+            mobileMenuToggle.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking a link (only on mobile)
+        document.querySelectorAll('.sidebar nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.matchMedia('(max-width: 768px)').matches) {
+                    sidebar.classList.add('sidebar-collapsed');
+                    mobileMenuToggle.classList.remove('active');
+                }
+            });
+        });
+
+        // Close mobile menu when clicking outside (only on mobile)
+        document.addEventListener('click', (e) => {
+            if (window.matchMedia('(max-width: 768px)').matches) {
+                if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                    sidebar.classList.add('sidebar-collapsed');
+                    mobileMenuToggle.classList.remove('active');
+                }
+            }
+        });
+
+        // Handle window resize to ensure sidebar is visible on desktop
+        window.addEventListener('resize', () => {
+            if (window.matchMedia('(min-width: 769px)').matches) {
+                sidebar.classList.remove('sidebar-collapsed');
+                mobileMenuToggle.classList.remove('active');
+            }
+        });
+    </script>
+
+    <!-- Performance Optimization Module -->
+    <script src="js/performance.js"></script>
+</body>
+
+</html>

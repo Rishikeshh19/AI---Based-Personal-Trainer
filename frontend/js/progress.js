@@ -65,10 +65,18 @@ async function fetchAndRenderProgress(currentUser) {
             }
         }
 
-        // Weekly stats (approx from last 7 days of workouts list)
-        const now = new Date();
-        const sevenDaysAgo = new Date(now);
-        sevenDaysAgo.setDate(now.getDate() - 7);
+        // Weekly stats (logic: from 'weeklyResetDate' in localStorage, or default last 7 days if not set)
+        let weeklyStartDateStr = localStorage.getItem(`weeklyResetDate_${currentUser.id}`);
+        let weeklyStartDate;
+
+        if (weeklyStartDateStr) {
+            weeklyStartDate = new Date(weeklyStartDateStr);
+        } else {
+            // Default to 7 days ago if never manually reset
+            const now = new Date();
+            weeklyStartDate = new Date(now);
+            weeklyStartDate.setDate(now.getDate() - 7);
+        }
 
         let weeklyWorkouts = 0;
         let weeklyCalories = 0;
@@ -76,7 +84,7 @@ async function fetchAndRenderProgress(currentUser) {
 
         workouts.forEach(w => {
             const d = new Date(w.date);
-            if (d >= sevenDaysAgo && d <= now) {
+            if (d >= weeklyStartDate) {
                 weeklyWorkouts += 1;
                 weeklyCalories += w.totalCalories || 0;
                 weeklyDuration += w.totalDuration || 0;
@@ -169,6 +177,17 @@ window.addEventListener('DOMContentLoaded', () => {
 
     initializeProgressSocket(currentUser);
     fetchAndRenderProgress(currentUser);
+
+    const startNewWeekBtn = document.getElementById('start-new-week-btn');
+    if (startNewWeekBtn) {
+        startNewWeekBtn.addEventListener('click', () => {
+            if (confirm('Start a new week? This will reset your "Weekly Statistics" view to zero. Your historical data remains safe.')) {
+                localStorage.setItem(`weeklyResetDate_${currentUser.id}`, new Date().toISOString());
+                fetchAndRenderProgress(currentUser);
+                alert('Weekly stats reset!');
+            }
+        });
+    }
 });
 
 window.addEventListener('beforeunload', () => {

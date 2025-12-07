@@ -1,12 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clients Interaction - AI Personal Trainer</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/style-premium.css">
+    <link rel="stylesheet" href="../css/dashboard-premium.css">
+    <link rel="stylesheet" href="../css/components.css">
     <style>
         .interaction-container {
             max-width: 1200px;
@@ -14,11 +15,12 @@
         }
 
         .clients-list {
-            background: white;
+            background: rgba(31, 31, 31, 0.8);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .client-item {
@@ -26,13 +28,13 @@
             align-items: center;
             justify-content: space-between;
             padding: 16px;
-            border-bottom: 1px solid #E8EBED;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             cursor: pointer;
             transition: background 0.2s;
         }
 
         .client-item:hover {
-            background: #f9fafb;
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .client-item:last-child {
@@ -49,7 +51,7 @@
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -60,13 +62,13 @@
 
         .client-details h3 {
             margin: 0 0 4px 0;
-            color: #1E40AF;
+            color: #32FF7E;
             font-size: 16px;
         }
 
         .client-details p {
             margin: 0;
-            color: #666;
+            color: rgba(255, 255, 255, 0.6);
             font-size: 14px;
         }
 
@@ -80,24 +82,25 @@
         }
 
         .chat-container {
-            background: white;
+            background: rgba(31, 31, 31, 0.8);
             border-radius: 12px;
             padding: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             min-height: 500px;
             display: flex;
             flex-direction: column;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .chat-header {
-            border-bottom: 1px solid #E8EBED;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 16px;
             margin-bottom: 20px;
         }
 
         .chat-header h2 {
             margin: 0;
-            color: #1E40AF;
+            color: #5A00FF;
             font-size: 20px;
         }
 
@@ -118,6 +121,24 @@
             flex-direction: row-reverse;
         }
 
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .message.client .message-avatar {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+        }
+
         .message-content {
             max-width: 70%;
             padding: 12px 16px;
@@ -126,14 +147,19 @@
         }
 
         .message.trainer .message-content {
-            background: #1E40AF;
+            background: #5A00FF;
             color: white;
         }
 
+        .message-text {
+            margin: 0 0 4px 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
         .message-time {
-            font-size: 12px;
+            font-size: 11px;
             color: #666;
-            margin-top: 4px;
         }
 
         .message.trainer .message-time {
@@ -158,12 +184,12 @@
         }
 
         .chat-input:focus {
-            border-color: #1E40AF;
+            border-color: #5A00FF;
         }
 
         .send-button {
             padding: 12px 24px;
-            background: #1E40AF;
+            background: #5A00FF;
             color: white;
             border: none;
             border-radius: 24px;
@@ -173,7 +199,7 @@
         }
 
         .send-button:hover {
-            background: #1e3a8a;
+            background: #3F2C70;
         }
 
         .empty-state {
@@ -188,7 +214,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
-                <h1>⚡ AI Trainer</h1>
+                <h1>AI Trainer</h1>
             </a>
             <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
                 <span class="hamburger-icon">
@@ -198,24 +224,24 @@
                 </span>
             </button>
         </div>
-                <nav>
+        <nav>
             <ul>
+                <!-- Navigation items will be injected by nav.js -->
                 <li><a href="trainer-dashboard.html" class="nav-link">My Clients</a></li>
-                <li><a href="clients-interaction.html" class="nav-link">Clients Interaction</a></li>
                 <li><a href="client-progress.html" class="nav-link">Client Progress</a></li>
-                <li><a href="profile.html" class="nav-link">My Profile</a></li>
+                <li><a href="clients-interaction.html" class="nav-link active">Client Interaction</a></li>
+                <li class="ml-auto"><a href="profile.html" class="nav-link">My Profile</a></li>
                 <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
-            </ul>
         </nav>
     </div>
 
     <main>
-        <h1>💬 Clients Interaction</h1>
+        <h1>Clients Interaction</h1>
         <p style="color: #666; margin-bottom: 30px;">Communicate with your clients</p>
 
         <div class="interaction-container">
             <div class="clients-list">
-                <h2 style="margin-bottom: 20px; color: #1E40AF;">Your Clients</h2>
+                <h2 style="margin-bottom: 20px; color: #5A00FF;">Your Clients</h2>
                 <div id="clientsList">
                     <div class="empty-state">
                         <div class="spinner"></div>
@@ -226,7 +252,10 @@
 
             <div class="chat-container" id="chatContainer" style="display: none;">
                 <div class="chat-header">
-                    <h2 id="chatClientName">Select a client</h2>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <h2 id="chatClientName" style="margin: 0;">Select a client</h2>
+                        <button id="clearChatBtn" class="send-button" style="padding: 8px 16px; font-size: 13px; background: #EF4444;">Clear Chat</button>
+                    </div>
                 </div>
                 <div class="chat-messages" id="chatMessages">
                     <div class="empty-state">
@@ -241,13 +270,14 @@
         </div>
     </main>
 
-    <script src="../js/nav.js"></script>
     <script src="../js/storage.js"></script>
+    <script src="../js/nav.js"></script>
     <script src="../js/api.js"></script>
     <script>
         let selectedClientId = null;
         let pollingInterval = null;
         let currentUser = null;
+        let lastMessageCount = -1;
 
         document.addEventListener("DOMContentLoaded", function () {
             const token = storage.getToken();
@@ -276,6 +306,7 @@
                 });
             }
 
+            document.getElementById('clearChatBtn')?.addEventListener('click', clearChat);
             loadClients();
         });
 
@@ -343,11 +374,44 @@
             document.getElementById('chatClientName').textContent = fullName;
             document.getElementById('chatContainer').style.display = 'flex';
 
+            // Reset message count for new client
+            lastMessageCount = -1;
+
             // Load conversation
             await loadConversation();
 
-            // Start polling for new messages every 5 seconds
-            pollingInterval = setInterval(loadConversation, 5000);
+            // Start polling for new messages every 10 seconds
+            pollingInterval = setInterval(loadConversation, 10000);
+        }
+
+        async function clearChat() {
+            if (!selectedClientId) return;
+            if (!confirm('Are you sure you want to delete this conversation? This cannot be undone.')) return;
+
+            try {
+                const response = await fetch(`http://localhost:8000/api/messages/${selectedClientId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${storage.getToken()}`
+                    }
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById('chatMessages').innerHTML = `
+                        <div class="empty-state">
+                            <p>No messages yet. Start the conversation!</p>
+                        </div>
+                    `;
+                    lastMessageCount = 0;
+                    alert('Chat cleared successfully');
+                } else {
+                    alert(result.message || 'Failed to clear chat');
+                }
+            } catch (error) {
+                console.error('Error clearing chat:', error);
+                alert('Error clearing chat');
+            }
         }
 
         async function loadConversation() {
@@ -357,7 +421,11 @@
                 const response = await api.messages.getConversation(selectedClientId);
                 const messages = response.data || [];
 
-                displayMessages(messages);
+                // Simple diffing: only update if count changed or empty
+                if (messages.length !== lastMessageCount) {
+                    displayMessages(messages);
+                    lastMessageCount = messages.length;
+                }
             } catch (error) {
                 console.error('Error loading conversation:', error);
             }
@@ -393,8 +461,9 @@
                 });
 
                 messageDiv.innerHTML = `
+                    <div class="message-avatar">${initials}</div>
                     <div class="message-content">
-                        <p style="margin: 0 0 4px 0; font-size: 14px; line-height: 1.5;">${escapeHtml(msg.message)}</p>
+                        <p class="message-text">${escapeHtml(msg.message)}</p>
                         <div class="message-time">${messageTime}</div>
                     </div>
                 `;

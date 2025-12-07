@@ -1,12 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Trainer - AI Personal Trainer Assistant</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/style-premium.css">
+    <link rel="stylesheet" href="../css/dashboard-premium.css">
+    <link rel="stylesheet" href="../css/components.css">
     <style>
         .trainers-grid {
             display: grid;
@@ -16,23 +17,23 @@
         }
 
         .trainer-card {
-            background: white;
+            background: rgba(31, 31, 31, 0.8);
             border-radius: 12px;
             padding: 25px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s, box-shadow 0.3s;
-            border: 2px solid transparent;
+            border: 2px solid rgba(255, 255, 255, 0.1);
         }
 
         .trainer-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 16px rgba(30, 64, 175, 0.2);
-            border-color: #1E40AF;
+            box-shadow: 0 4px 16px rgba(50, 255, 126, 0.2);
+            border-color: #32FF7E;
         }
 
         .trainer-card.selected {
-            border-color: #1E40AF;
-            background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 100%);
+            border-color: #32FF7E;
+            background: rgba(50, 255, 126, 0.05);
         }
 
         .trainer-header {
@@ -46,7 +47,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -57,7 +58,7 @@
 
         .trainer-info h3 {
             margin: 0 0 5px 0;
-            color: #1E40AF;
+            color: #5A00FF;
             font-size: 18px;
         }
 
@@ -90,7 +91,7 @@
         .stat-value {
             font-size: 20px;
             font-weight: bold;
-            color: #1E40AF;
+            color: #5A00FF;
         }
 
         .stat-label {
@@ -102,7 +103,7 @@
         .btn-select-trainer {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -146,7 +147,7 @@
         }
 
         .empty-state h3 {
-            color: #1E40AF;
+            color: #5A00FF;
             margin-bottom: 10px;
         }
     </style>
@@ -156,7 +157,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
-                <h1>⚡ AI Trainer</h1>
+                <h1>AI Trainer</h1>
             </a>
             <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
                 <span class="hamburger-icon">
@@ -166,13 +167,14 @@
                 </span>
             </button>
         </div>
-                        <nav>
+        <nav>
             <ul>
                 <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
                 <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
+                <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
                 <li><a href="profile.html" class="nav-link">Profile</a></li>
                 <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
@@ -181,7 +183,7 @@
     </div>
 
     <main>
-        <h1>👨‍🏫 Select Your Trainer</h1>
+        <h1>Select Your Trainer</h1>
         <p style="color: #666; margin-bottom: 30px;">Choose a certified trainer to guide your fitness journey</p>
 
         <div id="currentTrainerBanner" style="display: none;"></div>
@@ -194,8 +196,8 @@
         </div>
     </main>
 
-    <script src="../js/nav.js"></script>
     <script src="../js/storage.js"></script>
+    <script src="../js/nav.js"></script>
     <script src="../js/api.js"></script>
     <script>
         let selectedTrainerId = null;
@@ -212,10 +214,6 @@
                 alert('This page is for members only');
                 window.location.href = 'dashboard.html';
                 return;
-            }
-
-            if (typeof updateNavigation === 'function') {
-                updateNavigation(token);
             }
 
             const logoutLink = document.getElementById("logout-link");
@@ -239,18 +237,8 @@
             const container = document.getElementById('trainersContainer');
 
             try {
-                // Fetch all trainers from the dedicated trainers endpoint
-                const response = await fetch('http://localhost:8000/api/trainers', {
-                    headers: {
-                        'Authorization': `Bearer ${storage.getToken()}`
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to load trainers');
-                }
-
-                const data = await response.json();
+                // Fetch all trainers using API
+                const data = await api.trainer.getTrainers();
                 let trainers = data.data;
 
                 // Filter to only show trainer named Manoj
@@ -335,7 +323,7 @@
                     const banner = document.getElementById('currentTrainerBanner');
                     banner.style.display = 'block';
                     banner.innerHTML = `
-                        <h3>✅ Your Current Trainer</h3>
+                        <h3>✓ Your Current Trainer</h3>
                         <p><strong>${fullName}</strong> - ${specialization}</p>
                         <p style="font-size: 14px;">You can change your trainer at any time by selecting a new one below.</p>
                     `;
@@ -357,7 +345,7 @@
                 try {
                     const response = await api.member.assignTrainer(trainerId);
                     if (response.success) {
-                        alert('✅ Trainer assigned successfully!');
+                        alert('? Trainer assigned successfully!');
                         // Update current user in storage
                         storage.setCurrentUser(response.data);
                         displayCurrentTrainer();

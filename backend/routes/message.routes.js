@@ -12,6 +12,9 @@ router.post('/', messageController.sendMessage);
 // Get conversation with a specific user
 router.get('/:userId', messageController.getConversation);
 
+// Clear conversation with a specific user
+router.delete('/:otherUserId', messageController.clearChat);
+
 // Get all conversations
 router.get('/', messageController.getConversations);
 

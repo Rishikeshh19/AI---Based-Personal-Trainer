@@ -296,3 +296,315 @@ function generateRecoveryTips(user) {
 
     return tips;
 }
+
+// @desc    Generate personalized AI suggestions with real LLM
+// @route   POST /api/ai-suggestions/personalized
+// @access  Private
+exports.getPersonalizedSuggestions = asyncHandler(async (req, res, next) => {
+    try {
+        const {
+            currentWeight,
+            height,
+            age,
+            fitnessLevel,
+            fitnessGoal,
+            medicalConditions
+        } = req.body;
+
+        // Validate required fields
+        if (!currentWeight || !height || !age || !fitnessLevel || !fitnessGoal) {
+            return next(new ErrorResponse('Missing required fields', 400));
+        }
+
+        // Create fitness-level-specific prompt
+        const prompt = generateFitnessSpecificPrompt(
+            currentWeight,
+            height,
+            age,
+            fitnessLevel,
+            fitnessGoal,
+            medicalConditions
+        );
+
+        logger.info(`Generating personalized AI suggestions for fitness level: ${fitnessLevel}, goal: ${fitnessGoal}`);
+        
+        // Call Gemini API
+        const aiSuggestions = await geminiService.generateContent(prompt);
+
+        // Parse and structure the response
+        const structuredSuggestions = parseAISuggestions(aiSuggestions, fitnessLevel, fitnessGoal);
+
+        res.status(200).json({
+            success: true,
+            data: {
+                suggestions: aiSuggestions,
+                structured: structuredSuggestions,
+                fitnessLevel,
+                fitnessGoal,
+                source: 'gemini-ai',
+                generatedAt: new Date(),
+            }
+        });
+    } catch (error) {
+        logger.error(`AI Suggestions Generation Error: ${error.message}`);
+        
+        // Fallback response
+        res.status(200).json({
+            success: true,
+            data: {
+                suggestions: generateFallbackSuggestions(req.body),
+                source: 'fallback',
+                note: 'AI service temporarily unavailable, using rule-based suggestions',
+            }
+        });
+    }
+});
+
+// Generate fitness-level-specific prompt
+function generateFitnessSpecificPrompt(currentWeight, height, age, fitnessLevel, fitnessGoal, medicalConditions) {
+    let basePrompt = `You are an expert personal trainer and fitness coach. Provide comprehensive, personalized fitness improvement suggestions for someone with the following profile:
+
+**User Profile:**
+- Age: ${age} years
+- Weight: ${currentWeight} kg
+- Height: ${height} cm
+- Current Fitness Level: ${fitnessLevel}
+- Main Goal: ${fitnessGoal}
+${medicalConditions ? `- Medical Conditions/Injuries: ${medicalConditions}` : ''}
+
+`;
+
+    // Add fitness-level-specific guidance
+    if (fitnessLevel === 'beginner') {
+        basePrompt += `**BEGINNER LEVEL FOCUS:**
+You are training a beginner who is NEW to fitness. Focus on:
+1. **Foundation Building** - Start with basic movements and light intensity
+2. **Form and Technique** - Emphasize perfect form over heavy weights
+3. **Consistency Over Intensity** - Build the habit of regular exercise
+4. **Injury Prevention** - Focus on proper warm-up and cool-down
+
+Please provide:
+1. **Beginner-Friendly Workout Plan** (3-4 days/week, 30-40 mins each)
+   - 5-6 basic exercises with detailed form cues
+   - Sets and reps: 3 sets x 10-12 reps (light weight)
+   - Rest days: 1-2 days between sessions
+   - Focus on compound movements (squats, push-ups, rows)
+
+2. **Nutrition Guide for Beginners**
+   - Daily calorie target: ${calculateCalories(currentWeight, 'beginner', fitnessGoal)} calories
+   - Macro split recommendation (% of calories)
+   - 5-6 simple meal ideas per day
+   - Emphasis on whole foods, avoid complex diet plans
+
+3. **Recovery & Lifestyle**
+   - Sleep recommendations (8-9 hours)
+   - Basic stretching routine (5 mins daily)
+   - Hydration targets
+
+4. **Common Beginner Mistakes to Avoid**
+   - Doing too much too soon
+   - Poor form chasing heavy weights
+   - Skipping warm-up and cool-down
+   - Not eating enough protein
+
+5. **Progress Tracking**
+   - How to track workouts (reps/weight)
+   - Monthly progress checks
+   - Expected results timeline: 4-6 weeks to see noticeable changes
+
+6. **Motivational Tips**
+   - Building the fitness habit
+   - Overcoming initial soreness
+   - Setting achievable milestones`;
+    } else if (fitnessLevel === 'intermediate') {
+        basePrompt += `**INTERMEDIATE LEVEL FOCUS:**
+You are training someone with 6-12 months of consistent fitness experience. They know basics and can handle moderate intensity. Focus on:
+1. **Progressive Overload** - Gradually increase weight, reps, or intensity
+2. **Periodization** - Vary workout structure to prevent plateaus
+3. **Advanced Form Variations** - Add complexity to exercises
+4. **Performance Metrics** - Track strength and endurance gains
+
+Please provide:
+1. **Intermediate Workout Plan** (4-5 days/week, 45-60 mins each)
+   - Split routine (Upper/Lower or Push/Pull/Legs)
+   - 6-8 exercises per session
+   - Higher volume: 4 sets x 8-12 reps with moderate-heavy weight
+   - Progressive overload strategy (add weight each week)
+   - Include compound + isolation exercises
+
+2. **Optimized Nutrition Plan**
+   - Daily calorie target: ${calculateCalories(currentWeight, 'intermediate', fitnessGoal)} calories
+   - Advanced macro timing (pre/post-workout nutrition)
+   - 7-8 varied meal ideas
+   - Supplement recommendations (whey, creatine if applicable)
+   - Meal prep strategies
+
+3. **Advanced Recovery & Conditioning**
+   - Active recovery days and techniques
+   - Foam rolling and stretching (10-15 mins)
+   - Sleep optimization strategies
+   - Stress management for better recovery
+
+4. **Avoiding Plateaus**
+   - Signs of plateau and how to break through
+   - Deload weeks strategy
+   - Changing exercise variations
+   - Adjusting volume and intensity
+
+5. **Performance Goals**
+   - Specific metrics to track (strength, endurance, muscle)
+   - Realistic 12-week progress expectations
+   - Performance benchmarks for this level
+
+6. **Weekly Schedule Example**
+   - Detailed day-by-day workout plan
+   - Recommended rest days
+   - Flexibility in structure`;
+    } else {
+        // Advanced/Athlete level
+        basePrompt += `**ADVANCED/ATHLETE LEVEL FOCUS:**
+You are training an advanced fitness enthusiast or athlete with 2+ years of consistent training. Focus on:
+1. **Periodized Training** - Structured phases for specific goals
+2. **Advanced Techniques** - Drop sets, supersets, RPE training, etc.
+3. **Peak Performance** - Optimize for competition or specific events
+4. **Injury Prevention & Longevity** - Maintain health while training hard
+
+Please provide:
+1. **Advanced Periodized Workout Plan** (5-6 days/week, 60-90 mins each)
+   - Periodized structure (Hypertrophy/Strength/Power phases)
+   - 8-10 exercises per session
+   - Advanced rep ranges and techniques (3-5 reps for strength, 8-15 for hypertrophy)
+   - Progressive overload with advanced metrics (RPE, Rate of Perceived Exertion)
+   - Include accessory work and weak point training
+
+2. **Elite Nutrition Plan**
+   - Daily calorie target: ${calculateCalories(currentWeight, 'advanced', fitnessGoal)} calories
+   - Precise macro cycling (high on training days, lower on rest days)
+   - Nutrient timing for peak performance
+   - 9-10 diverse meals with supplement stack
+   - Recovery nutrition strategies
+   - Hydration and electrolyte management
+
+3. **Performance Science & Tracking**
+   - Detailed metrics to track (strength, power, body composition)
+   - Heart rate variability (HRV) monitoring
+   - Biomarkers to watch
+   - Recovery metrics and readiness assessment
+
+4. **Advanced Recovery Modalities**
+   - Mobility work (20-30 mins)
+   - Deload week protocols (every 4-6 weeks)
+   - Active recovery strategies
+   - Sleep optimization (9-10 hours quality sleep)
+   - Sauna, ice bath, compression therapy
+
+5. **Goal-Specific Advanced Strategies**
+   - ${fitnessGoal === 'weight-loss' ? 'Advanced body composition optimization, maintaining muscle while losing fat, strategic calorie cycling' : 
+       fitnessGoal === 'muscle-gain' ? 'Hypertrophy-focused periodization, progressive overload, nutrient partitioning' :
+       fitnessGoal === 'strength' ? 'Strength periodization, neural adaptation, competition prep' :
+       'Sport-specific conditioning and performance enhancement'}
+   
+6. **Quarterly Progression Plan**
+   - 3-month detailed timeline
+   - Expected performance gains
+   - Periodic assessment protocols
+   - Adjustment strategies based on results`;
+    }
+
+    basePrompt += `
+
+**IMPORTANT FORMAT:**
+- Use clear sections with headers
+- Include specific numbers and timelines
+- Make recommendations actionable and specific
+- Consider the user's ${fitnessGoal} goal throughout
+- Provide both "Do This" and "Avoid This" lists
+- Include realistic expectations based on their level`;
+
+    return basePrompt;
+}
+
+// Helper to calculate personalized calories
+function calculateCalories(weight, level, goal) {
+    const baseCalories = weight * 24;
+    
+    if (goal === 'weight-loss') {
+        if (level === 'beginner') return Math.round(baseCalories * 0.85);
+        if (level === 'intermediate') return Math.round(baseCalories * 0.80);
+        return Math.round(baseCalories * 0.75);
+    } else if (goal === 'muscle-gain') {
+        if (level === 'beginner') return Math.round(baseCalories * 1.10);
+        if (level === 'intermediate') return Math.round(baseCalories * 1.15);
+        return Math.round(baseCalories * 1.20);
+    } else {
+        return Math.round(baseCalories);
+    }
+}
+
+// Parse AI suggestions into structured format
+function parseAISuggestions(aiResponse, fitnessLevel, goal) {
+    return {
+        rawResponse: aiResponse,
+        fitnessLevel: fitnessLevel,
+        goal: goal,
+        sections: extractSections(aiResponse),
+        summary: extractSummary(aiResponse),
+    };
+}
+
+function extractSections(text) {
+    const sections = {};
+    const lines = text.split('\n');
+    let currentSection = 'general';
+    
+    for (const line of lines) {
+        if (line.includes('**') && line.includes(':')) {
+            const match = line.match(/\*\*(.*?)\*\*/);
+            if (match) {
+                currentSection = match[1].toLowerCase().replace(/\s+/g, '_');
+                sections[currentSection] = [];
+            }
+        } else if (line.trim()) {
+            if (!sections[currentSection]) sections[currentSection] = [];
+            sections[currentSection].push(line);
+        }
+    }
+    
+    return sections;
+}
+
+function extractSummary(text) {
+    const lines = text.split('\n').filter(l => l.trim());
+    return lines.slice(0, 5).join(' ');
+}
+
+// Fallback suggestions if LLM fails
+function generateFallbackSuggestions(formData) {
+    const { fitnessLevel, fitnessGoal } = formData;
+    
+    const fallbackMaps = {
+        beginner: {
+            'weight-loss': 'Start with 3-4 days/week of 30-40 min workouts combining walking/light cardio and bodyweight exercises. Focus on consistency over intensity.',
+            'muscle-gain': 'Begin with 3 days/week of basic strength training focusing on compound movements. Increase protein intake and eat in a caloric surplus.',
+            'strength': 'Do 3 days/week of full-body strength workouts with lighter weight and perfect form focus.',
+            'default': 'Start with 3-4 days of moderate activity per week, focusing on building the exercise habit.'
+        },
+        intermediate: {
+            'weight-loss': 'Follow a 4-5 day split with 45-60 min sessions. Combine cardio and strength training. Create a 300-500 calorie daily deficit.',
+            'muscle-gain': 'Use an Upper/Lower split 4-5 days/week. Progressive overload with 8-12 rep ranges. Eat 300-500 calories above maintenance.',
+            'strength': 'Follow a Push/Pull/Legs split with heavy compound focus, 4-5 days/week.',
+            'default': 'Mix strength and cardio in a 4-5 day weekly routine with moderate intensity.'
+        },
+        advanced: {
+            'weight-loss': 'Use periodized training with higher volume. Combine heavy strength days with moderate caloric deficit. Track macros precisely.',
+            'muscle-gain': 'Hypertrophy-focused periodization with 5-6 days/week. High volume, 8-15 rep ranges. Significant caloric surplus.',
+            'strength': 'Periodized strength with 5-6 days/week including competition lifts and accessories.',
+            'default': 'Advanced periodization with 5-6 training days, specific goal-focused programming.'
+        }
+    };
+    
+    const levelMap = fallbackMaps[fitnessLevel] || fallbackMaps['intermediate'];
+    const suggestion = levelMap[fitnessGoal] || levelMap['default'];
+    
+    return suggestion;
+}

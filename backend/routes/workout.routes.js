@@ -11,14 +11,14 @@ const {
     getMemberWorkouts
 } = require('../controllers/workout.controller');
 
-const { protect } = require('../middleware/auth');
+const { protect, requireTrainer } = require('../middleware/auth');
 
 // All routes require authentication
 router.use(protect);
 
 router.route('/')
     .get(getWorkouts)
-    .post(createWorkout);
+    .post(requireTrainer, createWorkout);
 
 router.route('/stats')
     .get(getWorkoutStats);
@@ -31,7 +31,7 @@ router.route('/range/:startDate/:endDate')
 
 router.route('/:id')
     .get(getWorkout)
-    .put(updateWorkout)
+    .put(requireTrainer, updateWorkout)
     .delete(deleteWorkout);
 
 module.exports = router;

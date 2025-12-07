@@ -3,6 +3,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
+const helmet = require('helmet');
 const path = require('path');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -25,12 +27,29 @@ const io = socketIo(server, {
     origin: process.env.FRONTEND_URL || '*',
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+  },
+  transports: ['websocket', 'polling'],
+  perMessageDeflate: {
+    threshold: 1024,
+    serverNoContextTakeover: true,
+    clientNoContextTakeover: true,
+    serverMaxWindowBits: 10,
+    concurrencyLimit: 10,
+    zlibDeflateOptions: {
+      chunkSize: 1024,
+      memLevel: 7,
+      level: 3
+    }
   }
 });
 
 // Make io globally accessible
 global.io = io;
 global.cacheService = cacheService;
+
+// Performance & Security Middleware
+app.use(helmet());
+app.use(compression({ level: 6, threshold: 1024 }));
 
 // Middleware
 app.use(cors({
@@ -136,8 +155,14 @@ startServer();
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
   logger.error('Unhandled Rejection:', err);
-  // Close server & exit process
-  process.exit(1);
+  // Log but don't exit - allow server to continue
+  console.error('Unhandled Promise Rejection:', err);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  logger.error('Uncaught Exception:', err);
+  console.error('Uncaught Exception:', err);
 });
 
 module.exports = app;

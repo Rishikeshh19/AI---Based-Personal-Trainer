@@ -92,3 +92,21 @@ exports.checkOwnership = (model) => {
         }
     };
 };
+
+// Require members to have a trainer assigned
+exports.requireTrainer = (req, res, next) => {
+    // Only enforce for members
+    if (req.user.role !== 'member') {
+        return next();
+    }
+
+    // Check if trainer is assigned
+    if (!req.user.trainerId) {
+        return next(
+            new ErrorResponse('You must select a trainer before accessing this feature. Please visit Select Trainer page.', 403)
+        );
+    }
+
+    next();
+};
+

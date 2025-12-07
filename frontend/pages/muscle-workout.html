@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -6,8 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Muscle Workout Selector - AI Trainer</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/style-premium.css">
+    <link rel="stylesheet" href="../css/dashboard-premium.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .workout-selector-container {
             max-width: 1200px;
@@ -22,27 +24,28 @@
 
         .page-header h1 {
             font-size: 36px;
-            color: #1E40AF;
+            color: #32FF7E;
             margin-bottom: 10px;
         }
 
         .page-header p {
             font-size: 18px;
-            color: #6B7280;
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .muscle-selection-section {
-            background: white;
+            background: rgba(31, 31, 31, 0.8);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .section-title {
             font-size: 24px;
             font-weight: 700;
-            color: #1E40AF;
+            color: #32FF7E;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
@@ -57,8 +60,8 @@
         }
 
         .muscle-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-            border: 3px solid #E5E7EB;
+            background: rgba(255, 255, 255, 0.05);
+            border: 3px solid rgba(255, 255, 255, 0.1);
             border-radius: 16px;
             padding: 20px;
             text-align: center;
@@ -66,6 +69,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            color: #FFFFFF;
         }
 
         .muscle-card::before {
@@ -75,15 +79,15 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #1E40AF, #0891B2);
+            background: linear-gradient(90deg, #5A00FF, #7C3FFF);
             transform: scaleX(0);
             transition: transform 0.3s;
         }
 
         .muscle-card:hover {
-            border-color: #1E40AF;
+            border-color: #32FF7E;
             transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.2);
+            box-shadow: 0 8px 24px rgba(50, 255, 126, 0.2);
         }
 
         .muscle-card:hover::before {
@@ -91,10 +95,10 @@
         }
 
         .muscle-card.selected {
-            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
-            border-color: #1E40AF;
+            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
+            border-color: #32FF7E;
             color: white;
-            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.4);
+            box-shadow: 0 8px 24px rgba(50, 255, 126, 0.4);
         }
 
         .muscle-card.selected::before {
@@ -105,6 +109,12 @@
             font-size: 48px;
             margin-bottom: 10px;
             display: block;
+            width: 80px;
+            height: 80px;
+            margin-left: auto;
+            margin-right: auto;
+            object-fit: contain;
+            object-position: center;
         }
 
         .muscle-name {
@@ -119,8 +129,8 @@
 
         .selected-count {
             display: inline-block;
-            background: #1E40AF;
-            color: white;
+            background: #32FF7E;
+            color: #1a1a2e;
             width: 24px;
             height: 24px;
             border-radius: 50%;
@@ -131,11 +141,12 @@
         }
 
         .suggestions-section {
-            background: white;
+            background: rgba(31, 31, 31, 0.8);
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             display: none;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .suggestions-section.active {
@@ -159,7 +170,7 @@
         }
 
         .muscle-badge {
-            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
             color: white;
             padding: 8px 16px;
             border-radius: 20px;
@@ -220,14 +231,14 @@
             top: 0;
             bottom: 0;
             width: 4px;
-            background: linear-gradient(135deg, #1E40AF, #0891B2);
+            background: linear-gradient(135deg, #5A00FF, #7C3FFF);
             transform: scaleY(0);
             transition: transform 0.3s;
         }
 
         .exercise-card:hover {
-            border-color: #1E40AF;
-            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.15);
+            border-color: #5A00FF;
+            box-shadow: 0 8px 24px rgba(90, 0, 255, 0.15);
             transform: translateY(-3px);
         }
 
@@ -264,7 +275,7 @@
         .exercise-name {
             font-size: 20px;
             font-weight: 700;
-            color: #1E40AF;
+            color: #5A00FF;
             margin: 0;
         }
 
@@ -309,7 +320,7 @@
         .info-value {
             font-size: 24px;
             font-weight: 700;
-            color: #1E40AF;
+            color: #5A00FF;
             display: block;
         }
 
@@ -409,7 +420,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
-                <h1>⚡ AI Trainer</h1>
+                <h1>AI Trainer</h1>
             </a>
             <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
                 <span class="hamburger-icon">
@@ -419,13 +430,14 @@
                 </span>
             </button>
         </div>
-                        <nav>
+        <nav>
             <ul>
                 <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
                 <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
+                <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
                 <li><a href="profile.html" class="nav-link">Profile</a></li>
                 <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
@@ -436,7 +448,7 @@
     <main>
         <div class="workout-selector-container">
             <div class="page-header">
-                <h1>💪 Build Your Workout</h1>
+                <h1><i class="fas fa-dumbbell" style="color: #5A00FF; margin-right: 10px;"></i>Build Your Workout</h1>
                 <p>Select the muscle groups you want to train today</p>
             </div>
 
@@ -451,39 +463,39 @@
 
                 <div class="muscle-grid" id="muscleGrid">
                     <div class="muscle-card" data-muscle="chest">
-                        <span class="muscle-icon">💪</span>
+                        <img src="../Muscle Workouts/Chest.webp" alt="Chest" class="muscle-icon">
                         <p class="muscle-name">Chest</p>
                     </div>
                     <div class="muscle-card" data-muscle="shoulders">
-                        <span class="muscle-icon">🏋️</span>
+                        <img src="../Muscle Workouts/Shoulders.png" alt="Shoulders" class="muscle-icon">
                         <p class="muscle-name">Shoulders</p>
                     </div>
                     <div class="muscle-card" data-muscle="biceps">
-                        <span class="muscle-icon">💪</span>
+                        <img src="../Muscle Workouts/Biceps.png" alt="Biceps" class="muscle-icon">
                         <p class="muscle-name">Biceps</p>
                     </div>
                     <div class="muscle-card" data-muscle="triceps">
-                        <span class="muscle-icon">💪</span>
+                        <img src="../Muscle Workouts/Triceps.png" alt="Triceps" class="muscle-icon">
                         <p class="muscle-name">Triceps</p>
                     </div>
                     <div class="muscle-card" data-muscle="back">
-                        <span class="muscle-icon">🏋️</span>
+                        <img src="../Muscle Workouts/Back.webp" alt="Back" class="muscle-icon">
                         <p class="muscle-name">Back</p>
                     </div>
                     <div class="muscle-card" data-muscle="core">
-                        <span class="muscle-icon">🔥</span>
+                        <img src="../Muscle Workouts/Core.png" alt="Core" class="muscle-icon">
                         <p class="muscle-name">Core</p>
                     </div>
                     <div class="muscle-card" data-muscle="lower_front">
-                        <span class="muscle-icon">🦵</span>
+                        <img src="../Muscle Workouts/lower front.png" alt="Lower Front" class="muscle-icon">
                         <p class="muscle-name">Lower Front</p>
                     </div>
                     <div class="muscle-card" data-muscle="lower_back">
-                        <span class="muscle-icon">🍑</span>
+                        <img src="../Muscle Workouts/Lower back.jpg" alt="Lower Back" class="muscle-icon">
                         <p class="muscle-name">Lower Back</p>
                     </div>
                     <div class="muscle-card" data-muscle="forearms">
-                        <span class="muscle-icon">✋</span>
+                        <img src="../Muscle Workouts/Forearms.png" alt="Forearms" class="muscle-icon">
                         <p class="muscle-name">Forearms</p>
                     </div>
                 </div>
@@ -493,18 +505,18 @@
             <div class="suggestions-section" id="suggestionsSection">
                 <div class="suggestion-header">
                     <div>
-                        <h2 class="section-title">🎯 Your Workout Suggestions</h2>
+                        <h2 class="section-title"><i class="fas fa-bullseye" style="color: #5A00FF; margin-right: 8px;"></i>Your Workout Suggestions</h2>
                         <div class="selected-muscles-badge" id="selectedMusclesBadge"></div>
                     </div>
                 </div>
 
                 <div id="exercisesContainer" class="empty-state">
-                    <div class="empty-state-icon">💪</div>
+                    <div class="empty-state-icon"><i class="fas fa-dumbbell" style="font-size: 48px; color: #5A00FF;"></i></div>
                     <h3>Loading exercises...</h3>
                 </div>
 
                 <button class="start-workout-btn" id="startWorkoutBtn" disabled>
-                    🚀 Start Workout (<span id="selectedExerciseCount">0</span> exercises selected)
+                    ?? Start Workout (<span id="selectedExerciseCount">0</span> exercises selected)
                 </button>
             </div>
         </div>
@@ -526,7 +538,14 @@
                 return;
             }
 
-            updateNavigation(token);
+            const currentUser = storage.getCurrentUser();
+            // Check if member has trainer
+            if (currentUser && currentUser.role === 'member' && !currentUser.trainerId) {
+                alert('You must select a trainer before logging workouts. Redirecting to trainer selection...');
+                window.location.href = 'select-trainer.html';
+                return;
+            }
+
             setupEventListeners();
             loadAllExercises();
         });
@@ -647,7 +666,7 @@
             if (allSelectedExercises.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">📭</div>
+                        <div class="empty-state-icon"><i class="fas fa-dumbbell" style="font-size: 48px; color: #5A00FF;"></i></div>
                         <h3>No exercises found</h3>
                         <p>Exercises will be added soon!</p>
                     </div>
@@ -820,7 +839,7 @@
             width: 40px;
             height: 40px;
             border: 4px solid #E5E7EB;
-            border-top-color: #1E40AF;
+            border-top-color: #5A00FF;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;

@@ -31,10 +31,12 @@ exports.getAssignedClients = asyncHandler(async (req, res, next) => {
         return next(new ErrorResponse('Only trainers can access this route', 403));
     }
 
+    const assignedClients = trainer.assignedClients || [];
+
     res.status(200).json({
         success: true,
-        count: trainer.assignedClients.length,
-        data: trainer.assignedClients
+        count: assignedClients.length,
+        data: assignedClients
     });
 });
 

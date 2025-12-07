@@ -213,3 +213,40 @@ exports.getUnreadCount = async (req, res) => {
         });
     }
 };
+
+// Clear conversation with a specific user
+exports.clearChat = async (req, res) => {
+    try {
+        const { otherUserId } = req.params;
+        const currentUserId = req.user.id;
+
+        if (!otherUserId) {
+            return res.status(400).json({
+                success: false,
+                message: 'User ID is required'
+            });
+        }
+
+        // Delete all messages between the two users
+        await Message.deleteMany({
+            $or: [
+                { sender: currentUserId, receiver: otherUserId },
+                { sender: otherUserId, receiver: currentUserId }
+            ]
+        });
+
+        logger.info(`Conversation cleared between ${currentUserId} and ${otherUserId}`);
+
+        res.status(200).json({
+            success: true,
+            message: 'Conversation cleared successfully'
+        });
+    } catch (error) {
+        logger.error('Error clearing conversation:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error clearing conversation',
+            error: error.message
+        });
+    }
+};

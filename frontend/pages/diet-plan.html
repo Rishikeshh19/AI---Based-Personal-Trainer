@@ -5,21 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Diet Plan - AI Personal Trainer</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/style-premium.css">
+    <link rel="stylesheet" href="../css/dashboard-premium.css">
+    <link rel="stylesheet" href="../css/components.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        // Check authentication immediately
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/pages/login.html';
+            }
+        })();
+    </script>
     <style>
+        :root {
+            --primary-color: #5A00FF;
+            --secondary-color: #32FF7E;
+            --accent-color: #00D9FF;
+            --text-dark: #FFFFFF;
+        }
         .diet-plan-container {
             max-width: 1200px;
             margin: 0 auto;
         }
 
+        section h2 {
+            color: var(--primary-color);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        section > p {
+            color: var(--text-light);
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
         .form-section {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.99) 0%, rgba(240, 249, 255, 0.99) 100%);
-            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(90, 0, 255, 0.05) 0%, rgba(50, 255, 126, 0.05) 100%);
+            border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-            border: 1px solid rgba(30, 64, 175, 0.08);
+            box-shadow: 0 8px 24px rgba(90, 0, 255, 0.1);
+            border: 2px solid var(--primary-color);
             margin-bottom: 40px;
         }
 
@@ -41,22 +74,28 @@
         .form-group textarea {
             width: 100%;
             padding: 14px 16px;
-            border: 2px solid rgba(30, 64, 175, 0.12);
+            border: 2px solid var(--primary-color);
             border-radius: 12px;
             font-size: 14px;
-            font-family: 'Manrope', sans-serif;
-            color: var(--text-dark);
+            font-family: 'Urbanist', sans-serif;
+            color: #FFFFFF;
             transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(0, 0, 0, 0.6);
+        }
+        
+        .form-group input::placeholder,
+        .form-group select::placeholder,
+        .form-group textarea::placeholder {
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #1E40AF;
+            border-color: var(--secondary-color);
             background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.08);
+            box-shadow: 0 0 0 3px rgba(50, 255, 126, 0.2);
         }
 
         .form-row {
@@ -76,8 +115,13 @@
         }
 
         .spinner {
+<<<<<<< HEAD
             border: 4px solid rgba(124, 58, 237, 0.1);
             border-top: 4px solid #7C3AED;
+=======
+            border: 4px solid rgba(90, 0, 255, 0.1);
+            border-top: 4px solid var(--primary-color);
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -86,6 +130,7 @@
         }
 
         @keyframes spin {
+<<<<<<< HEAD
             0% {
                 transform: rotate(0deg);
             }
@@ -93,15 +138,27 @@
             100% {
                 transform: rotate(360deg);
             }
+=======
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
         }
 
         .diet-result {
             display: none;
+<<<<<<< HEAD
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.99) 0%, rgba(240, 249, 255, 0.99) 100%);
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
             border: 1px solid rgba(30, 64, 175, 0.08);
+=======
+            background: linear-gradient(135deg, rgba(90, 0, 255, 0.05) 0%, rgba(0, 217, 255, 0.05) 100%);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 8px 24px rgba(90, 0, 255, 0.1);
+            border: 2px solid var(--primary-color);
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
             animation: fadeIn 0.6s ease-out;
         }
 
@@ -109,16 +166,55 @@
             display: block;
         }
 
+<<<<<<< HEAD
         .meal-card {
             background: linear-gradient(135deg, rgba(124, 58, 237, 0.06) 0%, rgba(30, 64, 175, 0.04) 100%);
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 20px;
             border: 2px solid rgba(124, 58, 237, 0.12);
+=======
+        .plan-tabs {
+            display: flex;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--primary-color);
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--text-dark);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(90, 0, 255, 0.2);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        .meal-card {
+            background: linear-gradient(135deg, rgba(90, 0, 255, 0.08) 0%, rgba(50, 255, 126, 0.08) 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary-color);
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
             transition: all 0.3s ease;
         }
 
         .meal-card:hover {
+<<<<<<< HEAD
             border-color: rgba(124, 58, 237, 0.3);
             box-shadow: 0 4px 16px rgba(124, 58, 237, 0.12);
             transform: translateY(-4px);
@@ -164,6 +260,64 @@
             border: 1px solid rgba(124, 58, 237, 0.1);
             white-space: pre-wrap;
             line-height: 1.8;
+=======
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(90, 0, 255, 0.15);
+        }
+
+        .meal-time {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .meal-items {
+            color: var(--text-dark);
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .macro-info {
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .ai-content {
+            background: rgba(31, 31, 31, 0.8);
+            border-radius: 12px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 2px solid var(--primary-color);
+            white-space: pre-wrap;
+            line-height: 1.8;
+            color: #FFFFFF;
+            font-family: 'Urbanist', sans-serif;
+        }
+
+        .ai-content h1,
+        .ai-content h2,
+        .ai-content h3,
+        .ai-content h4,
+        .ai-content h5,
+        .ai-content h6 {
+            color: var(--secondary-color);
+        }
+
+        .ai-content p,
+        .ai-content ul,
+        .ai-content ol,
+        .ai-content li,
+        .ai-content div {
+            color: #FFFFFF;
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
         }
 
         .button-group {
@@ -178,6 +332,7 @@
             min-width: 150px;
         }
 
+<<<<<<< HEAD
         .button-secondary {
             background: linear-gradient(135deg, rgba(30, 64, 175, 0.08) 0%, rgba(14, 165, 233, 0.06) 100%);
             color: var(--text-dark);
@@ -194,12 +349,38 @@
             background: linear-gradient(135deg, #10B981 0%, #059669 100%);
             color: white;
             padding: 4px 12px;
+=======
+        .info-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary-color) 0%, var(--accent-color) 100%);
+            color: white;
+            padding: 6px 14px;
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
             border-radius: 6px;
             font-size: 12px;
             font-weight: 600;
             margin-left: 10px;
         }
 
+<<<<<<< HEAD
+=======
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
@@ -209,6 +390,21 @@
             .diet-result {
                 padding: 25px;
             }
+<<<<<<< HEAD
+=======
+
+            section h2 {
+                font-size: 24px;
+            }
+
+            .plan-tabs {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
         }
     </style>
 </head>
@@ -234,7 +430,11 @@
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
+<<<<<<< HEAD
                 <li><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
+=======
+                <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
                 <li><a href="profile.html" class="nav-link">Profile</a></li>
                 <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
@@ -245,9 +445,14 @@
     <main>
         <div class="diet-plan-container">
             <section>
+<<<<<<< HEAD
                 <h2><i class="fas fa-utensils"></i> AI-Powered Indian Diet Plan Generator</h2>
                 <p>Get a personalized 7-day Indian-style meal plan tailored to your fitness goals, powered by Google
                     Gemini AI. Enjoy traditional Indian cuisine while achieving your health objectives!</p>
+=======
+                <h2><i class="fas fa-utensils"></i> AI-Powered Personalized Diet Plan</h2>
+                <p>Get a personalized 7-day meal plan tailored to your fitness goals and dietary preferences. Our advanced AI analyzes your profile to create optimal nutrition guidance.</p>
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
             </section>
 
             <!-- Form Section -->
@@ -340,8 +545,20 @@
 
             <!-- Results Section -->
             <div class="diet-result" id="diet-result">
+<<<<<<< HEAD
                 <h2><i class="fas fa-check-circle"></i> Your Personalized AI Diet Plan <span class="info-badge">Powered
                         by Gemini AI</span></h2>
+=======
+                <h2><i class="fas fa-check-circle"></i> Your Personalized Diet Plans <span class="info-badge">AI Generated</span></h2>
+
+                <div id="summary-stats" class="summary-stats">
+                    <!-- Summary stats will be inserted here -->
+                </div>
+
+                <div class="plan-tabs" id="plan-tabs">
+                    <!-- Tab buttons will be inserted here -->
+                </div>
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
 
                 <div id="diet-content" class="ai-content">
                     <!-- AI-generated content will appear here -->
@@ -351,10 +568,20 @@
                     <button class="button" onclick="resetForm()">
                         <i class="fas fa-redo"></i> Generate New Plan
                     </button>
+<<<<<<< HEAD
                     <button class="button" onclick="window.print()">
                         <i class="fas fa-print"></i> Print Plan
                     </button>
                     <a href="dashboard.html" class="button button-secondary">
+=======
+                    <button class="button" onclick="downloadPlan()">
+                        <i class="fas fa-download"></i> Download Plan
+                    </button>
+                    <button class="button" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Plan
+                    </button>
+                    <a href="dashboard.html" class="button">
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
                         <i class="fas fa-arrow-left"></i> Back to Dashboard
                     </a>
                 </div>
@@ -373,7 +600,10 @@
                 window.location.href = "login.html";
                 return;
             }
+<<<<<<< HEAD
             updateNavigation(token);
+=======
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
 
             const logoutLink = document.getElementById("logout-link");
             if (logoutLink) {
@@ -382,6 +612,7 @@
                     logout();
                 });
             }
+<<<<<<< HEAD
         });
 
         async function handleSubmit(event) {
@@ -396,6 +627,96 @@
                 goal: document.getElementById("goal").value,
                 dietaryRestrictions: document.getElementById("dietary-restrictions").value,
                 medicalConditions: document.getElementById("medical-conditions").value,
+=======
+
+            // Auto-fill form from user profile
+            autoFillFormFromProfile();
+        });
+
+        async function autoFillFormFromProfile() {
+            try {
+                const currentUser = storage.getCurrentUser();
+                if (!currentUser) {
+                    console.warn("No user found in storage");
+                    return;
+                }
+
+                const userData = currentUser;
+                
+                // Auto-fill available data without mandatory checks
+                if (userData.weight) {
+                    document.getElementById('current-weight').value = userData.weight;
+                }
+                if (userData.height) {
+                    document.getElementById('height').value = userData.height;
+                }
+                if (userData.age) {
+                    document.getElementById('age').value = userData.age;
+                }
+                if (userData.fitnessLevel) {
+                    document.getElementById('fitness-level').value = userData.fitnessLevel;
+                }
+
+                // Set target weight based on goals if available
+                if (userData.goals && userData.goals.length > 0) {
+                    const goal = userData.goals[0];
+                    if (goal === 'weight-loss') {
+                        const targetWeight = Math.max(userData.weight - 5, 50);
+                        document.getElementById('target-weight').value = userData.targetWeight || targetWeight;
+                    } else if (goal === 'muscle-gain') {
+                        const targetWeight = userData.weight + 5;
+                        document.getElementById('target-weight').value = userData.targetWeight || targetWeight;
+                    } else {
+                        document.getElementById('target-weight').value = userData.targetWeight || userData.weight;
+                    }
+                    document.getElementById('goal').value = goal;
+                }
+
+                console.log("Profile data auto-filled successfully");
+            } catch (error) {
+                console.error("Error auto-filling profile:", error);
+            }
+        }
+
+        function showProfileIncompleteAlert(missingFields) {
+            // No longer showing alerts for missing profile data
+            // User can fill form manually or with whatever data is available
+            return;
+        }
+
+        async function handleSubmit(event) {
+            event.preventDefault();
+
+            const currentWeight = parseFloat(document.getElementById("current-weight").value);
+            const targetWeight = parseFloat(document.getElementById("target-weight").value);
+            const height = parseFloat(document.getElementById("height").value);
+            const age = parseInt(document.getElementById("age").value);
+            const fitnessLevel = document.getElementById("fitness-level").value;
+            const goal = document.getElementById("goal").value;
+            const dietaryRestrictions = document.getElementById("dietary-restrictions").value;
+            const medicalConditions = document.getElementById("medical-conditions").value;
+
+            // Validate all required fields
+            if (!currentWeight || !targetWeight || !height || !age || !fitnessLevel || !goal) {
+                alert("❌ Please fill in all required fields. Complete your profile if data is missing.");
+                return;
+            }
+
+            if (currentWeight <= 0 || targetWeight <= 0 || height <= 0 || age <= 0) {
+                alert("❌ Please enter valid values for weight, height, and age.");
+                return;
+            }
+
+            const formData = {
+                currentWeight,
+                targetWeight,
+                height,
+                age,
+                fitnessLevel,
+                goal,
+                dietaryRestrictions,
+                medicalConditions,
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
             };
 
             // Show loading
@@ -416,6 +737,7 @@
                 const result = await response.json();
 
                 if (result.success) {
+<<<<<<< HEAD
                     displayDietPlan(result.data);
                 } else {
                     throw new Error(result.message || 'Failed to generate diet plan');
@@ -423,26 +745,74 @@
             } catch (error) {
                 console.error('Error:', error);
                 alert('Failed to generate diet plan. Please try again.');
+=======
+                    displayDietPlans(result.data);
+                } else {
+                    throw new Error(result.message || 'Failed to generate diet plans');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('❌ Failed to generate diet plans. Please try again.');
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
                 document.getElementById("loading-state").classList.remove("show");
                 document.getElementById("diet-form-section").style.display = "block";
             }
         }
 
+<<<<<<< HEAD
         function displayDietPlan(data) {
+=======
+        function displayDietPlans(data) {
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
             // Hide loading
             document.getElementById("loading-state").classList.remove("show");
 
             // Show results
             document.getElementById("diet-result").classList.add("show");
 
+<<<<<<< HEAD
             // Display the AI-generated content
             const contentDiv = document.getElementById("diet-content");
             contentDiv.innerHTML = formatDietPlan(data.dietPlan);
+=======
+            // Display summary stats
+            displaySummaryStats(data.userData);
+
+            // Create tabs for different plans
+            const tabsContainer = document.getElementById("plan-tabs");
+            tabsContainer.innerHTML = '';
+            
+            const plans = data.dietPlans || [];
+            
+            plans.forEach((plan, index) => {
+                const tabBtn = document.createElement('button');
+                tabBtn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+                const icons = ['leaf', 'heart', 'dumbbell', 'apple-alt'];
+                tabBtn.innerHTML = `<i class="fas fa-${icons[index] || 'utensils'}"></i> ${plan.type}`;
+                tabBtn.addEventListener('click', () => {
+                    // Update all tabs
+                    document.querySelectorAll('.tab-btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    tabBtn.classList.add('active');
+                    
+                    // Display selected plan
+                    displayPlan(plan);
+                });
+                tabsContainer.appendChild(tabBtn);
+            });
+
+            // Display first plan by default
+            if (plans.length > 0) {
+                displayPlan(plans[0]);
+            }
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
 
             // Scroll to results
             document.getElementById("diet-result").scrollIntoView({ behavior: 'smooth' });
         }
 
+<<<<<<< HEAD
         function formatDietPlan(planText) {
             // Convert markdown-style formatting to HTML
             let formattedText = planText
@@ -452,6 +822,71 @@
                 .replace(/#{3,}\s+(.*?)(<br>|$)/g, '<h4 style="color: var(--text-dark); margin-top: 20px; margin-bottom: 10px;">$1</h4>')
                 .replace(/#{2}\s+(.*?)(<br>|$)/g, '<h3 style="color: var(--text-dark); margin-top: 24px; margin-bottom: 12px;">$1</h3>')
                 .replace(/#{1}\s+(.*?)(<br>|$)/g, '<h2 style="color: var(--text-dark); margin-top: 28px; margin-bottom: 14px;">$1</h2>');
+=======
+        function displaySummaryStats(userData) {
+            const container = document.getElementById('summary-stats');
+            const weightDiff = Math.abs(userData.targetWeight - userData.currentWeight);
+            const bmi = (userData.currentWeight / ((userData.height / 100) ** 2)).toFixed(1);
+            
+            container.innerHTML = `
+                <div class="stat-item">
+                    <div style="font-size: 24px; margin-bottom: 5px;">⚖️</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Goal Weight</div>
+                    <div style="font-size: 18px; font-weight: 700;">${userData.targetWeight} kg</div>
+                </div>
+                <div class="stat-item">
+                    <div style="font-size: 24px; margin-bottom: 5px;">📊</div>
+                    <div style="font-size: 12px; opacity: 0.9;">BMI</div>
+                    <div style="font-size: 18px; font-weight: 700;">${bmi}</div>
+                </div>
+                <div class="stat-item">
+                    <div style="font-size: 24px; margin-bottom: 5px;">🎯</div>
+                    <div style="font-size: 12px; opacity: 0.9;">To Target</div>
+                    <div style="font-size: 18px; font-weight: 700;">${weightDiff.toFixed(1)} kg</div>
+                </div>
+                <div class="stat-item">
+                    <div style="font-size: 24px; margin-bottom: 5px;">💪</div>
+                    <div style="font-size: 12px; opacity: 0.9;">Fitness Level</div>
+                    <div style="font-size: 18px; font-weight: 700;">${userData.fitnessLevel}</div>
+                </div>
+            `;
+        }
+
+        function displayPlan(plan) {
+            const contentDiv = document.getElementById("diet-content");
+            let htmlContent = `<div style="margin-bottom: 20px; padding: 15px; background: var(--primary-color); color: white; border-radius: 8px;">
+                <h4 style="margin-top: 0; color: white;">📋 ${plan.type} Plan</h4>
+                <p style="margin: 0; font-size: 14px; opacity: 0.95;">${plan.description}</p>
+            </div>`;
+            htmlContent += formatDietPlan(plan.plan);
+            contentDiv.innerHTML = htmlContent;
+        }
+
+        function formatDietPlan(planText) {
+            // Better formatting for diet plans
+            let formattedText = planText
+                .split('\n')
+                .map(line => {
+                    if (line.match(/^#{3,}/)) {
+                        return `<h4 style="color: var(--primary-color); margin: 20px 0 10px 0; font-size: 16px;">${line.replace(/^#{3,}\s*/, '')}</h4>`;
+                    } else if (line.match(/^#{2}/)) {
+                        return `<h3 style="color: var(--primary-color); margin: 25px 0 12px 0; font-size: 18px;">${line.replace(/^#{2}\s*/, '')}</h3>`;
+                    } else if (line.match(/^#{1}/)) {
+                        return `<h2 style="color: var(--primary-color); margin: 30px 0 15px 0; font-size: 20px;">${line.replace(/^#{1}\s*/, '')}</h2>`;
+                    } else if (line.trim() === '') {
+                        return '<br>';
+                    } else if (line.match(/^\s*[-*]/)) {
+                        const content = line.replace(/^\s*[-*]\s*/, '');
+                        return `<div style="margin-left: 20px; margin-bottom: 8px; line-height: 1.6;">• ${content}</div>`;
+                    } else if (line.match(/^\s*\d+\./)) {
+                        const content = line.replace(/^\s*\d+\.\s*/, '');
+                        return `<div style="margin-left: 20px; margin-bottom: 8px; line-height: 1.6;">${line.match(/^\s*(\d+)\./)[1]}. ${content}</div>`;
+                    } else {
+                        return `<p style="margin: 8px 0; line-height: 1.6;">${line}</p>`;
+                    }
+                })
+                .join('');
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
 
             return formattedText;
         }
@@ -462,6 +897,20 @@
             document.getElementById("diet-form-section").style.display = "block";
         }
 
+<<<<<<< HEAD
+=======
+        function downloadPlan() {
+            const content = document.getElementById('diet-content').innerText;
+            const element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
+            element.setAttribute('download', 'diet-plan-' + new Date().toISOString().slice(0,10) + '.txt');
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)
         function logout() {
             localStorage.removeItem("token");
             window.location.href = "login.html";
@@ -469,4 +918,8 @@
     </script>
 </body>
 
+<<<<<<< HEAD
 </html>
+=======
+</html>
+>>>>>>> bfac5fa (Updated backend, frontend, removed old docs, added admin system)

@@ -60,6 +60,9 @@ const api = {
         updateProfile: async (profileData) => {
             return await apiCall('/trainers/profile', 'PUT', profileData);
         },
+        getTrainers: async () => {
+            return await apiCall('/trainers');
+        },
         getAssignedClients: async () => {
             return await apiCall('/trainers/clients');
         },

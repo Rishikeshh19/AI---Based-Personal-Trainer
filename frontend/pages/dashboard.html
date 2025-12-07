@@ -1,19 +1,29 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - AI Personal Trainer Assistant</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/style-premium.css">
+    <link rel="stylesheet" href="../css/dashboard-premium.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <script>
+        // Check authentication immediately
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/pages/login.html';
+            }
+        })();
+    </script>
 </head>
 
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
-                <h1>⚡ AI Trainer</h1>
+                <h1>AI Trainer</h1>
             </a>
             <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
                 <span class="hamburger-icon">
@@ -30,7 +40,7 @@
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
-                <li><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
+                <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
                 <li><a href="profile.html" class="nav-link">Profile</a></li>
                 <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
@@ -54,7 +64,7 @@
                 <p>Total</p>
             </div>
             <div class="stats-card">
-                <div class="card-icon">⭐</div>
+                <div class="card-icon">⚡</div>
                 <h3>Streak</h3>
                 <div class="stat-value" id="streak">0</div>
                 <p>Days active</p>
@@ -77,46 +87,25 @@
             </div>
         </section>
 
-        <!-- Muscle Workout Section (Members Only) -->
-        <section id="muscle-workout-section"
-            style="margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #e0e7ff 0%, #f0f9ff 100%); border-radius: 10px; text-align: center; display: none;">
-            <h2>🏋️ Choose Your Workout</h2>
-            <p style="color: #666; margin-bottom: 20px;">Select a muscle group and get personalized exercises</p>
-            <a href="muscle-workout.html" class="button"
-                style="background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%); color: white; padding: 12px 30px; border-radius: 5px; text-decoration: none; font-weight: 600;">Start
-                Muscle-Based Workout</a>
-        </section>
-
-        <!-- Trainer Selection Section (Members Only) -->
-        <section id="trainer-selection-section"
+        <!-- Your Trainer Section (Members Only) -->
+        <section id="your-trainer-section"
             style="margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; text-align: left; display: none;">
-            <h2>👨‍🏫 Select Your Trainer</h2>
-            <p style="color: #666; margin-bottom: 20px;">Choose a certified trainer to guide your fitness journey.</p>
-            <div id="dashboard-trainers-container"
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
-                <div class="empty-state" style="grid-column: 1 / -1; text-align: center;">
-                    <div class="spinner"></div>
-                    <p>Loading trainers...</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- AI Suggestions Section -->
-        <section id="ai-suggestions">
-            <h2>🤖 AI-Based Suggestions</h2>
-            <div id="suggestions" class="empty-state">
-                <h3>Personalized recommendations coming soon</h3>
-                <p>Log more workouts to get personalized AI suggestions</p>
+            <h2>Your Trainer</h2>
+            <div id="your-trainer-container" class="empty-state" style="text-align: center;">
+                <p>No trainer selected yet. Visit <a href="select-trainer.html" style="color: #5A00FF; text-decoration: underline;">Select Trainer</a> to choose one.</p>
             </div>
         </section>
 
         <!-- Progress Report Section -->
         <section id="progress-report">
-            <h2>📈 Progress Report</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">📊 Progress Report - This Week</h2>
+                <a href="progress.html" class="button" style="padding: 8px 16px; background: #5A00FF; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; transition: all 0.3s; display: inline-block;">View More →</a>
+            </div>
             <div id="progress-container">
                 <div class="empty-state">
-                    <h3>No progress data yet</h3>
-                    <p>Your progress will be displayed here</p>
+                    <h3>No workouts this week</h3>
+                    <p>Start logging workouts to see your progress here</p>
                 </div>
             </div>
         </section>
@@ -126,8 +115,9 @@
         <p>&copy; 2025 AI Personal Trainer Assistant. All rights reserved.</p>
     </div>
 
-    <script src="../js/nav.js"></script>
     <script src="../js/storage.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/api.js"></script>
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <script src="../js/dashboard.js"></script>
 
@@ -147,89 +137,149 @@
 
             // Show/hide sections based on role (no redirects, keep dashboard static)
             if (currentUser.role === 'member') {
-                const mw = document.getElementById('muscle-workout-section');
-                const ts = document.getElementById('trainer-selection-section');
-                const workoutItem = document.getElementById('workout-item');
-                const trainerSelectItem = document.getElementById('trainer-select-item');
-                if (mw) mw.style.display = 'block';
-                if (ts) ts.style.display = 'block';
-                if (workoutItem) workoutItem.style.display = 'block';
-                if (trainerSelectItem) trainerSelectItem.style.display = 'block';
+                const yourTrainerSection = document.getElementById('your-trainer-section');
+                if (yourTrainerSection) yourTrainerSection.style.display = 'block';
 
-                // Load trainers into dashboard section
-                loadDashboardTrainers();
+                // Load trainer info into dashboard section
+                loadYourTrainer();
             } else if (currentUser.role === 'trainer') {
-                const trainerDashItem = document.getElementById('trainer-dashboard-item');
                 const aiSection = document.getElementById('ai-suggestions');
-                if (trainerDashItem) trainerDashItem.style.display = 'block';
                 // Hide AI suggestions section for trainers
                 if (aiSection) aiSection.style.display = 'none';
-            }
-
-            if (typeof updateNavigation === 'function') {
-                updateNavigation(token);
             }
 
             const logoutLink = document.getElementById("logout-link");
             if (logoutLink) {
                 logoutLink.addEventListener("click", function (e) {
                     e.preventDefault();
-                    if (typeof logout === 'function') {
-                        logout();
-                    } else {
-                        storage.clearSession();
-                        window.location.href = 'login.html';
-                    }
+                    // Clear session from localStorage
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('current_user');
+                    localStorage.removeItem('isProfileComplete');
+                    // Redirect to login
+                    window.location.href = '/pages/login.html';
                 });
             }
         });
 
-        function loadDashboardTrainers() {
-            const container = document.getElementById('dashboard-trainers-container');
-            if (!container || typeof storage === 'undefined' || !storage.getTrainers) return;
+        async function loadYourTrainer() {
+            const container = document.getElementById('your-trainer-container');
+            if (!container) return;
 
-            const trainers = storage.getTrainers();
+            try {
+                // Fetch current trainer info from API
+                const response = await api.member.getCurrentTrainer();
+                
+                if (!response || !response.data || !response.data._id) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>No trainer selected</h3>
+                            <p>Visit <a href="select-trainer.html" style="color: #5A00FF; text-decoration: underline;">Select Trainer</a> to choose one.</p>
+                        </div>
+                    `;
+                    return;
+                }
 
-            if (!trainers || trainers.length === 0) {
+                // Display selected trainer info
+                const trainer = response.data;
+                const firstName = trainer.profile?.firstName || 'Trainer';
+                const lastName = trainer.profile?.lastName || '';
+                const fullName = `${firstName} ${lastName}`.trim();
+                const specialization = trainer.profile?.specialization || 'Personal Trainer';
+
                 container.innerHTML = `
-                    <div class="empty-state" style="grid-column: 1 / -1; text-align: center;">
-                        <h3>No trainers available</h3>
-                        <p>Trainers will be added soon.</p>
+                    <div class="card" style="text-align: center;">
+                        <h3 style="margin-bottom: 8px;">${fullName}</h3>
+                        <p style="margin-bottom: 12px; color:#555;">${specialization}</p>
+                        <a href="messages.html" class="button" style="padding: 8px 16px; font-size: 13px; background: #5A00FF; color: white; text-decoration: none; display: inline-block; border-radius: 5px;">Send Message</a>
+                    </div>
+                `;
+            } catch (error) {
+                console.log('Error loading trainer:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No trainer selected</h3>
+                        <p>Visit <a href="select-trainer.html" style="color: #5A00FF; text-decoration: underline;">Select Trainer</a> to choose one.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Filter button handling for progress report
+        document.addEventListener('DOMContentLoaded', function() {
+            loadWeeklyProgress();
+        });
+
+        async function loadWeeklyProgress() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('http://localhost:8000/api/progress?filter=weekly', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Failed to fetch progress');
+                
+                const data = await response.json();
+                displayWeeklyProgress(data.workouts);
+            } catch (error) {
+                console.error('Error loading progress:', error);
+                document.getElementById('progress-container').innerHTML = `
+                    <div class="empty-state">
+                        <h3>Unable to load progress</h3>
+                        <p>Please try again later</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayWeeklyProgress(workouts) {
+            const container = document.getElementById('progress-container');
+            
+            if (!workouts || workouts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No workouts this week</h3>
+                        <p>Start logging workouts to see your progress here</p>
                     </div>
                 `;
                 return;
             }
 
-            const currentUser = storage.getCurrentUser();
-            container.innerHTML = '';
-
-            trainers.forEach(trainer => {
-                const clientCount = trainer.clients ? trainer.clients.length : 0;
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `
-                    <h3 style="margin-bottom: 8px;">${trainer.name}</h3>
-                    <p style="margin-bottom: 4px; color:#555;">${trainer.specialization || 'General Fitness'}</p>
-                    <p style="margin-bottom: 8px; font-size: 13px; color:#777;">Clients: ${clientCount}</p>
-                    <button class="button" style="padding: 8px 16px; font-size: 13px;" data-trainer-id="${trainer.id}">Select Trainer</button>
-                `;
-
-                const btn = card.querySelector('button');
-                btn.addEventListener('click', function () {
-                    if (!currentUser) return;
-                    if (!confirm(`Select ${trainer.name} as your trainer?`)) return;
-                    try {
-                        storage.assignTrainer(currentUser.id, trainer.id);
-                        alert('Trainer assigned successfully!');
-                        // Optionally refresh trainers to reflect client counts
-                        loadDashboardTrainers();
-                    } catch (err) {
-                        alert('Error assigning trainer: ' + (err.message || err));
-                    }
+            let html = `<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">`;
+            
+            workouts.slice(0, 3).forEach(workout => {
+                const date = new Date(workout.date).toLocaleDateString('en-US', { 
+                    weekday: 'short', 
+                    month: 'short', 
+                    day: 'numeric' 
                 });
-
-                container.appendChild(card);
+                const muscles = workout.exercises?.map(e => e.name || e).join(', ') || 'Mixed';
+                
+                html += `
+                    <div style="background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%); padding: 20px; border-radius: 12px; color: white; box-shadow: 0 4px 15px rgba(90, 0, 255, 0.2);">
+                        <h4 style="margin: 0 0 10px 0;">📅 ${date}</h4>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>💪 Muscles:</strong> ${muscles}</p>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>⏱️ Duration:</strong> ${workout.totalDuration || 0} mins</p>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>🔥 Calories:</strong> ${workout.totalCalories || 0} cal</p>
+                    </div>
+                `;
             });
+
+            html += `</div>`;
+            
+            if (workouts.length > 3) {
+                html += `
+                    <p style="text-align: center; margin-top: 15px; color: #666; font-size: 14px;">
+                        Showing 3 of ${workouts.length} workouts this week. <a href="progress.html" style="color: #5A00FF; text-decoration: underline;">View all →</a>
+                    </p>
+                `;
+            }
+
+            container.innerHTML = html;
         }
     </script>
 </body>

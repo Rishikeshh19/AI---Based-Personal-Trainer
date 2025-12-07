@@ -1,12 +1,13 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainer Dashboard - AI Personal Trainer Assistant</title>
-    <link rel="stylesheet" href="../css/style.css">
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/style-premium.css">
+    <link rel="stylesheet" href="../css/dashboard-premium.css">
+    <link rel="stylesheet" href="../css/components.css">
     <style>
         .stats-overview {
             display: grid;
@@ -16,11 +17,12 @@
         }
 
         .stat-card {
-            background: white;
+            background: rgba(31, 31, 31, 0.8);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
             text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .stat-card .icon {
@@ -31,12 +33,12 @@
         .stat-card .value {
             font-size: 28px;
             font-weight: bold;
-            color: #1E40AF;
+            color: #32FF7E;
             margin: 10px 0;
         }
 
         .stat-card .label {
-            color: #666;
+            color: rgba(255, 255, 255, 0.6);
             font-size: 14px;
         }
 
@@ -57,7 +59,7 @@
             padding: 25px;
             margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #1E40AF;
+            border-left: 4px solid #5A00FF;
         }
 
         .client-header {
@@ -70,7 +72,7 @@
         .client-name {
             font-size: 20px;
             font-weight: bold;
-            color: #1E40AF;
+            color: #5A00FF;
         }
 
         .client-email {
@@ -96,7 +98,7 @@
         .client-stat .value {
             font-size: 24px;
             font-weight: bold;
-            color: #1E40AF;
+            color: #5A00FF;
         }
 
         .client-stat .label {
@@ -133,7 +135,7 @@
 
         .workout-muscle {
             font-weight: 600;
-            color: #1E40AF;
+            color: #5A00FF;
         }
 
         .workout-calories {
@@ -148,7 +150,7 @@
         }
 
         .empty-clients h3 {
-            color: #1E40AF;
+            color: #5A00FF;
             margin-bottom: 10px;
         }
 
@@ -166,7 +168,7 @@
 
         .client-details-header h3 {
             margin: 0;
-            color: #1E40AF;
+            color: #5A00FF;
         }
 
         .client-details-subtitle {
@@ -208,7 +210,7 @@
 
         .btn-view-details {
             padding: 8px 16px;
-            background: #1E40AF;
+            background: #5A00FF;
             color: white;
             border: none;
             border-radius: 6px;
@@ -218,7 +220,7 @@
         }
 
         .btn-view-details:hover {
-            background: #1e3a8a;
+            background: #3F2C70;
         }
     </style>
 </head>
@@ -227,7 +229,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
-                <h1>⚡ AI Trainer</h1>
+                <h1>AI Trainer</h1>
             </a>
             <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
                 <span class="hamburger-icon">
@@ -236,26 +238,27 @@
                     <span></span>
                 </span>
             </button>
-        </div>                <nav>
+        </div>
+        <nav>
             <ul>
-                <li><a href="trainer-dashboard.html" class="nav-link">My Clients</a></li>
-                <li><a href="clients-interaction.html" class="nav-link">Clients Interaction</a></li>
+                <!-- Navigation items will be injected by nav.js -->
+                <li><a href="trainer-dashboard.html" class="nav-link active">My Clients</a></li>
                 <li><a href="client-progress.html" class="nav-link">Client Progress</a></li>
-                <li><a href="profile.html" class="nav-link">My Profile</a></li>
+                <li><a href="clients-interaction.html" class="nav-link">Client Interaction</a></li>
+                <li class="ml-auto"><a href="profile.html" class="nav-link">My Profile</a></li>
                 <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
-            </ul>
         </nav>
     </div>
 
     <main>
-        <h1>👨‍🏫 My Clients</h1>
+        <h1>My Clients</h1>
         <p style="color: #666; margin-bottom: 30px;">Monitor and analyze your clients' progress</p>
 
-        <div class="stats-overview" id="overviewStats">
+        <div class="stats-overview">
             <div class="stat-card">
                 <div class="icon">👥</div>
                 <div class="value" id="totalClients">0</div>
-                <div class="label">Total Clients</div>
+                <div class="label">Active Clients</div>
             </div>
             <div class="stat-card">
                 <div class="icon">💪</div>
@@ -268,14 +271,13 @@
                 <div class="label">Calories Burned</div>
             </div>
             <div class="stat-card">
-                <div class="icon">⭐</div>
+                <div class="icon">⚡</div>
                 <div class="value" id="avgStreak">0</div>
-                <div class="label">Avg. Streak (days)</div>
+                <div class="label">Avg. Streak</div>
             </div>
         </div>
 
-        <section class="clients-section">
-            <h2>Your Clients</h2>
+        <div class="clients-section">
             <div class="clients-layout">
                 <div id="clientsContainer">
                     <div class="empty-clients">
@@ -283,15 +285,18 @@
                         <p>Loading clients...</p>
                     </div>
                 </div>
+
                 <div class="client-details-panel" id="clientDetailsPanel">
-                    <div class="client-details-empty">Select a client on the left to see detailed progress.</div>
+                    <div class="client-details-empty">
+                        <p>Select a client to view details</p>
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
     </main>
 
-    <script src="../js/nav.js"></script>
     <script src="../js/storage.js"></script>
+    <script src="../js/nav.js?v=3"></script>
     <script src="../js/api.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -308,9 +313,7 @@
                 return;
             }
 
-            if (typeof updateNavigation === 'function') {
-                updateNavigation(token);
-            }
+            // Navigation is now auto-initialized by nav.js
 
             const logoutLink = document.getElementById("logout-link");
             if (logoutLink) {
@@ -404,7 +407,7 @@
                             </div>
                             ${recentWorkouts.length > 0 ? `
                                 <div class="workout-history">
-                                    <h4 style="margin-bottom: 15px; color: #1E40AF;">Recent Workouts</h4>
+                                    <h4 style="margin-bottom: 15px; color: #5A00FF;">Recent Workouts</h4>
                                     ${recentWorkouts.map(workout => `
                                         <div class="workout-item">
                                             <div class="workout-date">${new Date(workout.date).toLocaleDateString()}</div>

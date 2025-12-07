@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 :root {
-    --primary-color: #1E40AF;
-    --primary-dark: #1E3A8A;
-    --secondary-color: #0891B2;
-    --accent-color: #06B6D4;
+    --primary-color: #1F1F1F;
+    --primary-dark: #0D0D0D;
+    --secondary-color: #FFFFFF;
+    --accent-color: #5A00FF;
     --white: #FFFFFF;
-    --text-dark: #0F172A;
-    --text-light: #475569;
-    --shadow-sm: 0 2px 8px rgba(30, 64, 175, 0.08);
-    --shadow-md: 0 4px 16px rgba(30, 64, 175, 0.12);
-    --shadow-lg: 0 8px 24px rgba(30, 64, 175, 0.15);
-    --shadow-xl: 0 12px 32px rgba(30, 64, 175, 0.2);
+    --text-dark: #0D0D0D;
+    --text-light: #666666;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.15);
+    --shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
 * {
@@ -22,7 +22,7 @@
 
 body {
     font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 50%, #0369A1 100%);
+    background: linear-gradient(135deg, #0D0D0D 0%, #1F1F1F 50%, #262626 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,7 +52,7 @@ body::after {
     right: -50%;
     width: 800px;
     height: 800px;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
     border-radius: 50%;
     pointer-events: none;
     z-index: 0;
@@ -60,18 +60,18 @@ body::after {
 
 .login-container {
     background: 
-        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="rgba(13,148,136,0.08)"/></svg>'),
-        linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(240, 253, 250, 0.96) 100%);
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.08)"/></svg>'),
+        linear-gradient(135deg, rgba(31, 31, 31, 0.95) 0%, rgba(30, 30, 30, 0.95) 100%);
     background-size: 80px 80px, 100% 100%;
     padding: 50px 45px;
     border-radius: 24px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255, 255, 255, 0.1) inset;
     width: 100%;
     max-width: 420px;
     animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     z-index: 1;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
 }
 
@@ -79,8 +79,8 @@ body::after {
     display: block;
     position: relative;
     margin-top: 20px;
-    background: linear-gradient(135deg, rgba(30, 64, 175, 0.1) 0%, rgba(30, 58, 138, 0.1) 100%);
-    color: var(--primary-color);
+    background: linear-gradient(135deg, rgba(90, 0, 255, 0.1) 0%, rgba(124, 63, 255, 0.1) 100%);
+    color: #5A00FF;
     padding: 12px 20px;
     border-radius: 12px;
     text-decoration: none;
@@ -88,17 +88,17 @@ body::after {
     font-weight: 700;
     font-family: 'Manrope', sans-serif;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(30, 64, 175, 0.2);
+    border: 1px solid rgba(90, 0, 255, 0.2);
     letter-spacing: 0.3px;
     cursor: pointer;
     text-align: center;
 }
 
 .back-home-btn:hover {
-    background: linear-gradient(135deg, rgba(30, 64, 175, 0.2) 0%, rgba(30, 58, 138, 0.2) 100%);
+    background: linear-gradient(135deg, rgba(90, 0, 255, 0.2) 0%, rgba(124, 63, 255, 0.2) 100%);
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
-    border-color: rgba(30, 64, 175, 0.3);
+    box-shadow: 0 4px 12px rgba(90, 0, 255, 0.15);
+    border-color: rgba(90, 0, 255, 0.3);
 }
 
 .back-home-btn:active {
@@ -118,7 +118,7 @@ body::after {
 
 .login-container h1 {
     text-align: center;
-    background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%);
+    background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -131,7 +131,7 @@ body::after {
 
 .login-subtitle {
     text-align: center;
-    color: var(--text-light);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 14px;
     margin-bottom: 35px;
     font-weight: 500;
@@ -144,7 +144,7 @@ body::after {
 .form-group label {
     display: block;
     margin-bottom: 10px;
-    color: var(--text-dark);
+    color: #FFFFFF;
     font-weight: 700;
     font-size: 13px;
     font-family: 'Manrope', sans-serif;
@@ -155,32 +155,32 @@ body::after {
 .form-group input {
     width: 100%;
     padding: 14px 16px;
-    border: 2px solid transparent;
+    border: 2px solid rgba(90, 0, 255, 0.3);
     border-radius: 12px;
     font-size: 14px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     font-family: 'Manrope', sans-serif;
-    background: linear-gradient(135deg, #F0FDFA 0%, #E0F8F6 100%);
-    color: var(--text-dark);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    background: rgba(255, 255, 255, 0.05);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .form-group input:focus {
-    border-color: var(--primary-color);
+    border-color: #5A00FF;
     outline: none;
-    box-shadow: 0 8px 24px rgba(30, 64, 175, 0.2), 0 0 0 4px rgba(30, 64, 175, 0.1);
-    background: var(--white);
+    box-shadow: 0 8px 24px rgba(90, 0, 255, 0.3), 0 0 0 4px rgba(90, 0, 255, 0.15);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .form-group input::placeholder {
-    color: #CBD5E0;
+    color: rgba(255, 255, 255, 0.4);
     font-weight: 500;
 }
 
 button[type="submit"] {
     width: 100%;
     padding: 14px 20px;
-    background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 50%, #0369A1 100%);
+    background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
     color: var(--white);
     border: none;
     border-radius: 12px;
@@ -189,7 +189,7 @@ button[type="submit"] {
     font-weight: 800;
     font-family: 'Manrope', sans-serif;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 12px 32px rgba(30, 64, 175, 0.35), 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 32px rgba(90, 0, 255, 0.35), 0 2px 8px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
     letter-spacing: 0.5px;
@@ -210,7 +210,7 @@ button[type="submit"]::before {
 
 button[type="submit"]:hover {
     transform: translateY(-4px);
-    box-shadow: 0 16px 40px rgba(30, 64, 175, 0.45), 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 16px 40px rgba(90, 0, 255, 0.45), 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 button[type="submit"]:hover::before {
@@ -219,18 +219,18 @@ button[type="submit"]:hover::before {
 
 button[type="submit"]:active {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(108, 92, 231, 0.35);
+    box-shadow: 0 8px 20px rgba(90, 0, 255, 0.35);
 }
 
 .form-footer {
     text-align: center;
     margin-top: 24px;
-    color: var(--text-light);
+    color: rgba(255, 255, 255, 0.7);
     font-size: 13px;
 }
 
 .form-footer a {
-    color: var(--primary-color);
+    color: #32FF7E;
     text-decoration: none;
     font-weight: 700;
     transition: all 0.3s ease;
@@ -238,12 +238,12 @@ button[type="submit"]:active {
 }
 
 .form-footer a:hover {
-    color: var(--primary-dark);
+    color: #FFFFFF;
     text-decoration: underline;
 }
 
 .error-message {
-    color: #E53E3E;
+    color: #FCA5A5;
     font-size: 12px;
     margin-top: 6px;
     display: none;
@@ -251,8 +251,8 @@ button[type="submit"]:active {
 }
 
 .form-group.error input {
-    border-color: #E53E3E;
-    background: rgba(229, 62, 62, 0.04);
+    border-color: #EF4444 !important;
+    background: rgba(220, 38, 38, 0.15);
 }
 
 .form-group.error .error-message {

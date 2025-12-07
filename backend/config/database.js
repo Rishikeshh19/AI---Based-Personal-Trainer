@@ -70,16 +70,9 @@ mongoose.connection.on('disconnected', () => {
 });
 
 // Close the Mongoose connection when the app is terminated
-process.on('SIGINT', async () => {
-    try {
-        await mongoose.connection.close();
-        logger.info('Mongoose connection closed through app termination');
-        process.exit(0);
-    } catch (err) {
-        logger.error('Error closing MongoDB connection:', err);
-        process.exit(1);
-    }
-});
+// Note: Don't handle SIGINT/SIGTERM here as it interferes with normal operation
+// The process manager (npm, pm2, etc.) will handle graceful shutdown
+let isShuttingDown = false;
 
 module.exports = {
     connectDB,

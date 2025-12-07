@@ -1,63 +1,138 @@
 // Navigation utility functions
 // Note: This file should be loaded after storage.js if using storage utilities
 
+// Defined navigation structures
+const NAV_ITEMS = {
+    member: [
+        { id: 'dashboard-item', href: 'dashboard.html', text: 'Dashboard' },
+        { id: 'workout-item', href: 'muscle-workout.html', text: 'Muscle Workout' },
+        { id: 'trainer-select-item', href: 'select-trainer.html', text: 'Select Trainer' },
+        { id: 'messages-item', href: 'messages.html', text: 'Messages' },
+        { id: 'ai-suggestions-item', href: 'ai-suggestions.html', text: 'AI Suggestions' },
+        { id: 'diet-plan-item', href: 'diet-plan.html', text: 'AI Diet Plan' },
+        { id: 'progress-item', href: 'progress.html', text: 'View Progress' },
+    ],
+    trainer: [
+        { id: 'trainer-dashboard-item', href: 'trainer-dashboard.html', text: 'My Clients' },
+        { id: 'client-progress-item', href: 'client-progress.html', text: 'Client Progress' },
+        { id: 'clients-interaction-item', href: 'clients-interaction.html', text: 'Client Interaction' },
+    ],
+    trainer_shared: [
+        { id: 'profile-item', href: 'profile.html', text: 'My Profile', className: 'ml-auto' }, // Right align for trainer
+        { id: 'logout-item', href: '#', text: 'Logout', isLogout: true }
+    ],
+    shared: [
+        { id: 'profile-item', href: 'profile.html', text: 'My Profile' },
+        { id: 'logout-item', href: '#', text: 'Logout', isLogout: true }
+    ],
+    auth: [
+        { id: 'login-item', href: 'login.html', text: 'Login' },
+        { id: 'signup-item', href: 'signup.html', text: 'Sign Up' },
+        { id: 'home-item', href: '../index.html', text: 'Home' }
+    ]
+};
+
 function updateNavigation(token) {
-    const loginItem = document.getElementById("login-item");
-    const signupItem = document.getElementById("signup-item");
-    const dashboardItem = document.getElementById("dashboard-item");
-    const workoutItem = document.getElementById("workout-item");
-    const progressItem = document.getElementById("progress-item");
-    const aiSuggestionsItem = document.getElementById("ai-suggestions-item");
-    const logoutItem = document.getElementById("logout-item");
-    const trainerDashboardItem = document.getElementById("trainer-dashboard-item");
-    const trainerSelectItem = document.getElementById("trainer-select-item");
-    const messagesItem = document.getElementById("messages-item");
-    const homeItem = document.getElementById("home-item");
+    try {
+        console.log('Nav: Starting updateNavigation');
+        const navList = document.querySelector('nav ul');
+        if (!navList) {
+            console.error('Nav: Navigation list container (nav ul) not found!');
+            return;
+        }
 
-    if (token) {
-        // User is logged in - show protected pages
-        if (loginItem) loginItem.style.display = "none";
-        if (signupItem) signupItem.style.display = "none";
-        if (homeItem) homeItem.style.display = "none"; // Hide Home when logged in
-        if (dashboardItem) dashboardItem.style.display = "block";
-        if (progressItem) progressItem.style.display = "block";
-        if (aiSuggestionsItem) aiSuggestionsItem.style.display = "block";
-        if (logoutItem) logoutItem.style.display = "block";
+        // Clear existing nav
+        navList.innerHTML = '';
 
-        // Role-based items (requires storage.js)
+        if (!token) {
+            console.log('Nav: No token, rendering auth items');
+            // Not logged in: Show Auth items
+            NAV_ITEMS.auth.forEach(item => {
+                navList.appendChild(createNavItem(item));
+            });
+            return;
+        }
+
+        // User is logged in
         let currentUser = null;
         if (typeof storage !== 'undefined' && storage.getCurrentUser) {
             currentUser = storage.getCurrentUser();
+        } else {
+            console.warn('Nav: storage utility not found or getCurrentUser missing');
         }
 
-        const role = currentUser && currentUser.role ? currentUser.role : null;
+        // Robust role detection
+        let role = currentUser && currentUser.role ? currentUser.role.toLowerCase() : null;
+        console.log('Nav: Detected role:', role);
+
+        // Fallback: If on a trainer page, force trainer view just in case
+        if (window.location.href.includes('trainer-dashboard') ||
+            window.location.href.includes('clients-interaction') ||
+            window.location.href.includes('client-progress')) {
+            role = 'trainer';
+        }
+
+        // Build the menu based on role
+        let menuItems = [];
 
         if (role === 'trainer') {
-            // Trainer: show trainer dashboard / clients, hide member-only options and AI suggestions
-            if (trainerDashboardItem) trainerDashboardItem.style.display = "block";
-            if (workoutItem) workoutItem.style.display = "none";
-            if (trainerSelectItem) trainerSelectItem.style.display = "none";
-            if (messagesItem) messagesItem.style.display = "none";
-            if (aiSuggestionsItem) aiSuggestionsItem.style.display = "none";
+            menuItems = [...NAV_ITEMS.trainer, ...NAV_ITEMS.trainer_shared];
         } else {
-            // Member or other roles: show workout + select-trainer + messages + AI suggestions, hide trainer dashboard
-            if (trainerDashboardItem) trainerDashboardItem.style.display = "none";
-            if (workoutItem) workoutItem.style.display = "block";
-            if (trainerSelectItem) trainerSelectItem.style.display = "block";
-            if (messagesItem) messagesItem.style.display = "block";
-            if (aiSuggestionsItem) aiSuggestionsItem.style.display = "block";
+            // Default to member view for anyone else (including 'member')
+            menuItems = [...NAV_ITEMS.member, ...NAV_ITEMS.shared];
         }
-    } else {
-        // User is not logged in - show auth pages
-        if (loginItem) loginItem.style.display = "block";
-        if (signupItem) signupItem.style.display = "block";
-        if (homeItem) homeItem.style.display = "block"; // Show Home when not logged in
-        if (dashboardItem) dashboardItem.style.display = "none";
-        if (workoutItem) workoutItem.style.display = "none";
-        if (progressItem) progressItem.style.display = "none";
-        if (aiSuggestionsItem) aiSuggestionsItem.style.display = "none";
-        if (logoutItem) logoutItem.style.display = "none";
+
+        // Render items
+        menuItems.forEach(item => {
+            if (item) {
+                navList.appendChild(createNavItem(item));
+            } else {
+                console.error('Nav: Encountered undefined navigation item');
+            }
+        });
+
+        // Re-attach logout listener since we recreated the element
+        const logoutLink = document.getElementById('logout-link');
+        if (logoutLink) {
+            logoutLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                if (typeof logout === 'function') {
+                    logout();
+                } else if (typeof storage !== 'undefined' && storage.clearSession) {
+                    storage.clearSession();
+                    window.location.href = '../index.html';
+                } else {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("current_user");
+                    window.location.href = "../index.html";
+                }
+            });
+        }
+        console.log('Nav: Navigation updated successfully');
+
+    } catch (error) {
+        console.error('Nav: Critical error in updateNavigation:', error);
     }
+}
+
+function createNavItem(item) {
+    const li = document.createElement('li');
+    li.id = item.id;
+    if (item.className) {
+        li.className = item.className;
+    }
+
+    const a = document.createElement('a');
+    a.href = item.href;
+    a.className = 'nav-link';
+    a.textContent = item.text;
+
+    if (item.id === 'logout-item') {
+        a.id = 'logout-link';
+    }
+
+    li.appendChild(a);
+    return li;
 }
 
 function logout() {
@@ -104,13 +179,29 @@ function initSidebarToggle() {
         e.stopPropagation();
         sidebar.classList.toggle('sidebar-collapsed');
     });
+}
 
-    // Keep sidebar open - don't collapse on link clicks
-    // All menu items remain visible and static
+function initNavigation() {
+    console.log('Nav: Initializing navigation...');
+    // If we're on the login or signup page, we might want different auth-nav logic
+    // But updateNavigation handles !token case (showing Login/Signup links)
+
+    let token = null;
+    if (typeof storage !== 'undefined' && storage.getToken) {
+        token = storage.getToken();
+    } else {
+        token = localStorage.getItem('token');
+    }
+    console.log('Nav: Token found:', !!token);
+
+    // Update navigation based on user role
+    updateNavigation(token); 
+
+    initSidebarToggle();
 }
 
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initSidebarToggle);
+    document.addEventListener('DOMContentLoaded', initNavigation);
 } else {
-    initSidebarToggle();
+    initNavigation();
 }

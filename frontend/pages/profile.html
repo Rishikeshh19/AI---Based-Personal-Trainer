@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
-    <link rel="stylesheet" href="../css/dark-mode.css">
     <script>
         // Check authentication immediately
         (function() {
@@ -230,8 +229,8 @@
             </button>
         </div>
         <nav>
-            <ul>
-                <!-- Navigation items will be injected by nav.js -->
+            <ul id="navList">
+                <!-- Navigation items will be populated by nav.js -->
             </ul>
         </nav>
     </div>
@@ -376,8 +375,7 @@
     </div>
 
     <script src="../js/storage.js"></script>
-    <script src="../js/nav.js?v=3"></script>
-    <script src="../js/dark-mode.js"></script>
+    <script src="../js/nav.js"></script>
     <script>
         const API_URL = 'http://localhost:8000/api';
         let currentUserData = null;

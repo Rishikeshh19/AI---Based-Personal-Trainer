@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
-    <link rel="stylesheet" href="../css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .workout-selector-container {
@@ -433,17 +432,8 @@
             </button>
         </div>
         <nav>
-            <ul>
-                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-                <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
-                <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
-                <li><a href="messages.html" class="nav-link">Messages</a></li>
-                <li><a href="notifications.html" class="nav-link">Notifications</a></li>
-                <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
-                <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
-                <li><a href="progress.html" class="nav-link">View Progress</a></li>
-                <li><a href="profile.html" class="nav-link">Profile</a></li>
-                <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
+            <ul id="navList">
+                <!-- Navigation items will be dynamically loaded by nav.js -->
             </ul>
         </nav>
     </div>
@@ -525,10 +515,11 @@
         </div>
     </main>
 
+    <script src="../js/clear-old-tokens.js"></script>
     <script src="../js/storage.js"></script>
+    <script src="../js/auth.js"></script>
     <script src="../js/nav.js"></script>
-    <script src="../js/dark-mode.js"></script>
-    <script src="../js/gif_database.js"></script>
+        <script src="../js/gif_database.js"></script>
     <script src="../js/exercises.js"></script>
     <script>
         let selectedMuscles = new Set();

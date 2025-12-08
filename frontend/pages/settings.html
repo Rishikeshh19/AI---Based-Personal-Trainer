@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
-    <link rel="stylesheet" href="../css/dark-mode.css">
     <style>
         .settings-container {
             max-width: 900px;
@@ -402,46 +401,6 @@
                 </div>
             </div>
 
-            <!-- Display Settings -->
-            <div class="settings-section">
-                <h2>Display & Theme</h2>
-                
-                <div class="setting-item">
-                    <div class="setting-item-label">
-                        <strong>Theme</strong>
-                        <small>Choose your preferred color scheme</small>
-                    </div>
-                    <div class="setting-item-control">
-                        <select class="setting-select" id="themeSelect" onchange="changeSetting('theme', this.value)">
-                            <option value="light">Light (Default)</option>
-                            <option value="dark">Dark</option>
-                            <option value="auto">Auto (System)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="setting-item">
-                    <div class="setting-item-label">
-                        <strong>Font Size</strong>
-                        <small>Adjust text size for better readability</small>
-                    </div>
-                    <div class="setting-item-control">
-                        <input type="range" class="setting-slider" id="fontSizeSlider" min="12" max="18" value="14" onchange="changeSetting('fontSize', this.value)">
-                        <span class="slider-value" id="fontSizeValue">14px</span>
-                    </div>
-                </div>
-
-                <div class="setting-item">
-                    <div class="setting-item-label">
-                        <strong>Compact Mode</strong>
-                        <small>Show more content with reduced spacing</small>
-                    </div>
-                    <div class="setting-item-control">
-                        <button class="toggle-switch" id="compactMode" onclick="toggleSetting('compactMode')"></button>
-                    </div>
-                </div>
-            </div>
-
             <!-- Workout Settings -->
             <div class="settings-section">
                 <h2>Workout Preferences</h2>
@@ -581,7 +540,6 @@
     </main>
 
     <script src="../js/storage.js"></script>
-    <script src="../js/dark-mode.js"></script>
     <script src="../js/notification-center.js"></script>
     <script src="../js/nav.js"></script>
     <script>
@@ -636,12 +594,23 @@
                 }
             }
             
-            // Apply font size
-            if (settings.fontSize !== 14) {
-                document.documentElement.style.fontSize = settings.fontSize + 'px';
-            } else {
-                document.documentElement.style.fontSize = '14px';
-            }
+            // Apply font size - Update CSS variables because the site uses px variables
+            const baseSize = 14;
+            const currentSize = settings.fontSize || 14;
+            const scale = currentSize / baseSize;
+            
+            const root = document.documentElement;
+            root.style.setProperty('--font-size-xs', `${12 * scale}px`);
+            root.style.setProperty('--font-size-sm', `${14 * scale}px`);
+            root.style.setProperty('--font-size-md', `${16 * scale}px`);
+            root.style.setProperty('--font-size-lg', `${18 * scale}px`);
+            root.style.setProperty('--font-size-xl', `${20 * scale}px`);
+            root.style.setProperty('--font-size-2xl', `${24 * scale}px`);
+            root.style.setProperty('--font-size-3xl', `${28 * scale}px`);
+            root.style.setProperty('--font-size-4xl', `${32 * scale}px`);
+            
+            // Also set root font size for rem usage
+            root.style.fontSize = currentSize + 'px';
             
             // Apply compact mode
             if (settings.compactMode) {

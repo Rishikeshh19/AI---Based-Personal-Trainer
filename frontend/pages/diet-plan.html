@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
-    <link rel="stylesheet" href="../css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         // Check authentication immediately
@@ -427,21 +426,8 @@
             </button>
         </div>
         <nav>
-            <ul>
-                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-                <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
-                <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
-                <li><a href="messages.html" class="nav-link">Messages</a></li>
-                <li><a href="notifications.html" class="nav-link">Notifications</a></li>
-                <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
-
-                <li><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
-
-                <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
-
-                <li><a href="progress.html" class="nav-link">View Progress</a></li>
-                <li><a href="profile.html" class="nav-link">Profile</a></li>
-                <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
+            <ul id="navList">
+                <!-- Navigation items will be populated by nav.js -->
             </ul>
         </nav>
     </div>
@@ -450,11 +436,11 @@
         <div class="diet-plan-container">
             <section>
 
-                <h2><i class="fas fa-utensils"></i> AI-Powered Indian Diet Plan Generator</h2>
+                <h2>AI-Powered Indian Diet Plan Generator</h2>
                 <p>Get a personalized 7-day Indian-style meal plan tailored to your fitness goals, powered by Google
                     Gemini AI. Enjoy traditional Indian cuisine while achieving your health objectives!</p>
 
-                <h2><i class="fas fa-utensils"></i> AI-Powered Personalized Diet Plan</h2>
+                <h2>AI-Powered Personalized Diet Plan</h2>
                 <p>Get a personalized 7-day meal plan tailored to your fitness goals and dietary preferences. Our advanced AI analyzes your profile to create optimal nutrition guidance.</p>
 
             </section>
@@ -603,9 +589,9 @@
         </div>
     </main>
 
+    <script src="../js/clear-old-tokens.js"></script>
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
-    <script src="../js/dark-mode.js"></script>
     <script>
         const API_URL = 'http://localhost:8000/api';
 

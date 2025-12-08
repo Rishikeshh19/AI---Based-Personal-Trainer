@@ -12,11 +12,13 @@ const NAV_ITEMS = {
         { id: 'ai-suggestions-item', href: 'ai-suggestions.html', text: 'AI Suggestions', icon: 'fas fa-robot' },
         { id: 'diet-plan-item', href: 'diet-plan.html', text: 'AI Diet Plan', icon: 'fas fa-apple-alt' },
         { id: 'progress-item', href: 'progress.html', text: 'View Progress', icon: 'fas fa-chart-line' },
+        { id: 'profile-item', href: 'profile.html', text: 'Profile', icon: 'fas fa-user' },
     ],
     trainer: [
         { id: 'trainer-dashboard-item', href: 'trainer-dashboard.html', text: 'My Clients', icon: 'fas fa-users' },
         { id: 'client-progress-item', href: 'client-progress.html', text: 'Client Progress', icon: 'fas fa-chart-line' },
         { id: 'clients-interaction-item', href: 'clients-interaction.html', text: 'Client Interaction', icon: 'fas fa-comments' },
+        { id: 'profile-item', href: 'profile.html', text: 'Profile', icon: 'fas fa-user' },
     ],
     trainer_shared: [
         { id: 'settings-item', href: 'settings.html', text: 'Settings', icon: 'fas fa-cog', className: 'nav-right' },
@@ -90,7 +92,19 @@ function updateNavigation(token) {
         // Render left items
         leftItems.forEach(item => {
             if (item) {
-                navList.appendChild(createNavItem(item));
+                // Create list item
+                const li = document.createElement('li');
+                li.id = item.id;
+                
+                const a = document.createElement('a');
+                a.href = item.href;
+                a.className = 'nav-link';
+                
+                // For left items, we want PLAIN text as per user request (no icons)
+                a.textContent = item.text;
+                
+                li.appendChild(a);
+                navList.appendChild(li);
             }
         });
 
@@ -112,18 +126,8 @@ function updateNavigation(token) {
                     a.href = item.href;
                     a.className = 'nav-link';
                     
-                    // Add icon if provided
-                    if (item.icon) {
-                        const icon = document.createElement('i');
-                        icon.className = item.icon;
-                        a.appendChild(icon);
-                        
-                        const text = document.createElement('span');
-                        text.textContent = item.text;
-                        a.appendChild(text);
-                    } else {
-                        a.textContent = item.text;
-                    }
+                    // Plain text for right items too
+                    a.textContent = item.text;
 
                     if (item.id === 'logout-item') {
                         a.id = 'logout-link';

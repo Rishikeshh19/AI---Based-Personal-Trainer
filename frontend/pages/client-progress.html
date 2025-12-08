@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
-    <link rel="stylesheet" href="../css/dark-mode.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .progress-container {
@@ -175,12 +174,8 @@
             </button>
         </div>
         <nav>
-            <ul>
-                <li><a href="trainer-dashboard.html" class="nav-link">My Clients</a></li>
-                <li><a href="client-progress.html" class="nav-link active">Client Progress</a></li>
-                <li><a href="clients-interaction.html" class="nav-link">Client Interaction</a></li>
-                <li class="ml-auto"><a href="profile.html" class="nav-link">My Profile</a></li>
-                <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
+            <ul id="navList">
+                <!-- Navigation items will be populated by nav.js -->
             </ul>
         </nav>
     </div>
@@ -250,8 +245,7 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js?v=3"></script>
-    <script src="../js/dark-mode.js"></script>
-    <script src="../js/api.js"></script>
+        <script src="../js/api.js"></script>
     <script>
         let frequencyChart = null;
         let caloriesChart = null;

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infrastructure Monitoring - Admin</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --admin-primary: #DC2626;
+            --admin-secondary: #F59E0B;
+            --admin-accent: #7C3AED;
+            --admin-success: #10B981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #F8FAFC;
+            min-height: 100vh;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--admin-primary) 0%, var(--admin-secondary) 100%);
+            color: white;
+            padding: 25px 40px;
+            box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .admin-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-badge {
+            background: rgba(255, 255, 255, 0.25);
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: white;
+            color: var(--admin-primary);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-external {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-external:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .prometheus-section {
+            background: linear-gradient(135deg, #E85D4B 0%, #D13B26 100%);
+            border-radius: 16px;
+            padding: 35px;
+            margin-bottom: 30px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(232, 93, 75, 0.4);
+        }
+
+        .prometheus-section h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .prometheus-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .prom-metric {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s;
+        }
+
+        .prom-metric:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .prom-metric-label {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .prom-metric-value {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--admin-primary);
+            transition: all 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .metric-card.success { border-left-color: var(--admin-success); }
+        .metric-card.warning { border-left-color: var(--admin-secondary); }
+        .metric-card.info { border-left-color: var(--admin-accent); }
+
+        .metric-icon {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 14px;
+            color: #64748B;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .metric-trend {
+            margin-top: 10px;
+            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .metric-trend.up {
+            background: #DEF7EC;
+            color: #03543F;
+        }
+
+        .metric-trend.down {
+            background: #FDE8E8;
+            color: #9B1C1C;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-card h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: var(--admin-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+        }
+
+        .raw-metrics-section {
+            background: #1E293B;
+            color: #E2E8F0;
+            padding: 30px;
+            border-radius: 16px;
+            margin-top: 30px;
+        }
+
+        .raw-metrics-section h3 {
+            color: white;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .metrics-output {
+            background: #0F172A;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre;
+            line-height: 1.6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 60px;
+            font-size: 18px;
+            color: #64748B;
+        }
+
+        .loading i {
+            font-size: 48px;
+            color: var(--admin-primary);
+            margin-bottom: 15px;
+            display: block;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .nav-link-back {
+            color: white;
+            text-decoration: none;
+            opacity: 0.9;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .nav-link-back:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .charts-grid, .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h1>
+            <i class="fas fa-fire"></i> 
+            Infrastructure Monitoring
+            <span class="admin-badge">🔒 Admin</span>
+        </h1>
+        <a href="dashboard.html" class="nav-link-back">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+        <div class="header-actions">
+            <button class="btn btn-primary" onclick="refreshMetrics()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+            <a href="http://localhost:9090" target="_blank" class="btn btn-external">
+                <i class="fas fa-fire"></i> Open Prometheus
+            </a>
+            <a href="http://localhost:3001" target="_blank" class="btn btn-external">
+                <i class="fas fa-chart-area"></i> Open Grafana
+            </a>
+            <a href="http://localhost:8000/api/metrics" target="_blank" class="btn btn-external">
+                <i class="fas fa-code"></i> Raw Endpoint
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Prometheus Status -->
+        <div class="prometheus-section">
+            <h2><i class="fas fa-server"></i> Prometheus Metrics Server</h2>
+            <p style="opacity: 0.95; margin-bottom: 20px;">Real-time metrics collection and monitoring</p>
+            <div class="prometheus-grid">
+                <div class="prom-metric">
+                    <div class="prom-metric-label">Status</div>
+                    <div class="prom-metric-value" id="prom-status">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </div>
+                </div>
+                <div class="prom-metric">
+                    <div class="prom-metric-label">Scrape Interval</div>
+                    <div class="prom-metric-value">15s</div>
+                </div>
+                <div class="prom-metric">
+                    <div class="prom-metric-label">Metrics Count</div>
+                    <div class="prom-metric-value" id="metrics-count">--</div>
+                </div>
+                <div class="prom-metric">
+                    <div class="prom-metric-label">Last Scrape</div>
+                    <div class="prom-metric-value" id="last-scrape" style="font-size: 18px;">--</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Infrastructure Metrics -->
+        <div class="metrics-grid" id="infra-metrics">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <div>Loading infrastructure metrics...</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-line"></i> API Request Rate</h3>
+                <canvas id="requestChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-tachometer-alt"></i> Response Time Distribution</h3>
+                <canvas id="responseChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Raw Metrics Display -->
+        <div class="raw-metrics-section">
+            <h3><i class="fas fa-terminal"></i> Live Prometheus Metrics Feed</h3>
+            <div class="metrics-output" id="raw-metrics">
+                Loading metrics...
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/storage.js"></script>
+    <script>
+        let requestChart = null;
+        let responseChart = null;
+
+        // Check admin authentication
+        (function() {
+            const token = localStorage.getItem('token');
+            const user = storage.getCurrentUser();
+            
+            if (!token || !user || user.role !== 'admin') {
+                alert('Access denied. Admin only.');
+                window.location.href = 'dashboard.html';
+                return;
+            }
+        })();
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshMetrics();
+            setInterval(refreshMetrics, 15000); // Refresh every 15 seconds
+        });
+
+        async function refreshMetrics() {
+            await Promise.all([
+                checkPrometheusStatus(),
+                loadRawMetrics(),
+                loadInfraMetrics()
+            ]);
+        }
+
+        async function checkPrometheusStatus() {
+            try {
+                const response = await fetch('http://localhost:8000/api/metrics');
+                if (response.ok) {
+                    document.getElementById('prom-status').innerHTML = '<i class="fas fa-check-circle" style="color: #10B981;"></i> Active';
+                    
+                    const metricsText = await response.text();
+                    const lines = metricsText.split('\n').filter(l => l && !l.startsWith('#'));
+                    document.getElementById('metrics-count').textContent = lines.length;
+                } else {
+                    throw new Error('Failed to fetch');
+                }
+                
+                document.getElementById('last-scrape').textContent = new Date().toLocaleTimeString();
+            } catch (error) {
+                document.getElementById('prom-status').innerHTML = '<i class="fas fa-times-circle" style="color: #EF4444;"></i> Offline';
+                console.error('Prometheus check failed:', error);
+            }
+        }
+
+        async function loadRawMetrics() {
+            try {
+                const response = await fetch('http://localhost:8000/api/metrics');
+                const metricsText = await response.text();
+                
+                // Format and display
+                const formatted = metricsText
+                    .split('\n')
+                    .filter(line => line.trim())
+                    .map(line => {
+                        if (line.startsWith('#')) {
+                            return `<span style="color: #64748B;">${line}</span>`;
+                        }
+                        return `<span style="color: #10B981;">${line}</span>`;
+                    })
+                    .join('\n');
+                
+                document.getElementById('raw-metrics').innerHTML = formatted || 'No metrics available';
+            } catch (error) {
+                document.getElementById('raw-metrics').textContent = 'Error loading metrics: ' + error.message;
+            }
+        }
+
+        async function loadInfraMetrics() {
+            try {
+                const response = await fetch('http://localhost:8000/api/metrics');
+                const metricsText = await response.text();
+                
+                // Parse metrics
+                const httpRequests = extractMetric(metricsText, 'http_requests_total');
+                const httpDuration = extractMetric(metricsText, 'http_request_duration_seconds');
+                const activeUsers = extractMetric(metricsText, 'active_users');
+                const dbOps = extractMetric(metricsText, 'db_operations_duration_seconds');
+                const apiErrors = extractMetric(metricsText, 'api_errors_total');
+                
+                displayInfraMetrics({
+                    httpRequests: httpRequests || 0,
+                    avgDuration: httpDuration || 0,
+                    activeUsers: activeUsers || 0,
+                    dbOps: dbOps || 0,
+                    apiErrors: apiErrors || 0
+                });
+                
+                updateCharts(metricsText);
+            } catch (error) {
+                console.error('Error loading infra metrics:', error);
+            }
+        }
+
+        function extractMetric(metricsText, metricName) {
+            const lines = metricsText.split('\n');
+            let total = 0;
+            let count = 0;
+            
+            for (const line of lines) {
+                if (line.startsWith(metricName) && !line.startsWith('#')) {
+                    const match = line.match(/\s+([\d.]+)$/);
+                    if (match) {
+                        total += parseFloat(match[1]);
+                        count++;
+                    }
+                }
+            }
+            
+            return count > 0 ? (total / count).toFixed(2) : 0;
+        }
+
+        function displayInfraMetrics(metrics) {
+            const grid = document.getElementById('infra-metrics');
+            
+            grid.innerHTML = `
+                <div class="metric-card info">
+                    <div class="metric-icon">⚡</div>
+                    <div class="metric-value">${(metrics.avgDuration * 1000).toFixed(0)}ms</div>
+                    <div class="metric-label">Avg Response Time</div>
+                    <div class="metric-trend up">
+                        <i class="fas fa-check-circle"></i> Optimal
+                    </div>
+                </div>
+
+                <div class="metric-card success">
+                    <div class="metric-icon">📊</div>
+                    <div class="metric-value">${Math.round(metrics.httpRequests)}</div>
+                    <div class="metric-label">HTTP Requests</div>
+                    <div class="metric-trend up">
+                        <i class="fas fa-arrow-up"></i> Processing
+                    </div>
+                </div>
+
+                <div class="metric-card warning">
+                    <div class="metric-icon">👥</div>
+                    <div class="metric-value">${Math.round(metrics.activeUsers)}</div>
+                    <div class="metric-label">Active Connections</div>
+                    <div class="metric-trend">
+                        <i class="fas fa-users"></i> Online
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon">💾</div>
+                    <div class="metric-value">${Math.round(metrics.dbOps)}</div>
+                    <div class="metric-label">Database Ops</div>
+                    <div class="metric-trend up">
+                        <i class="fas fa-database"></i> Active
+                    </div>
+                </div>
+
+                <div class="metric-card ${metrics.apiErrors > 10 ? 'warning' : 'success'}">
+                    <div class="metric-icon">${metrics.apiErrors > 10 ? '⚠️' : '✅'}</div>
+                    <div class="metric-value">${Math.round(metrics.apiErrors)}</div>
+                    <div class="metric-label">API Errors</div>
+                    <div class="metric-trend ${metrics.apiErrors > 10 ? 'down' : 'up'}">
+                        ${metrics.apiErrors > 10 ? '⚠️ Monitor' : '✓ Healthy'}
+                    </div>
+                </div>
+
+                <div class="metric-card info">
+                    <div class="metric-icon">🔥</div>
+                    <div class="metric-value">${((metrics.httpRequests / 60) || 0).toFixed(1)}</div>
+                    <div class="metric-label">Requests/Min</div>
+                    <div class="metric-trend up">
+                        <i class="fas fa-bolt"></i> Throughput
+                    </div>
+                </div>
+            `;
+        }
+
+        function updateCharts(metricsText) {
+            // Simulate data for demo - replace with actual parsed metrics
+            const timestamps = Array.from({length: 10}, (_, i) => {
+                const d = new Date();
+                d.setMinutes(d.getMinutes() - (9 - i));
+                return d.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'});
+            });
+            
+            const requestData = timestamps.map(() => Math.random() * 100 + 50);
+            const responseData = timestamps.map(() => Math.random() * 200 + 100);
+            
+            // Request Chart
+            const ctx1 = document.getElementById('requestChart');
+            if (requestChart) requestChart.destroy();
+            requestChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: 'Requests/min',
+                        data: requestData,
+                        borderColor: '#DC2626',
+                        backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+            
+            // Response Time Chart
+            const ctx2 = document.getElementById('responseChart');
+            if (responseChart) responseChart.destroy();
+            responseChart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: timestamps,
+                    datasets: [{
+                        label: 'Response Time (ms)',
+                        data: responseData,
+                        backgroundColor: '#F59E0B',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

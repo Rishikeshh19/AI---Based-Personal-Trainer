@@ -12,6 +12,7 @@ const { connectDB } = require('./config/database');
 const { cacheService } = require('./config/redis');
 const logger = require('./utils/logger');
 const errorHandler = require('./middleware/error');
+const { metricsMiddleware } = require('./middleware/metrics');
 const apiRoutes = require('./routes');
 
 // Initialize Express app
@@ -70,6 +71,9 @@ app.use(cookieParser());
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// Metrics middleware for Prometheus
+app.use(metricsMiddleware);
 
 // Set static folder
 app.use(express.static(path.join(__dirname, 'public')));

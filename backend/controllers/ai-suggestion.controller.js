@@ -578,33 +578,139 @@ function extractSummary(text) {
     return lines.slice(0, 5).join(' ');
 }
 
-// Fallback suggestions if LLM fails
+// Fallback suggestions if LLM fails - Comprehensive version
 function generateFallbackSuggestions(formData) {
-    const { fitnessLevel, fitnessGoal } = formData;
+    const { currentWeight, height, age, fitnessLevel, fitnessGoal, medicalConditions } = formData;
+    const calories = calculateCalories(currentWeight, fitnessLevel, fitnessGoal);
+    const bmi = (currentWeight / ((height/100) ** 2)).toFixed(1);
     
-    const fallbackMaps = {
-        beginner: {
-            'weight-loss': 'Start with 3-4 days/week of 30-40 min workouts combining walking/light cardio and bodyweight exercises. Focus on consistency over intensity.',
-            'muscle-gain': 'Begin with 3 days/week of basic strength training focusing on compound movements. Increase protein intake and eat in a caloric surplus.',
-            'strength': 'Do 3 days/week of full-body strength workouts with lighter weight and perfect form focus.',
-            'default': 'Start with 3-4 days of moderate activity per week, focusing on building the exercise habit.'
-        },
-        intermediate: {
-            'weight-loss': 'Follow a 4-5 day split with 45-60 min sessions. Combine cardio and strength training. Create a 300-500 calorie daily deficit.',
-            'muscle-gain': 'Use an Upper/Lower split 4-5 days/week. Progressive overload with 8-12 rep ranges. Eat 300-500 calories above maintenance.',
-            'strength': 'Follow a Push/Pull/Legs split with heavy compound focus, 4-5 days/week.',
-            'default': 'Mix strength and cardio in a 4-5 day weekly routine with moderate intensity.'
-        },
-        advanced: {
-            'weight-loss': 'Use periodized training with higher volume. Combine heavy strength days with moderate caloric deficit. Track macros precisely.',
-            'muscle-gain': 'Hypertrophy-focused periodization with 5-6 days/week. High volume, 8-15 rep ranges. Significant caloric surplus.',
-            'strength': 'Periodized strength with 5-6 days/week including competition lifts and accessories.',
-            'default': 'Advanced periodization with 5-6 training days, specific goal-focused programming.'
-        }
-    };
+    let suggestions = `**🎯 PERSONALIZED FITNESS PLAN - ${fitnessLevel.toUpperCase()} LEVEL**\n\n`;
+    suggestions += `**📊 YOUR PROFILE ANALYSIS:**\n`;
+    suggestions += `- Age: ${age} years | Weight: ${currentWeight} kg | Height: ${height} cm\n`;
+    suggestions += `- BMI: ${bmi} | Goal: ${fitnessGoal.replace(/-/g, ' ').toUpperCase()}\n`;
+    suggestions += `- Target Daily Calories: ${calories} kcal\n\n`;
     
-    const levelMap = fallbackMaps[fitnessLevel] || fallbackMaps['intermediate'];
-    const suggestion = levelMap[fitnessGoal] || levelMap['default'];
+    // Workout Plan based on level
+    if (fitnessLevel === 'beginner') {
+        suggestions += `**🏋️ BEGINNER WORKOUT PLAN (3-4 Days/Week)**\n\n`;
+        suggestions += `**Day 1 & 3: Full Body Strength**\n`;
+        suggestions += `1. Bodyweight Squats: 3 sets x 12-15 reps\n`;
+        suggestions += `2. Push-ups (knee or regular): 3 sets x 8-12 reps\n`;
+        suggestions += `3. Dumbbell Rows: 3 sets x 10-12 reps each arm\n`;
+        suggestions += `4. Plank Hold: 3 sets x 20-40 seconds\n`;
+        suggestions += `5. Walking Lunges: 3 sets x 10 reps per leg\n`;
+        suggestions += `6. Standing Dumbbell Press: 3 sets x 10 reps\n\n`;
+        
+        suggestions += `**Day 2: Active Recovery**\n`;
+        suggestions += `- 20-30 min brisk walking or light cycling\n`;
+        suggestions += `- 10-15 min gentle stretching routine\n\n`;
+    } else if (fitnessLevel === 'intermediate') {
+        suggestions += `**💪 INTERMEDIATE WORKOUT PLAN (4-5 Days/Week)**\n\n`;
+        suggestions += `**Day 1: Upper Push**\n`;
+        suggestions += `1. Barbell Bench Press: 4 sets x 8-10 reps\n`;
+        suggestions += `2. Overhead Press: 4 sets x 8-10 reps\n`;
+        suggestions += `3. Incline Dumbbell Press: 3 sets x 10-12 reps\n`;
+        suggestions += `4. Lateral Raises: 3 sets x 12-15 reps\n`;
+        suggestions += `5. Tricep Dips: 3 sets x 10-12 reps\n`;
+        suggestions += `6. Cable Flyes: 3 sets x 12 reps\n\n`;
+        
+        suggestions += `**Day 2: Lower Body**\n`;
+        suggestions += `1. Barbell Squats: 4 sets x 8-10 reps\n`;
+        suggestions += `2. Romanian Deadlifts: 4 sets x 8-10 reps\n`;
+        suggestions += `3. Leg Press: 3 sets x 12-15 reps\n`;
+        suggestions += `4. Walking Lunges: 3 sets x 12 per leg\n`;
+        suggestions += `5. Leg Curls: 3 sets x 12-15 reps\n`;
+        suggestions += `6. Calf Raises: 4 sets x 15-20 reps\n\n`;
+        
+        suggestions += `**Day 3: Upper Pull**\n`;
+        suggestions += `1. Deadlifts: 4 sets x 6-8 reps\n`;
+        suggestions += `2. Pull-ups/Lat Pulldowns: 4 sets x 8-10 reps\n`;
+        suggestions += `3. Barbell Rows: 4 sets x 8-10 reps\n`;
+        suggestions += `4. Face Pulls: 3 sets x 15 reps\n`;
+        suggestions += `5. Bicep Curls: 3 sets x 10-12 reps\n`;
+        suggestions += `6. Hammer Curls: 3 sets x 12 reps\n\n`;
+    } else {
+        suggestions += `**⚡ ADVANCED WORKOUT PLAN (5-6 Days/Week)**\n\n`;
+        suggestions += `**Day 1: Heavy Push**\n`;
+        suggestions += `1. Flat Barbell Bench: 5 sets x 5 reps (heavy)\n`;
+        suggestions += `2. Overhead Press: 4 sets x 6-8 reps\n`;
+        suggestions += `3. Weighted Dips: 4 sets x 8-10 reps\n`;
+        suggestions += `4. Incline DB Press: 4 sets x 8-10 reps\n`;
+        suggestions += `5. Lateral Raises: 4 sets x 12-15 reps\n`;
+        suggestions += `6. Tricep Extensions: 3 sets x 12 reps\n\n`;
+        
+        suggestions += `**Day 2: Heavy Pull**\n`;
+        suggestions += `1. Deadlifts: 5 sets x 5 reps (heavy)\n`;
+        suggestions += `2. Weighted Pull-ups: 4 sets x 6-8 reps\n`;
+        suggestions += `3. Barbell Rows: 4 sets x 8-10 reps\n`;
+        suggestions += `4. T-Bar Rows: 3 sets x 10-12 reps\n`;
+        suggestions += `5. Face Pulls: 4 sets x 15 reps\n`;
+        suggestions += `6. Barbell Curls: 4 sets x 8-10 reps\n\n`;
+        
+        suggestions += `**Day 3: Legs (Quad Focus)**\n`;
+        suggestions += `1. Back Squats: 4 sets x 8-10 reps\n`;
+        suggestions += `2. Front Squats: 3 sets x 10-12 reps\n`;
+        suggestions += `3. Leg Extensions: 3 sets x 15 reps\n`;
+        suggestions += `4. Bulgarian Split Squats: 3 sets x 10 per leg\n`;
+        suggestions += `5. Calf Raises: 5 sets x 20 reps\n\n`;
+    }
     
-    return suggestion;
+    // Nutrition
+    suggestions += `**🍽️ NUTRITION PLAN**\n\n`;
+    suggestions += `**Daily Calorie Target: ${calories} kcal**\n\n`;
+    
+    const proteinGrams = Math.round(currentWeight * (fitnessGoal === 'muscle-gain' ? 2.2 : 2.0));
+    suggestions += `**Macros:**\n`;
+    suggestions += `- Protein: ${proteinGrams}g daily\n`;
+    suggestions += `- Carbs: ${Math.round(calories * 0.40 / 4)}g\n`;
+    suggestions += `- Fats: ${Math.round(calories * 0.30 / 9)}g\n\n`;
+    
+    suggestions += `**Sample Meal Plan:**\n`;
+    suggestions += `- Breakfast: Oatmeal with protein powder, berries, nuts\n`;
+    suggestions += `- Snack: Greek yogurt with fruit\n`;
+    suggestions += `- Lunch: Chicken/fish with rice and vegetables\n`;
+    suggestions += `- Pre-Workout: Banana with peanut butter\n`;
+    suggestions += `- Post-Workout: Protein shake\n`;
+    suggestions += `- Dinner: Lean meat with quinoa and salad\n\n`;
+    
+    // Recovery
+    suggestions += `**😴 RECOVERY & LIFESTYLE**\n\n`;
+    suggestions += `**Sleep:** Target 7-9 hours nightly\n`;
+    suggestions += `**Hydration:** ${Math.round(currentWeight * 35)}ml daily (${(currentWeight * 35/1000).toFixed(1)}L)\n`;
+    suggestions += `**Stretching:** 10-15 minutes daily\n\n`;
+    
+    // Progress Tracking
+    suggestions += `**📈 PROGRESS TRACKING**\n\n`;
+    suggestions += `- Weigh yourself weekly (same day/time)\n`;
+    suggestions += `- Log all workouts (sets, reps, weight)\n`;
+    suggestions += `- Take photos every 2 weeks\n`;
+    suggestions += `- Measure key areas monthly\n\n`;
+    
+    suggestions += `**Expected Timeline:**\n`;
+    suggestions += `- Weeks 1-2: Adaptation phase\n`;
+    suggestions += `- Weeks 3-4: Habits forming, energy increase\n`;
+    suggestions += `- Weeks 5-8: Noticeable strength gains\n`;
+    suggestions += `- Weeks 9-12: Visible body composition changes\n\n`;
+    
+    // Safety
+    suggestions += `**⚠️ SAFETY TIPS**\n\n`;
+    suggestions += `- Always warm up 5-10 minutes before training\n`;
+    suggestions += `- Focus on perfect form over heavy weight\n`;
+    suggestions += `- Listen to your body - rest when needed\n`;
+    suggestions += `- Deload every 4-6 weeks (reduce volume 40%)\n\n`;
+    
+    if (medicalConditions) {
+        suggestions += `**⚕️ MEDICAL NOTE:** ${medicalConditions}\n`;
+        suggestions += `Consult healthcare provider before starting. Modify exercises as needed.\n\n`;
+    }
+    
+    suggestions += `**🎯 SUCCESS MINDSET**\n\n`;
+    suggestions += `- Consistency beats perfection\n`;
+    suggestions += `- Progress takes 8-12 weeks minimum\n`;
+    suggestions += `- Focus on the process, not just results\n`;
+    suggestions += `- Celebrate small wins\n\n`;
+    
+    suggestions += `_Note: AI service temporarily unavailable. These are evidence-based guidelines tailored to your profile._`;
+    
+    return suggestions;
 }

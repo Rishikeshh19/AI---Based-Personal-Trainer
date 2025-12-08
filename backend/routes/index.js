@@ -14,6 +14,7 @@ const messageRoutes = require('./message.routes');
 const dietPlanRoutes = require('./diet-plan.routes');
 const monitoringRoutes = require('./monitoring.routes');
 const adminRoutes = require('./admin.routes');
+const metricsRoutes = require('./metrics.routes');
 
 // API routes
 router.use('/auth', authRoutes);
@@ -28,5 +29,6 @@ router.use('/messages', messageRoutes);
 router.use('/diet-plan', dietPlanRoutes);
 router.use('/monitoring', monitoringRoutes);
 router.use('/admin', adminRoutes);
+router.use('/metrics', metricsRoutes);
 
 module.exports = router;

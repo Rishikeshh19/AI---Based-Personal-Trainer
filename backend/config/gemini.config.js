@@ -86,20 +86,93 @@ Use ONLY English names and descriptions. No Hindi translations.
    - Buttermilk
    - Fresh fruit
 
-**Macronutrient Targets (English descriptions only):**
-- Protein per kilogram: 1.2 to 1.5 grams
-- Carbohydrates from rice and millets
-- Healthy fats from coconut oil and ground nut oil
+**DETAILED REQUIREMENTS - PROVIDE COMPLETE INFORMATION:**
 
-**Format your response:**
-- Write clear day-by-day meal plans
-- Include portion sizes
-- List calories and macros for each meal
-- Use ONLY English throughout
-- Do NOT mix languages
-- Do NOT translate to Hindi
+## 1. DAILY NUTRITION TARGETS
+Calculate and provide:
+- **Total Daily Calories**: [Calculate based on goal - deficit for weight loss, surplus for gain]
+- **Protein**: [1.6-2.2g per kg of body weight] = [X grams]
+- **Carbohydrates**: [X grams] = [X% of calories]
+- **Fats**: [X grams] = [X% of calories]
+- **Fiber**: [25-30g daily]
 
-Begin the 7-day meal plan now in ENGLISH:`;
+## 2. COMPLETE 7-DAY MEAL PLAN
+
+For EACH day (Monday through Sunday), provide:
+
+### DAY X: [Day Name]
+
+**BREAKFAST (6:30 AM - 7:30 AM)**
+- Main Dish: [e.g., 3 Idlis with Sambar]
+- Side: [e.g., Coconut Chutney - 2 tbsp]
+- Beverage: [e.g., Filter Coffee without sugar]
+- **Portion Sizes**: [Be specific - 150g, 2 pieces, 1 cup, etc.]
+- **Calories**: [X kcal]
+- **Macros**: P: [X]g | C: [X]g | F: [X]g
+- **Preparation Tips**: [Quick cooking instructions]
+
+**MID-MORNING SNACK (10:00 AM - 10:30 AM)**
+- Food Item: [e.g., Sundal (Chickpea Salad)]
+- **Portion**: [1 cup / 100g]
+- **Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**LUNCH (12:30 PM - 1:30 PM)**
+- Rice: [Type and amount - e.g., 1 cup cooked brown rice]
+- Main Curry: [e.g., Sambar with vegetables]
+- Side Dish 1: [e.g., Rasam - 1 bowl]
+- Side Dish 2: [e.g., Vegetable Curry]
+- Accompaniment: [e.g., Buttermilk - 1 glass]
+- **Total Calories**: [X kcal]
+- **Total Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**EVENING SNACK (4:00 PM - 4:30 PM)**
+- Snack: [e.g., Roasted Peanuts or Fresh Fruit]
+- **Portion**: [Specific amount]
+- **Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**DINNER (7:30 PM - 8:30 PM)**
+- Main: [Light dinner option - e.g., 2 Dosas with Chutney]
+- Side: [e.g., Vegetable Kurma]
+- **Total Calories**: [X kcal]
+- **Total Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**DAILY TOTALS for Day X:**
+- **Total Calories**: [X kcal]
+- **Total Protein**: [X grams]
+- **Total Carbs**: [X grams]
+- **Total Fat**: [X grams]
+
+---
+
+[REPEAT FORMAT FOR ALL 7 DAYS WITH VARIETY]
+
+## 3. GROCERY SHOPPING LIST
+Organize by category:
+- **Grains & Millets**: [Rice, Wheat, Ragi, etc.]
+- **Lentils & Pulses**: [Dal varieties, Chickpeas, etc.]
+- **Vegetables**: [Specific vegetables needed]
+- **Protein Sources**: [Eggs, Paneer, etc. if applicable]
+- **Spices & Condiments**: [Essential spices]
+- **Dairy**: [Yogurt, Milk, etc.]
+
+## 4. MEAL PREP TIPS
+- **Sunday Prep**: [What to prepare in advance]
+- **Storage**: [How to store items]
+- **Cooking Time**: [Average time for each meal]
+
+## 5. HYDRATION PLAN
+- **Daily Water Intake**: [3-4 liters]
+- **Timing**: [When to drink]
+- **Additional**: [Coconut water, Buttermilk, Herbal teas]
+
+## 6. SUPPLEMENTS (if needed)
+- [Recommendations based on diet gaps]
+
+## 7. DINING OUT / CHEAT MEALS
+- **Allowed Frequency**: [Once per week]
+- **Smart Choices**: [What to order at restaurants]
+
+USE ONLY ENGLISH. Provide COMPLETE details with specific measurements, calories, and macros for ALL meals across ALL 7 days.`;
 
     return await generateContent(prompt);
 }
@@ -117,62 +190,98 @@ async function generateWorkoutSuggestions(userData) {
         athlete: "6-7 days per week with periodized training"
     };
 
-    const prompt = `You are a certified professional personal trainer and fitness coach with 10+ years of experience. Provide HIGHLY PERSONALIZED and EFFECTIVE workout recommendations based on:
+    // Calculate BMI for better recommendations
+    let bmi = 'Not calculated';
+    if (userData.weight && userData.height) {
+        const heightInMeters = userData.height / 100;
+        bmi = (userData.weight / (heightInMeters * heightInMeters)).toFixed(1);
+    }
+
+    const prompt = `You are a certified professional personal trainer and fitness coach with 10+ years of experience specializing in personalized workout programming. Create a COMPLETE, ACTIONABLE, and SCIENCE-BASED workout plan.
 
 **User Profile:**
 - Fitness Level: ${userData.fitnessLevel}
-- Goals: ${userData.goals ? userData.goals.join(', ') : 'General fitness'}
+- Primary Goals: ${userData.goals ? userData.goals.join(', ') : 'General fitness'}
 - Age: ${userData.age || 'Not specified'} years
 - Weight: ${userData.weight || 'Not specified'} kg
 - Height: ${userData.height || 'Not specified'} cm
+- BMI: ${bmi}
 ${userData.medicalConditions ? `- Medical Conditions/Injuries: ${userData.medicalConditions}` : ''}
 
 **Recent Workout History:**
 ${userData.recentWorkouts && userData.recentWorkouts.length > 0
             ? userData.recentWorkouts.map(w => `- ${w.name || 'Workout'} on ${w.date}`).join('\n')
-            : 'No recent workouts recorded'}
+            : 'No recent workouts recorded - Starting fresh'}
 
-**COMPREHENSIVE INSTRUCTIONS - PROVIDE DETAILED RECOMMENDATIONS:**
+**MANDATORY RESPONSE FORMAT - PROVIDE ALL SECTIONS:**
 
-1. **Workout Schedule**: ${fitnessLevelGuide[userData.fitnessLevel] || "4-5 days per week, 45-60 minutes"}
-   
-2. **Recommended Exercises (Minimum 7-10 exercises):**
-   - For EACH exercise provide: NAME, SETS, REPS, REST TIME (in seconds), FORM TIPS, TARGET MUSCLES
-   - Include progressive variations (beginner → intermediate → advanced versions)
-   - Mix compound movements and isolation exercises
+## 1. TRAINING OVERVIEW
+**Recommended Frequency**: ${fitnessLevelGuide[userData.fitnessLevel] || "4-5 days per week, 45-60 minutes"}
+**Training Split**: [Provide specific split - Upper/Lower, Push/Pull/Legs, Full Body, etc.]
+**Primary Focus**: [Based on user goals]
 
-3. **Weekly Schedule Template:**
-   - Monday: [Specific muscle group with 4-5 exercises]
-   - Tuesday: [Specific muscle group with 4-5 exercises]
-   - Wednesday: [Rest or active recovery]
-   - Thursday-Sunday: [Detailed breakdown]
+## 2. DETAILED WEEKLY WORKOUT PLAN
+Provide complete 7-day breakdown:
 
-4. **Goal-Specific Adjustments:**
-   - If WEIGHT LOSS: Include cardio recommendations (frequency, intensity, duration), calorie burn estimates
-   - If MUSCLE GAIN: Emphasize progressive overload, rest periods, protein timing
-   - If ATHLETIC PERFORMANCE: Include sport-specific drills and agility work
-   - If MAINTENANCE: Balance strength, cardio, and flexibility
+**MONDAY**: [Muscle Group]
+1. Exercise Name | Sets: X | Reps: X | Rest: X seconds | Tempo: X-X-X
+   - Form Cues: [3-4 specific tips]
+   - Target Muscles: [Primary and secondary]
+   - Alternative: [Home/gym variation]
 
-5. **Recovery & Safety:**
-   - Warm-up protocol (5-10 minutes with specific exercises)
-   - Cool-down stretching routine (5-10 minutes)
-   - Injury prevention tips specific to their profile
-   - Rest day recommendations
+[Repeat for 4-6 exercises]
 
-6. **Progression Strategy:**
-   - How to increase intensity every 2-4 weeks
-   - When to add weight/reps
-   - How to prevent plateaus
+**TUESDAY-SUNDAY**: [Continue similar format]
 
-7. **Equipment Needed:**
-   - Home gym alternatives if needed
-   - Gym equipment recommendations
+## 3. EXERCISE LIBRARY (Minimum 12-15 exercises)
+For each exercise provide:
+- **Exercise Name**
+- **Category**: [Compound/Isolation]
+- **Sets x Reps**: [Specific numbers]
+- **Rest Period**: [Exact seconds]
+- **Execution Tips**: [Step-by-step form]
+- **Common Mistakes**: [What to avoid]
+- **Progression**: [How to advance]
 
-8. **Nutrition Pairing:**
-   - Pre-workout meal suggestions (timing and macros)
-   - Post-workout nutrition (protein, carbs, timing)
+## 4. CARDIO RECOMMENDATIONS
+- **Type**: [HIIT/LISS/Moderate]
+- **Frequency**: [X times per week]
+- **Duration**: [X minutes]
+- **Intensity**: [Heart rate zones or RPE]
+- **Best Timing**: [Before/after/separate]
 
-Be SPECIFIC with numbers, timing, and actionable steps. Make it a complete training program that addresses their specific goals and fitness level.`;
+## 5. WARM-UP PROTOCOL (8-10 minutes)
+List specific exercises with reps/duration:
+1. [Dynamic stretch 1]
+2. [Activation drill 1]
+3. [Movement prep 1]
+
+## 6. COOL-DOWN & MOBILITY (10 minutes)
+1. [Static stretch 1] - Hold 30 seconds
+2. [Foam roll area] - 60 seconds
+
+## 7. PROGRESSIVE OVERLOAD STRATEGY
+- **Week 1-2**: [Specific progression]
+- **Week 3-4**: [Next phase]
+- **Week 5-6**: [Advanced phase]
+- **Deload Week 7**: [Recovery protocol]
+
+## 8. NUTRITION TIMING
+- **Pre-Workout (90 min before)**: [Specific meal with macros]
+- **Post-Workout (30 min after)**: [Specific meal with macros]
+- **Daily Protein Target**: [X grams based on ${userData.weight}kg body weight]
+
+## 9. RECOVERY GUIDELINES
+- **Sleep**: [X hours recommended]
+- **Rest Days**: [Active recovery suggestions]
+- **Hydration**: [Daily water intake]
+
+## 10. SAFETY & MODIFICATIONS
+${userData.medicalConditions ? `- **Special Considerations**: [Specific modifications for ${userData.medicalConditions}]` : ''}
+- **Pain Management**: [When to stop, rest, or modify]
+- **Warning Signs**: [What to watch for]
+
+Provide COMPLETE details for ALL sections. Use specific numbers, exercise names, and actionable steps.`;
 
     return await generateContent(prompt);
 }

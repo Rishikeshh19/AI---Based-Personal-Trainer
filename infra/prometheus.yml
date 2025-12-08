@@ -1,7 +1,10 @@
 global:
   scrape_interval: 10s
+  evaluation_interval: 10s
 
 scrape_configs:
-  - job_name: fastapi
+  - job_name: "ai-trainer-backend"
     static_configs:
-      - targets: ['host.docker.internal:8000']
+      - targets: ["host.docker.internal:8000"]
+    metrics_path: "/api/metrics"
+    scrape_interval: 15s

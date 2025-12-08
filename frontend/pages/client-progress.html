@@ -10,6 +10,15 @@
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Check authentication immediately
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = 'login.html';
+            }
+        })();
+    </script>
     <style>
         .progress-container {
             max-width: 1400px;
@@ -243,9 +252,11 @@
         </div>
     </main>
 
+    <script src="../js/clear-old-tokens.js"></script>
     <script src="../js/storage.js"></script>
-    <script src="../js/nav.js?v=3"></script>
-        <script src="../js/api.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/api.js"></script>
     <script>
         let frequencyChart = null;
         let caloriesChart = null;

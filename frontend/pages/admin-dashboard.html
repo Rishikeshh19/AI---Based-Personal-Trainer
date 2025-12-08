@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -37,7 +38,7 @@
         .header h1 {
             font-size: 32px;
             font-weight: 700;
-            background: linear-gradient(135deg, #5A00FF, #32FF7E);
+            background: linear-gradient(135deg, #1E40AF, #0891B2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -59,13 +60,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #5A00FF, #7C3FFF);
+            background: linear-gradient(135deg, #1E40AF, #0891B2);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(90, 0, 255, 0.3);
+            box-shadow: 0 8px 16px rgba(30, 64, 175, 0.3);
         }
 
         .btn-danger {
@@ -96,8 +97,8 @@
         }
 
         .stat-card {
-            background: rgba(31, 31, 31, 0.8);
-            border: 1px solid rgba(90, 0, 255, 0.3);
+            background: #FFFFFF;
+            border: 2px solid #E0F2FE;
             border-radius: 12px;
             padding: 20px;
             text-align: center;
@@ -105,34 +106,35 @@
         }
 
         .stat-card:hover {
-            background: rgba(31, 31, 31, 0.95);
-            border-color: rgba(90, 0, 255, 0.6);
+            background: #f8fafc;
+            border-color: #1E40AF;
             transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.1);
         }
 
         .stat-card .icon {
             font-size: 28px;
             margin-bottom: 10px;
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .stat-card .number {
             font-size: 32px;
             font-weight: 700;
             margin-bottom: 5px;
-            color: #32FF7E;
+            color: #1E40AF;
         }
 
         .stat-card .label {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
+            color: #475569;
         }
 
         .tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 20px;
-            border-bottom: 1px solid rgba(90, 0, 255, 0.3);
+            border-bottom: 2px solid #E0F2FE;
             overflow-x: auto;
         }
 
@@ -140,7 +142,7 @@
             padding: 12px 20px;
             background: none;
             border: none;
-            color: rgba(255, 255, 255, 0.7);
+            color: #64748B;
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
@@ -150,13 +152,13 @@
         }
 
         .tab-btn:hover {
-            color: #fff;
-            border-bottom-color: #5A00FF;
+            color: #1E40AF;
+            border-bottom-color: #1E40AF;
         }
 
         .tab-btn.active {
-            color: #5A00FF;
-            border-bottom-color: #5A00FF;
+            color: #1E40AF;
+            border-bottom-color: #1E40AF;
         }
 
         .tab-content {
@@ -168,8 +170,8 @@
         }
 
         .table-container {
-            background: rgba(31, 31, 31, 0.8);
-            border: 1px solid rgba(90, 0, 255, 0.3);
+            background: #FFFFFF;
+            border: 2px solid #E0F2FE;
             border-radius: 12px;
             overflow-x: auto;
             padding: 20px;
@@ -181,15 +183,15 @@
         }
 
         thead {
-            background: rgba(90, 0, 255, 0.1);
-            border-bottom: 2px solid rgba(90, 0, 255, 0.3);
+            background: #F0F9FF;
+            border-bottom: 2px solid #E0F2FE;
         }
 
         th {
             padding: 12px;
             text-align: left;
             font-weight: 600;
-            color: #32FF7E;
+            color: #1E40AF;
             font-size: 13px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -197,12 +199,12 @@
 
         td {
             padding: 12px;
-            border-bottom: 1px solid rgba(90, 0, 255, 0.1);
+            border-bottom: 1px solid #E0F2FE;
             font-size: 14px;
         }
 
         tbody tr:hover {
-            background: rgba(90, 0, 255, 0.05);
+            background: #F0F9FF;
         }
 
         .role-badge {
@@ -215,27 +217,27 @@
         }
 
         .role-admin {
-            background: rgba(168, 85, 247, 0.2);
-            color: #d8b4fe;
-            border: 1px solid #d8b4fe;
+            background: #EDE9FE;
+            color: #6D28D9;
+            border: 1px solid #C4B5FD;
         }
 
         .role-member {
-            background: rgba(59, 130, 246, 0.2);
-            color: #93c5fd;
-            border: 1px solid #93c5fd;
+            background: #DBEAFE;
+            color: #1E40AF;
+            border: 1px solid #93C5FD;
         }
 
         .role-trainer {
-            background: rgba(34, 197, 94, 0.2);
-            color: #86efac;
-            border: 1px solid #86efac;
+            background: #DCFCE7;
+            color: #166534;
+            border: 1px solid #86EFAC;
         }
 
         .role-user {
-            background: rgba(107, 114, 128, 0.2);
-            color: #d1d5db;
-            border: 1px solid #d1d5db;
+            background: #F3F4F6;
+            color: #374151;
+            border: 1px solid #D1D5DB;
         }
 
         .action-buttons {
@@ -256,15 +258,15 @@
         }
 
         .action-btn-edit {
-            background: rgba(59, 130, 246, 0.2);
-            color: #93c5fd;
-            border: 1px solid #93c5fd;
+            background: #DBEAFE;
+            color: #1E40AF;
+            border: 1px solid #93C5FD;
         }
 
         .action-btn-delete {
-            background: rgba(239, 68, 68, 0.2);
-            color: #fca5a5;
-            border: 1px solid #fca5a5;
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #FECACA;
         }
 
         .action-btn:hover {
@@ -275,15 +277,15 @@
         .loading {
             text-align: center;
             padding: 40px;
-            color: rgba(255, 255, 255, 0.7);
+            color: #64748B;
         }
 
         .loading-spinner {
             display: inline-block;
             width: 30px;
             height: 30px;
-            border: 3px solid rgba(90, 0, 255, 0.3);
-            border-top-color: #5A00FF;
+            border: 3px solid #E0F2FE;
+            border-top-color: #1E40AF;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin-bottom: 10px;
@@ -318,7 +320,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.1);
             z-index: 1000;
             justify-content: center;
             align-items: center;
@@ -329,14 +331,15 @@
         }
 
         .modal-content {
-            background: rgba(31, 31, 31, 0.95);
-            border: 1px solid rgba(90, 0, 255, 0.3);
+            background: #FFFFFF;
+            border: 2px solid #E0F2FE;
             border-radius: 12px;
             padding: 30px;
             max-width: 500px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1);
         }
 
         .modal-header {
@@ -345,18 +348,18 @@
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 1px solid rgba(90, 0, 255, 0.3);
+            border-bottom: 2px solid #E0F2FE;
         }
 
         .modal-header h2 {
             font-size: 20px;
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .modal-close {
             background: none;
             border: none;
-            color: rgba(255, 255, 255, 0.7);
+            color: #64748B;
             font-size: 24px;
             cursor: pointer;
         }
@@ -370,29 +373,29 @@
             margin-bottom: 5px;
             font-weight: 500;
             font-size: 14px;
-            color: #fff;
+            color: #0F172A;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
             padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(90, 0, 255, 0.3);
+            background: #F8FAFC;
+            border: 1px solid #E0F2FE;
             border-radius: 6px;
-            color: #fff;
+            color: #0F172A;
             font-size: 14px;
         }
 
         .form-group input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
+            color: #94A3B8;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #5A00FF;
-            background: rgba(90, 0, 255, 0.1);
+            border-color: #1E40AF;
+            background: #F0F9FF;
         }
 
         .modal-footer {

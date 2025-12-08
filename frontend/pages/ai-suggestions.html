@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Suggestions - AI Personal Trainer Assistant</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <script>
         // Check authentication immediately
         (function() {
@@ -19,10 +21,11 @@
     </script>
     <style>
         :root {
-            --primary-color: #5A00FF;
-            --secondary-color: #32FF7E;
+            --primary-color: #1E40AF;
+            --secondary-color: #0891B2;
             --accent-color: #00D9FF;
-            --text-dark: #FFFFFF;
+            --text-dark: #0F172A;
+            --text-light: #475569;
         }
         .ai-suggestions-container {
             max-width: 900px;
@@ -30,10 +33,10 @@
         }
 
         .form-section {
-            background: linear-gradient(135deg, rgba(90, 0, 255, 0.05) 0%, rgba(50, 255, 126, 0.05) 100%);
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
             border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 8px 24px rgba(90, 0, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.1);
             border: 2px solid var(--primary-color);
             margin-bottom: 40px;
         }
@@ -55,26 +58,26 @@
         .form-group select {
             width: 100%;
             padding: 14px 16px;
-            border: 2px solid var(--primary-color);
+            border: 2px solid #E0F2FE;
             border-radius: 12px;
             font-size: 14px;
             font-family: 'Urbanist', sans-serif;
-            color: #FFFFFF;
+            color: #0F172A;
             transition: all 0.3s ease;
-            background: rgba(0, 0, 0, 0.6);
+            background: #FFFFFF;
         }
         
         .form-group input::placeholder,
         .form-group select::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: #94A3B8;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: var(--secondary-color);
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 0 0 3px rgba(50, 255, 126, 0.2);
+            border-color: var(--primary-color);
+            background: #F0F9FF;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
         }
 
         .form-row {
@@ -141,21 +144,22 @@
         }
 
         .button-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-dark);
+            background: #FFFFFF;
+            color: var(--primary-color);
             border: 2px solid var(--primary-color);
         }
 
         .button-secondary:hover {
-            background: rgba(90, 0, 255, 0.1);
+            background: #F0F9FF;
             border-color: var(--secondary-color);
+            color: var(--secondary-color);
         }
 
         .suggestions-result {
-            background: linear-gradient(135deg, rgba(90, 0, 255, 0.05) 0%, rgba(0, 217, 255, 0.05) 100%);
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
             border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 8px 24px rgba(90, 0, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.1);
             border: 2px solid var(--primary-color);
             display: none;
             animation: fadeIn 0.6s ease-out;
@@ -166,22 +170,23 @@
         }
 
         .suggestion-card {
-            background: linear-gradient(135deg, rgba(90, 0, 255, 0.08) 0%, rgba(50, 255, 126, 0.08) 100%);
+            background: linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 100%);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 20px;
             border-left: 4px solid var(--primary-color);
             transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.08);
         }
 
         .suggestion-card:hover {
             border-left-color: var(--secondary-color);
-            box-shadow: 0 4px 16px rgba(90, 0, 255, 0.15);
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.15);
             transform: translateX(5px);
         }
 
         .suggestion-title {
-            color: var(--text-dark);
+            color: #1E40AF;
             font-family: 'Poppins', sans-serif;
             font-weight: 700;
             font-size: 16px;
@@ -192,7 +197,7 @@
         }
 
         .suggestion-description {
-            color: var(--text-light);
+            color: #475569;
             font-size: 14px;
             line-height: 1.7;
             margin: 0;
@@ -200,7 +205,7 @@
 
         .badge {
             display: inline-block;
-            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
             color: white;
             padding: 6px 12px;
             border-radius: 8px;
@@ -345,7 +350,7 @@
         }
 
         .ai-response-content {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 30px;
             margin: 20px 0;
@@ -380,7 +385,7 @@
             color: #FFFFFF;
             line-height: 1.8;
             font-size: 14px;
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 30px;
             margin: 20px 0;
@@ -456,6 +461,7 @@
                 <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="notifications.html" class="nav-link">Notifications</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
                 <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
@@ -572,7 +578,7 @@
                 <h2><i class="fas fa-check-circle"></i> Your Personalized Recommendations <span class="info-badge">AI Generated</span></h2>
 
                 <div class="weight-tracker">
-                    <h4>📊 Weight Goal Progress</h4>
+                    <h4>Weight Goal Progress</h4>
                     <div class="weight-progress">
                         <div class="weight-box">
                             <div class="weight-label">Current Weight</div>
@@ -620,6 +626,7 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const token = localStorage.getItem("token");
@@ -806,15 +813,15 @@
                 const content = lines.slice(1).join('\n');
                 
                 // Determine icon based on section title
-                let icon = '📋';
-                if (firstLine.toLowerCase().includes('workout') || firstLine.toLowerCase().includes('exercise')) icon = '💪';
-                if (firstLine.toLowerCase().includes('nutrition') || firstLine.toLowerCase().includes('meal')) icon = '🍗';
-                if (firstLine.toLowerCase().includes('recovery') || firstLine.toLowerCase().includes('sleep')) icon = '😴';
-                if (firstLine.toLowerCase().includes('tracking') || firstLine.toLowerCase().includes('progress')) icon = '📈';
-                if (firstLine.toLowerCase().includes('strategy') || firstLine.toLowerCase().includes('avoid')) icon = '⚠️';
-                if (firstLine.toLowerCase().includes('goal') || firstLine.toLowerCase().includes('week')) icon = '🎯';
-                if (firstLine.toLowerCase().includes('schedule') || firstLine.toLowerCase().includes('plan')) icon = '📅';
-                if (firstLine.toLowerCase().includes('technique') || firstLine.toLowerCase().includes('form')) icon = '🎓';
+                let icon = '';
+                if (firstLine.toLowerCase().includes('workout') || firstLine.toLowerCase().includes('exercise')) icon = '';
+                if (firstLine.toLowerCase().includes('nutrition') || firstLine.toLowerCase().includes('meal')) icon = '';
+                if (firstLine.toLowerCase().includes('recovery') || firstLine.toLowerCase().includes('sleep')) icon = '';
+                if (firstLine.toLowerCase().includes('tracking') || firstLine.toLowerCase().includes('progress')) icon = '';
+                if (firstLine.toLowerCase().includes('strategy') || firstLine.toLowerCase().includes('avoid')) icon = '';
+                if (firstLine.toLowerCase().includes('goal') || firstLine.toLowerCase().includes('week')) icon = '';
+                if (firstLine.toLowerCase().includes('schedule') || firstLine.toLowerCase().includes('plan')) icon = '';
+                if (firstLine.toLowerCase().includes('technique') || firstLine.toLowerCase().includes('form')) icon = '';
                 
                 html += `
                     <div class="suggestion-card">
@@ -831,8 +838,8 @@
             // Add metadata footer
             html += `
                 <div class="suggestions-metadata">
-                    <p><strong>📊 Level:</strong> ${level.charAt(0).toUpperCase() + level.slice(1)} | 
-                    <strong>🎯 Goal:</strong> ${goal.charAt(0).toUpperCase() + goal.slice(1).replace(/-/g, ' ')}</p>
+                    <p><strong>Level:</strong> ${level.charAt(0).toUpperCase() + level.slice(1)} | 
+                    <strong>Goal:</strong> ${goal.charAt(0).toUpperCase() + goal.slice(1).replace(/-/g, ' ')}</p>
                     <p style="font-size: 12px; color: var(--text-light);">Generated by AI on ${new Date().toLocaleString()}</p>
                 </div>
             `;

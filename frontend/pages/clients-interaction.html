@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clients Interaction - AI Personal Trainer</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <style>
         .interaction-container {
             max-width: 1200px;
@@ -15,12 +17,12 @@
         }
 
         .clients-list {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
+            border: 2px solid #E0F2FE;
         }
 
         .client-item {
@@ -28,13 +30,13 @@
             align-items: center;
             justify-content: space-between;
             padding: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid #E0F2FE;
             cursor: pointer;
             transition: background 0.2s;
         }
 
         .client-item:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: #F0F9FF;
         }
 
         .client-item:last-child {
@@ -51,7 +53,7 @@
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -62,13 +64,13 @@
 
         .client-details h3 {
             margin: 0 0 4px 0;
-            color: #32FF7E;
+            color: #1E40AF;
             font-size: 16px;
         }
 
         .client-details p {
             margin: 0;
-            color: rgba(255, 255, 255, 0.6);
+            color: #64748B;
             font-size: 14px;
         }
 
@@ -82,25 +84,25 @@
         }
 
         .chat-container {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
             min-height: 500px;
             display: flex;
             flex-direction: column;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid #E0F2FE;
         }
 
         .chat-header {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid #E0F2FE;
             padding-bottom: 16px;
             margin-bottom: 20px;
         }
 
         .chat-header h2 {
             margin: 0;
-            color: #5A00FF;
+            color: #1E40AF;
             font-size: 20px;
         }
 
@@ -125,7 +127,7 @@
             width: 36px;
             height: 36px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -147,7 +149,7 @@
         }
 
         .message.trainer .message-content {
-            background: #5A00FF;
+            background: #1E40AF;
             color: white;
         }
 
@@ -184,12 +186,12 @@
         }
 
         .chat-input:focus {
-            border-color: #5A00FF;
+            border-color: #1E40AF;
         }
 
         .send-button {
             padding: 12px 24px;
-            background: #5A00FF;
+            background: #1E40AF;
             color: white;
             border: none;
             border-radius: 24px;
@@ -241,7 +243,7 @@
 
         <div class="interaction-container">
             <div class="clients-list">
-                <h2 style="margin-bottom: 20px; color: #5A00FF;">Your Clients</h2>
+                <h2 style="margin-bottom: 20px; color: #1E40AF;">Your Clients</h2>
                 <div id="clientsList">
                     <div class="empty-state">
                         <div class="spinner"></div>
@@ -272,7 +274,8 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
-    <script src="../js/api.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script>
         let selectedClientId = null;
         let pollingInterval = null;

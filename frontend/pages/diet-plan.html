@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Diet Plan - AI Personal Trainer</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         // Check authentication immediately
@@ -20,10 +22,11 @@
     </script>
     <style>
         :root {
-            --primary-color: #5A00FF;
-            --secondary-color: #32FF7E;
+            --primary-color: #1E40AF;
+            --secondary-color: #1E40AF;
             --accent-color: #00D9FF;
-            --text-dark: #FFFFFF;
+            --text-dark: #0F172A;
+            --text-light: #475569;
         }
         .diet-plan-container {
             max-width: 1200px;
@@ -48,10 +51,10 @@
         }
 
         .form-section {
-            background: linear-gradient(135deg, rgba(90, 0, 255, 0.05) 0%, rgba(50, 255, 126, 0.05) 100%);
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
             border-radius: 16px;
             padding: 40px;
-            box-shadow: 0 8px 24px rgba(90, 0, 255, 0.1);
+            box-shadow: 0 8px 24px rgba(30, 64, 175, 0.1);
             border: 2px solid var(--primary-color);
             margin-bottom: 40px;
         }
@@ -78,15 +81,15 @@
             border-radius: 12px;
             font-size: 14px;
             font-family: 'Urbanist', sans-serif;
-            color: #FFFFFF;
+            color: #0F172A;
             transition: all 0.3s ease;
-            background: rgba(0, 0, 0, 0.6);
+            background: #FFFFFF;
         }
         
         .form-group input::placeholder,
         .form-group select::placeholder,
         .form-group textarea::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+            color: #64748B;
         }
 
         .form-group input:focus,
@@ -94,8 +97,8 @@
         .form-group textarea:focus {
             outline: none;
             border-color: var(--secondary-color);
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 0 0 3px rgba(50, 255, 126, 0.2);
+            background: #F0F9FF;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
         }
 
         .form-row {
@@ -291,7 +294,7 @@
         }
 
         .ai-content {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 30px;
             margin: 20px 0;
@@ -413,7 +416,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
-                <h1>⚡ AI Trainer</h1>
+                <h1>AI Trainer</h1>
             </a>
             <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
                 <span class="hamburger-icon">
@@ -429,6 +432,7 @@
                 <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="notifications.html" class="nav-link">Notifications</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
 
                 <li><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
@@ -601,6 +605,7 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script>
         const API_URL = 'http://localhost:8000/api';
 
@@ -789,17 +794,17 @@
                     <div style="font-size: 18px; font-weight: 700;">${userData.targetWeight} kg</div>
                 </div>
                 <div class="stat-item">
-                    <div style="font-size: 24px; margin-bottom: 5px;">📊</div>
+                    <div style="font-size: 24px; margin-bottom: 5px;"></div>
                     <div style="font-size: 12px; opacity: 0.9;">BMI</div>
                     <div style="font-size: 18px; font-weight: 700;">${bmi}</div>
                 </div>
                 <div class="stat-item">
-                    <div style="font-size: 24px; margin-bottom: 5px;">🎯</div>
+                    <div style="font-size: 24px; margin-bottom: 5px;"></div>
                     <div style="font-size: 12px; opacity: 0.9;">To Target</div>
                     <div style="font-size: 18px; font-weight: 700;">${weightDiff.toFixed(1)} kg</div>
                 </div>
                 <div class="stat-item">
-                    <div style="font-size: 24px; margin-bottom: 5px;">💪</div>
+                    <div style="font-size: 24px; margin-bottom: 5px;"></div>
                     <div style="font-size: 12px; opacity: 0.9;">Fitness Level</div>
                     <div style="font-size: 18px; font-weight: 700;">${userData.fitnessLevel}</div>
                 </div>
@@ -809,7 +814,7 @@
         function displayPlan(plan) {
             const contentDiv = document.getElementById("diet-content");
             let htmlContent = `<div style="margin-bottom: 20px; padding: 15px; background: var(--primary-color); color: white; border-radius: 8px;">
-                <h4 style="margin-top: 0; color: white;">📋 ${plan.type} Plan</h4>
+                <h4 style="margin-top: 0; color: white;">${plan.type} Plan</h4>
                 <p style="margin: 0; font-size: 14px; opacity: 0.95;">${plan.description || ''}</p>
             </div>`;
             htmlContent += formatDietPlan(plan.plan);

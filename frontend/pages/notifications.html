@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - AI Personal Trainer</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <style>
+        .notifications-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            padding: 30px;
+            border-radius: 16px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+        }
+
+        .notifications-header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .header-actions button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .header-actions button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .notification-filters {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #E0F2FE;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #1E40AF;
+            transition: all 0.3s;
+        }
+
+        .filter-btn.active {
+            background: #1E40AF;
+            color: white;
+            border-color: #1E40AF;
+        }
+
+        .filter-btn:hover {
+            border-color: #1E40AF;
+        }
+
+        .notifications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .notification-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #E0F2FE;
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.15);
+            transform: translateX(4px);
+        }
+
+        .notification-item.unread {
+            background: linear-gradient(135deg, #EFF6FF 0%, #F0FFFE 100%);
+        }
+
+        .notification-item.message {
+            border-left-color: #3B82F6;
+        }
+
+        .notification-item.progress {
+            border-left-color: #10B981;
+        }
+
+        .notification-item.system {
+            border-left-color: #F59E0B;
+        }
+
+        .notification-item.alert {
+            border-left-color: #EF4444;
+        }
+
+        .notification-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #F0F9FF;
+            border-radius: 10px;
+        }
+
+        .notification-item.message .notification-icon {
+            background: #EFF6FF;
+            color: #3B82F6;
+        }
+
+        .notification-item.progress .notification-icon {
+            background: #F0FDF4;
+            color: #10B981;
+        }
+
+        .notification-item.system .notification-icon {
+            background: #FEF3C7;
+            color: #F59E0B;
+        }
+
+        .notification-item.alert .notification-icon {
+            background: #FEF2F2;
+            color: #EF4444;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1E40AF;
+            margin: 0 0 4px 0;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            color: #475569;
+            margin: 4px 0;
+            line-height: 1.5;
+        }
+
+        .notification-sender {
+            font-size: 12px;
+            color: #94A3B8;
+            margin-top: 8px;
+        }
+
+        .notification-time {
+            font-size: 12px;
+            color: #94A3B8;
+            white-space: nowrap;
+            margin-left: auto;
+        }
+
+        .notification-actions {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+
+        .notification-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.6;
+            transition: opacity 0.3s;
+        }
+
+        .notification-action-btn:hover {
+            opacity: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 12px;
+            border: 2px dashed #E0F2FE;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state h3 {
+            color: #475569;
+            margin: 16px 0 8px 0;
+            font-size: 20px;
+        }
+
+        .empty-state p {
+            color: #94A3B8;
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .unread-badge {
+            display: inline-block;
+            background: #EF4444;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .notifications-container {
+                padding: 20px;
+            }
+
+            .notifications-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+
+            .header-actions {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .notification-item {
+                flex-direction: column;
+            }
+
+            .notification-time {
+                margin-left: 0;
+            }
+
+            .notification-actions {
+                margin-left: 0;
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+    <script>
+        // Check authentication immediately
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/pages/login.html';
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+                <h1>AI Trainer</h1>
+            </a>
+            <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+                <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
+                <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
+                <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="notifications.html" class="nav-link active">Notifications</a></li>
+                <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
+                <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
+                <li><a href="progress.html" class="nav-link">View Progress</a></li>
+                <li><a href="profile.html" class="nav-link">Profile</a></li>
+                <li><a href="#" class="nav-link" id="logout-link">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <div class="notifications-container">
+            <div class="notifications-header">
+                <div>
+                    <h1>Notifications</h1>
+                </div>
+                <div class="header-actions">
+                    <button id="mark-all-read-btn" onclick="markAllAsRead()">Mark All Read</button>
+                    <button id="clear-all-btn" onclick="clearAllNotifications()">Clear All</button>
+                </div>
+            </div>
+
+            <div class="notification-filters">
+                <button class="filter-btn active" onclick="filterNotifications('all')">All</button>
+                <button class="filter-btn" onclick="filterNotifications('message')">Messages</button>
+                <button class="filter-btn" onclick="filterNotifications('progress')">Progress</button>
+                <button class="filter-btn" onclick="filterNotifications('system')">System</button>
+                <button class="filter-btn" onclick="filterNotifications('alert')">Alerts</button>
+            </div>
+
+            <div id="notifications-list" class="notifications-list">
+                <div class="empty-state">
+                    <div class="empty-state-icon">No Notifications</div>
+                    <h3>No notifications yet</h3>
+                    <p>You're all caught up! New notifications will appear here.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/notification-center.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
+    <script>
+        let allNotifications = [];
+        let currentFilter = 'all';
+
+        // Initialize notifications
+        async function initNotifications() {
+            await loadNotifications();
+            renderNotifications();
+        }
+
+        // Load notifications from localStorage and backend
+        async function loadNotifications() {
+            try {
+                const token = localStorage.getItem('token');
+                
+                // Get notifications from localStorage (for offline support)
+                const savedNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+                
+                // Try to fetch from backend
+                try {
+                    const response = await fetch('http://localhost:8000/api/notifications', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        allNotifications = data.notifications || savedNotifications;
+                        localStorage.setItem('notifications', JSON.stringify(allNotifications));
+                    } else {
+                        allNotifications = savedNotifications;
+                    }
+                } catch (err) {
+                    console.log('Using cached notifications');
+                    allNotifications = savedNotifications;
+                }
+
+                // Sort by date (newest first)
+                allNotifications.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+            } catch (error) {
+                console.error('Error loading notifications:', error);
+                allNotifications = [];
+            }
+        }
+
+        // Add a new notification
+        function addNotification(notification) {
+            const newNotif = {
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                isRead: false,
+                ...notification
+            };
+            
+            allNotifications.unshift(newNotif);
+            localStorage.setItem('notifications', JSON.stringify(allNotifications));
+            renderNotifications();
+            
+            // Save to backend if connected
+            saveNotificationToBackend(newNotif);
+        }
+
+        // Save notification to backend
+        async function saveNotificationToBackend(notification) {
+            try {
+                const token = localStorage.getItem('token');
+                await fetch('http://localhost:8000/api/notifications', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(notification)
+                });
+            } catch (error) {
+                console.log('Notification saved locally, will sync when online');
+            }
+        }
+
+        // Filter notifications
+        function filterNotifications(filter) {
+            currentFilter = filter;
+            
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            renderNotifications();
+        }
+
+        // Render notifications
+        function renderNotifications() {
+            const container = document.getElementById('notifications-list');
+            
+            let filteredNotifications = allNotifications;
+            if (currentFilter !== 'all') {
+                filteredNotifications = allNotifications.filter(n => n.type === currentFilter);
+            }
+
+            if (filteredNotifications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">No Notifications</div>
+                        <h3>No ${currentFilter === 'all' ? '' : currentFilter} notifications</h3>
+                        <p>You're all caught up!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filteredNotifications.map(notif => `
+                <div class="notification-item ${notif.type} ${notif.isRead ? '' : 'unread'}" data-id="${notif.id}">
+                    <div class="notification-icon">${notif.icon}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">
+                            ${notif.title}
+                            ${!notif.isRead ? '<span class="unread-badge">New</span>' : ''}
+                        </div>
+                        <div class="notification-message">${notif.message}</div>
+                        ${notif.sender ? `<div class="notification-sender">From: ${notif.sender}</div>` : ''}
+                    </div>
+                    <div class="notification-time">${formatTime(notif.timestamp)}</div>
+                    <div class="notification-actions">
+                        <button class="notification-action-btn" onclick="markAsRead(${notif.id})" title="Mark as read">✓</button>
+                        <button class="notification-action-btn" onclick="deleteNotification(${notif.id})" title="Delete">✕</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Mark notification as read
+        function markAsRead(notificationId) {
+            const notif = allNotifications.find(n => n.id === notificationId);
+            if (notif) {
+                notif.isRead = true;
+                localStorage.setItem('notifications', JSON.stringify(allNotifications));
+                renderNotifications();
+            }
+        }
+
+        // Mark all as read
+        function markAllAsRead() {
+            allNotifications.forEach(n => n.isRead = true);
+            localStorage.setItem('notifications', JSON.stringify(allNotifications));
+            renderNotifications();
+        }
+
+        // Delete notification
+        function deleteNotification(notificationId) {
+            allNotifications = allNotifications.filter(n => n.id !== notificationId);
+            localStorage.setItem('notifications', JSON.stringify(allNotifications));
+            renderNotifications();
+        }
+
+        // Clear all notifications
+        function clearAllNotifications() {
+            if (confirm('Are you sure you want to delete all notifications?')) {
+                allNotifications = [];
+                localStorage.setItem('notifications', JSON.stringify(allNotifications));
+                renderNotifications();
+            }
+        }
+
+        // Format time
+        function formatTime(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            const diff = now - date;
+            
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return 'just now';
+            if (minutes < 60) return `${minutes}m ago`;
+            if (hours < 24) return `${hours}h ago`;
+            if (days < 7) return `${days}d ago`;
+            
+            return date.toLocaleDateString();
+        }
+
+        // Load notifications on page load
+        document.addEventListener('DOMContentLoaded', initNotifications);
+
+        // Global function to add notifications from other pages
+        window.notificationCenter = {
+            addMessage: (title, message, sender) => {
+                addNotification({
+                    type: 'message',
+                    icon: '',
+                    title: title,
+                    message: message,
+                    sender: sender
+                });
+            },
+            addProgress: (title, message) => {
+                addNotification({
+                    type: 'progress',
+                    icon: '',
+                    title: title,
+                    message: message
+                });
+            },
+            addSystem: (title, message) => {
+                addNotification({
+                    type: 'system',
+                    icon: '',
+                    title: title,
+                    message: message
+                });
+            },
+            addAlert: (title, message) => {
+                addNotification({
+                    type: 'alert',
+                    icon: '⚠️',
+                    title: title,
+                    message: message
+                });
+            }
+        };
+    </script>
+</body>
+
+</html>

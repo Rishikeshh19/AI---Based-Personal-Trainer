@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Progress - AI Personal Trainer</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .progress-container {
@@ -16,35 +18,35 @@
         }
 
         .client-selector {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
+            border: 2px solid #E0F2FE;
         }
 
         .client-selector label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #32FF7E;
+            color: #1E40AF;
         }
 
         .client-selector select {
             width: 100%;
             padding: 12px 16px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid #E0F2FE;
             border-radius: 8px;
             font-size: 14px;
             outline: none;
             transition: border-color 0.2s;
-            background: rgba(0, 0, 0, 0.6);
-            color: #FFFFFF;
+            background: #F8FAFC;
+            color: #0F172A;
         }
 
         .client-selector select:focus {
-            border-color: #5A00FF;
+            border-color: #1E40AF;
         }
 
         .stats-grid {
@@ -55,12 +57,12 @@
         }
 
         .stat-card {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             padding: 24px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid #E0F2FE;
         }
 
         .stat-card .icon {
@@ -71,12 +73,12 @@
         .stat-card .value {
             font-size: 32px;
             font-weight: bold;
-            color: #32FF7E;
+            color: #1E40AF;
             margin: 8px 0;
         }
 
         .stat-card .label {
-            color: rgba(255, 255, 255, 0.6);
+            color: #64748B;
             font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -90,36 +92,36 @@
         }
 
         .chart-card {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             padding: 24px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
+            border: 2px solid #E0F2FE;
         }
 
         .chart-card h3 {
             margin: 0 0 20px 0;
-            color: #32FF7E;
+            color: #1E40AF;
             font-size: 18px;
         }
 
         .workout-log {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             padding: 24px;
             border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
+            border: 2px solid #E0F2FE;
         }
 
         .workout-log h3 {
             margin: 0 0 20px 0;
-            color: #32FF7E;
+            color: #1E40AF;
         }
 
         .workout-entry {
             padding: 16px;
-            border-left: 4px solid #5A00FF;
-            background: #f9fafb;
+            border-left: 4px solid #1E40AF;
+            background: #F0F9FF;
             border-radius: 8px;
             margin-bottom: 16px;
         }
@@ -133,11 +135,11 @@
 
         .workout-date {
             font-weight: 600;
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .workout-calories {
-            background: #10B981;
+            background: #1E40AF;
             color: white;
             padding: 4px 12px;
             border-radius: 12px;
@@ -146,7 +148,7 @@
         }
 
         .workout-exercises {
-            color: #666;
+            color: #475569;
             font-size: 14px;
         }
 
@@ -198,22 +200,22 @@
             <div id="progressContent" style="display: none;">
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="icon">📊</div>
+                        <div class="icon">Analytics</div>
                         <div class="value" id="totalWorkouts">0</div>
                         <div class="label">Total Workouts</div>
                     </div>
                     <div class="stat-card">
-                        <div class="icon">🔥</div>
+                        <div class="icon">Calories</div>
                         <div class="value" id="totalCalories">0</div>
                         <div class="label">Calories Burned</div>
                     </div>
                     <div class="stat-card">
-                        <div class="icon">⏱️</div>
+                        <div class="icon">Time</div>
                         <div class="value" id="avgDuration">0</div>
                         <div class="label">Avg Duration (min)</div>
                     </div>
                     <div class="stat-card">
-                        <div class="icon">📅</div>
+                        <div class="icon">Schedule</div>
                         <div class="value" id="lastWorkout">N/A</div>
                         <div class="label">Last Workout</div>
                     </div>
@@ -248,6 +250,7 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js?v=3"></script>
+    <script src="../js/dark-mode.js"></script>
     <script src="../js/api.js"></script>
     <script>
         let frequencyChart = null;
@@ -384,7 +387,7 @@
                     datasets: [{
                         label: 'Workouts',
                         data: workoutCounts,
-                        backgroundColor: '#5A00FF',
+                        backgroundColor: '#1E40AF',
                         borderRadius: 8
                     }]
                 },
@@ -456,7 +459,7 @@
                 entry.innerHTML = `
                     <div class="workout-entry-header">
                         <div class="workout-date">${new Date(workout.date).toLocaleDateString()}</div>
-                        <div class="workout-calories">🔥 ${workout.totalCalories || 0} cal</div>
+                        <div class="workout-calories">${workout.totalCalories || 0} cal</div>
                     </div>
                     <div class="workout-exercises">
                         ${workout.exercises?.length || 0} exercises completed

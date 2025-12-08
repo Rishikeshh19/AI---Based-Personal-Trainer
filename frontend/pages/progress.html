@@ -5,16 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Progress Tracking - AI Personal Trainer Assistant</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
 </head>
 
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
-                <h1>⚡ AI Trainer</h1>
+                <h1>AI Trainer</h1>
             </a>
             <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
                 <span class="hamburger-icon">
@@ -30,6 +32,7 @@
                 <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="notifications.html" class="nav-link">Notifications</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
                 <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
@@ -40,62 +43,85 @@
     </div>
 
     <main>
-        <section id="progress-section">
+        <!-- Progress Header with Time Range Selector -->
+        <section id="progress-header" style="margin-bottom: 30px;">
+            <h2 style="margin-bottom: 20px;">Your Fitness Progress</h2>
+            
+            <!-- Time Range Filter Buttons -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 30px;">
+                <button class="time-range-btn active" data-range="today" style="padding: 10px 20px; background: #1E40AF; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 14px;">Today</button>
+                <button class="time-range-btn" data-range="week" style="padding: 10px 20px; background: #E5E7EB; color: #333; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 14px;">This Week</button>
+                <button class="time-range-btn" data-range="month" style="padding: 10px 20px; background: #E5E7EB; color: #333; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 14px;">This Month</button>
+                <button class="time-range-btn" data-range="all" style="padding: 10px 20px; background: #E5E7EB; color: #333; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; font-size: 14px;">All Time</button>
+            </div>
+
+            <!-- Key Metrics Cards -->
+            <div class="dashboard-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="stats-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 25px; border-radius: 12px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;"></div>
+                    <h3 style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.8);">Workouts</h3>
+                    <div style="font-size: 32px; font-weight: bold; margin-bottom: 5px;" id="metric-workouts">0</div>
+                    <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.7);" id="metric-workouts-label">in this period</p>
+                </div>
+
+                <div class="stats-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 25px; border-radius: 12px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;"></div>
+                    <h3 style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.8);">Calories Burned</h3>
+                    <div style="font-size: 32px; font-weight: bold; margin-bottom: 5px;" id="metric-calories">0</div>
+                    <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.7);" id="metric-calories-label">kcal burned</p>
+                </div>
+
+                <div class="stats-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 25px; border-radius: 12px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;"></div>
+                    <h3 style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.8);">Total Time</h3>
+                    <div style="font-size: 32px; font-weight: bold; margin-bottom: 5px;" id="metric-time">0h</div>
+                    <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.7);" id="metric-time-label">training time</p>
+                </div>
+
+                <div class="stats-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 25px; border-radius: 12px;">
+                    <div style="font-size: 24px; margin-bottom: 10px;"></div>
+                    <h3 style="margin: 0 0 10px 0; font-size: 14px; color: rgba(255,255,255,0.8);">Avg Sets/Reps</h3>
+                    <div style="font-size: 32px; font-weight: bold; margin-bottom: 5px;" id="metric-avg-sets">0</div>
+                    <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.7);" id="metric-avg-reps">sets completed</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detailed Progress View -->
+        <section id="detailed-progress">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">Your Fitness Progress</h2>
-                <div style="display: flex; gap: 10px;">
-                    <button class="filter-btn-progress active" data-filter="weekly" style="padding: 8px 16px; background: #5A00FF; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">Weekly</button>
-                    <button class="filter-btn-progress" data-filter="monthly" style="padding: 8px 16px; background: #f0f0f0; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">Monthly</button>
-                    <button class="filter-btn-progress" data-filter="all" style="padding: 8px 16px; background: #f0f0f0; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">All Time</button>
-                </div>
+                <h3 style="margin: 0;">Workout Details</h3>
+                <span id="progress-count" style="background: #1E40AF; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; font-weight: 600;">0 workouts</span>
             </div>
-            <div id="progress-data" class="empty-state">
-                <h3>No progress data yet</h3>
-                <p>Start logging workouts to see your progress</p>
-            </div>
-        </section>
-
-        <section id="weekly-stats">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">Weekly Statistics</h2>
-                <div style="display: flex; gap: 10px;">
-                    <button class="period-btn active" data-period="current" style="padding: 8px 16px; background: #5A00FF; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">Current Week</button>
-                    <button class="period-btn" data-period="previous" style="padding: 8px 16px; background: #f0f0f0; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">Previous Week</button>
-                    <button class="period-btn" data-period="all" style="padding: 8px 16px; background: #f0f0f0; color: #333; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;">All Weeks</button>
-                </div>
-            </div>
-            <div class="dashboard-container">
-                <div class="stats-card">
-                    <div class="card-icon">🏋️</div>
-                    <h3>Workouts This Week</h3>
-                    <div class="stat-value" id="weekly-workouts">0</div>
-                </div>
-                <div class="stats-card">
-                    <div class="card-icon">🔥</div>
-                    <h3>Calories This Week</h3>
-                    <div class="stat-value" id="weekly-calories">0</div>
-                </div>
-                <div class="stats-card">
-                    <div class="card-icon">⏱️</div>
-                    <h3>Total Time</h3>
-                    <div class="stat-value" id="total-time">0h</div>
+            <div id="progress-list" style="max-height: 600px; overflow-y: auto;">
+                <div class="empty-state">
+                    <h3>No workouts recorded</h3>
+                    <p>Start logging workouts to see your detailed progress</p>
                 </div>
             </div>
         </section>
 
-        <section id="monthly-stats">
-            <h2>Monthly Overview</h2>
-            <div id="monthly-data" class="empty-state">
-                <h3>No monthly data available</h3>
-                <p>Your monthly statistics will appear here</p>
+        <!-- Date Selector and Calendar View -->
+        <section id="calendar-section" style="margin-top: 40px;">
+            <h3 style="margin-bottom: 20px;">Workout Calendar</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <!-- Date Picker -->
+                <div style="background: #F8F9FA; padding: 20px; border-radius: 12px;">
+                    <h4 style="margin-top: 0;">Select Date</h4>
+                    <input type="date" id="progress-date-picker" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px;">
+                    <button id="view-date-btn" style="width: 100%; margin-top: 10px; padding: 10px; background: #1E40AF; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">View Date</button>
+                </div>
+
+                <!-- Date-Specific Workouts -->
+                <div style="background: #F8F9FA; padding: 20px; border-radius: 12px;">
+                    <h4 style="margin-top: 0;">Selected Date Details</h4>
+                    <div id="date-specific-workouts" style="font-size: 14px; color: #666;">
+                        <p>Select a date to view workouts</p>
+                    </div>
+                </div>
             </div>
         </section>
-
-        <section id="goals-section">
-            <h2>🎯 Goals</h2>
-            <div id="goals-data" class="empty-state">
-                <h3>Set Your Fitness Goals</h3>
-                <p>Define your fitness goals to track progress better</p>
+    </main>
             </div>
         </section>
     </main>
@@ -106,6 +132,7 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script src="../js/api.js"></script>
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <script src="../js/progress.js"></script>
@@ -132,6 +159,13 @@
     </style>
 
     <script>
+        // Initialize date picker with today's date
+        const today = new Date().toISOString().split('T')[0];
+        const datePickerInput = document.getElementById('progress-date-picker');
+        if (datePickerInput) {
+            datePickerInput.value = today;
+        }
+
         document.addEventListener("DOMContentLoaded", function () {
             const token = localStorage.getItem("token");
             if (!token) {
@@ -139,44 +173,39 @@
                 return;
             }
 
-            // Progress filter button handling
-            const filterBtns = document.querySelectorAll('.filter-btn-progress');
-            filterBtns.forEach(btn => {
+            // Time range filter button handling
+            const timeRangeBtns = document.querySelectorAll('.time-range-btn');
+            timeRangeBtns.forEach(btn => {
                 btn.addEventListener('click', function() {
-                    // Remove active styling from all buttons
-                    filterBtns.forEach(b => {
-                        b.style.background = '#f0f0f0';
+                    timeRangeBtns.forEach(b => {
+                        b.style.background = '#E5E7EB';
                         b.style.color = '#333';
-                        b.classList.remove('active');
                     });
-                    // Add active styling to clicked button
-                    this.style.background = '#5A00FF';
+                    this.style.background = '#1E40AF';
                     this.style.color = 'white';
-                    this.classList.add('active');
                     
-                    const filter = this.getAttribute('data-filter');
-                    loadProgressData(filter);
+                    const range = this.getAttribute('data-range');
+                    loadProgressByTimeRange(range);
                 });
             });
 
-            // Period button handling
-            const periodBtns = document.querySelectorAll('.period-btn');
-            periodBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Remove active class from all buttons
-                    periodBtns.forEach(b => {
-                        b.style.background = '#f0f0f0';
-                        b.style.color = '#333';
-                    });
-                    // Add active class to clicked button
-                    this.style.background = '#5A00FF';
-                    this.style.color = 'white';
-                    this.classList.add('active');
-                    
-                    const period = this.getAttribute('data-period');
-                    loadWeeklyStats(period);
+            // Date picker button
+            const viewDateBtn = document.getElementById('view-date-btn');
+            if (viewDateBtn) {
+                viewDateBtn.addEventListener('click', function() {
+                    const selectedDate = document.getElementById('progress-date-picker').value;
+                    loadWorkoutsByDate(selectedDate);
                 });
-            });
+            }
+
+            // Date picker enter key
+            if (datePickerInput) {
+                datePickerInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        loadWorkoutsByDate(this.value);
+                    }
+                });
+            }
 
             const logoutLink = document.getElementById("logout-link");
             if (logoutLink) {
@@ -186,90 +215,219 @@
                 });
             }
 
-            // Load initial data
-            loadProgressData('weekly');
-            loadWeeklyStats('current');
+            // Load initial data for today
+            loadProgressByTimeRange('today');
         });
 
-        async function loadProgressData(filter) {
+        async function loadProgressByTimeRange(range) {
             try {
                 const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:8000/api/progress?filter=${filter}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) throw new Error('Failed to fetch progress data');
+                const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
                 
-                const data = await response.json();
-                displayProgressData(data, filter);
+                const now = new Date();
+                let filteredWorkouts = [];
+
+                const getStartOfWeek = (date) => {
+                    const d = new Date(date);
+                    const day = d.getDay();
+                    const diff = d.getDate() - day;
+                    return new Date(d.setDate(diff));
+                };
+
+                const getStartOfMonth = (date) => {
+                    return new Date(date.getFullYear(), date.getMonth(), 1);
+                };
+
+                switch(range) {
+                    case 'today':
+                        filteredWorkouts = workouts.filter(w => {
+                            const wDate = new Date(w.date);
+                            return wDate.toDateString() === now.toDateString();
+                        });
+                        break;
+                    case 'week':
+                        const weekStart = getStartOfWeek(now);
+                        filteredWorkouts = workouts.filter(w => {
+                            const wDate = new Date(w.date);
+                            return wDate >= weekStart && wDate <= now;
+                        });
+                        break;
+                    case 'month':
+                        const monthStart = getStartOfMonth(now);
+                        filteredWorkouts = workouts.filter(w => {
+                            const wDate = new Date(w.date);
+                            return wDate >= monthStart && wDate <= now;
+                        });
+                        break;
+                    case 'all':
+                        filteredWorkouts = workouts;
+                        break;
+                }
+
+                displayProgressMetrics(filteredWorkouts, range);
+                displayProgressList(filteredWorkouts);
             } catch (error) {
                 console.error('Error loading progress data:', error);
-                document.getElementById('progress-data').innerHTML = '<h3>Error loading data</h3>';
             }
         }
 
-        async function loadWeeklyStats(period) {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await fetch(`http://localhost:8000/api/progress/weekly?period=${period}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+        function displayProgressMetrics(workouts, range) {
+            const totalWorkouts = workouts.length;
+            const totalCalories = workouts.reduce((sum, w) => sum + (w.totalCalories || 0), 0);
+            const totalMinutes = workouts.reduce((sum, w) => sum + (w.duration || 0), 0);
+            const avgSets = workouts.length > 0 
+                ? (workouts.reduce((sum, w) => sum + (w.sets || 0), 0) / workouts.length).toFixed(1)
+                : 0;
 
-                if (!response.ok) throw new Error('Failed to fetch weekly stats');
-                
-                const stats = await response.json();
-                displayWeeklyStats(stats);
-            } catch (error) {
-                console.error('Error loading weekly stats:', error);
-                document.getElementById('weekly-workouts').textContent = '0';
-                document.getElementById('weekly-calories').textContent = '0';
-                document.getElementById('total-time').textContent = '0h';
-            }
+            const hours = Math.floor(totalMinutes / 60);
+            const mins = totalMinutes % 60;
+            const timeStr = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+
+            // Update metric cards
+            document.getElementById('metric-workouts').textContent = totalWorkouts;
+            document.getElementById('metric-calories').textContent = totalCalories.toLocaleString();
+            document.getElementById('metric-time').textContent = timeStr;
+            document.getElementById('metric-avg-sets').textContent = avgSets;
+
+            // Update labels based on range
+            const labels = {
+                'today': 'today',
+                'week': 'this week',
+                'month': 'this month',
+                'all': 'all time'
+            };
+
+            document.getElementById('metric-workouts-label').textContent = `in ${labels[range]}`;
+            document.getElementById('metric-calories-label').textContent = `kcal burned (${labels[range]})`;
+            document.getElementById('metric-time-label').textContent = `training (${labels[range]})`;
+            document.getElementById('metric-avg-reps').textContent = `avg sets (${labels[range]})`;
         }
 
-        function displayProgressData(data, filter) {
-            const container = document.getElementById('progress-data');
-            
-            if (!data.workouts || data.workouts.length === 0) {
-                container.innerHTML = '<h3>No workouts recorded</h3><p>Start logging workouts to see your progress</p>';
+        function displayProgressList(workouts) {
+            const container = document.getElementById('progress-list');
+            const countSpan = document.getElementById('progress-count');
+
+            if (!workouts || workouts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No workouts recorded</h3>
+                        <p>Start logging workouts to see your detailed progress</p>
+                    </div>
+                `;
+                countSpan.textContent = '0 workouts';
                 return;
             }
 
-            let html = `<div style="margin-top: 20px;">`;
+            countSpan.textContent = `${workouts.length} workout${workouts.length !== 1 ? 's' : ''}`;
             
-            data.workouts.forEach(workout => {
-                const date = new Date(workout.date).toLocaleDateString();
-                const muscles = workout.exercises?.map(e => e.name || e).join(', ') || 'N/A';
+            let html = '';
+            
+            // Sort workouts by date (newest first)
+            const sortedWorkouts = [...workouts].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            sortedWorkouts.forEach(workout => {
+                const date = new Date(workout.date);
+                const formattedDate = date.toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+                const formattedTime = date.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                const muscles = Array.isArray(workout.exercises)
+                    ? workout.exercises.map(e => e.name || e.muscle || e).join(', ')
+                    : (workout.muscle || 'N/A');
+
                 html += `
-                    <div class="progress-card">
-                        <h4>📅 ${date}</h4>
-                        <p><strong>Muscle Groups:</strong> ${muscles}</p>
-                        <p><strong>Duration:</strong> ${workout.duration || 0} mins</p>
-                        <p><strong>Calories:</strong> 🔥 ${workout.totalCalories || 0} cal</p>
-                        <p><strong>Sets & Reps:</strong> ${workout.sets || 0} × ${workout.reps || 0}</p>
+                    <div style="background: white; border-left: 4px solid #1E40AF; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
+                            <div>
+                                <h4 style="margin: 0 0 5px 0; color: #1E40AF; font-size: 16px;">${formattedDate}</h4>
+                                <p style="margin: 0; color: #999; font-size: 13px;">⏰ ${formattedTime}</p>
+                            </div>
+                            <span style="background: #1E40AF; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">Completed</span>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 12px;">
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">Muscle Groups</p>
+                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 600;">${muscles}</p>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">Duration</p>
+                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 600;">${workout.duration || 0} min</p>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">Calories Burned</p>
+                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 600;">${workout.totalCalories || 0} kcal</p>
+                            </div>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">Sets × Reps</p>
+                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 600;">${workout.sets || 0} × ${workout.reps || 0}</p>
+                            </div>
+                        </div>
                     </div>
                 `;
             });
 
-            html += `</div>`;
             container.innerHTML = html;
         }
 
-        function displayWeeklyStats(stats) {
-            document.getElementById('weekly-workouts').textContent = stats.workoutCount || '0';
-            document.getElementById('weekly-calories').textContent = stats.totalCalories || '0';
-            
-            const hours = Math.floor((stats.totalDuration || 0) / 60);
-            const mins = (stats.totalDuration || 0) % 60;
-            document.getElementById('total-time').textContent = hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+        async function loadWorkoutsByDate(selectedDate) {
+            try {
+                const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+                
+                const selectedDateObj = new Date(selectedDate);
+                const workoutsOnDate = workouts.filter(w => {
+                    const wDate = new Date(w.date);
+                    return wDate.toDateString() === selectedDateObj.toDateString();
+                });
+
+                const container = document.getElementById('date-specific-workouts');
+                const selectedDateFormatted = selectedDateObj.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                if (!workoutsOnDate || workoutsOnDate.length === 0) {
+                    container.innerHTML = `
+                        <p style="color: #999;"><strong>${selectedDateFormatted}</strong></p>
+                        <p style="color: #999;">No workouts recorded on this date</p>
+                    `;
+                    return;
+                }
+
+                let html = `<p style="margin: 0 0 10px 0; font-weight: 600; color: #1E40AF;">${selectedDateFormatted}</p>`;
+                
+                workoutsOnDate.forEach(workout => {
+                    const time = new Date(workout.date).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+
+                    const muscles = Array.isArray(workout.exercises)
+                        ? workout.exercises.map(e => e.name || e.muscle || e).join(', ')
+                        : (workout.muscle || 'N/A');
+
+                    html += `
+                        <div style="background: #F0F4F8; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+                            <p style="margin: 0 0 5px 0; font-weight: 600;">⏰ ${time}</p>
+                            <p style="margin: 3px 0; font-size: 13px;">${muscles}</p>
+                            <p style="margin: 3px 0; font-size: 13px;">${workout.duration || 0} min | ${workout.totalCalories || 0} kcal</p>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading date-specific workouts:', error);
+                document.getElementById('date-specific-workouts').innerHTML = '<p style="color: red;">Error loading data</p>';
+            }
         }
     </script>
 </body>

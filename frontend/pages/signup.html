@@ -1,13 +1,15 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up - AI Personal Trainer Assistant</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/login.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .password-strength {
@@ -41,7 +43,7 @@
         .password-requirements {
             margin-top: 12px;
             font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
+            color: #64748B;
         }
 
         .requirement {
@@ -56,14 +58,14 @@
         }
 
         .requirement::before {
-            content: 'â—‹';
+            content: '○';
             display: inline-block;
             margin-right: 8px;
             font-weight: bold;
         }
 
         .requirement.met::before {
-            content: 'âœ“';
+            content: '✓';
         }
 
         .form-group .error-message {
@@ -153,7 +155,7 @@
 
             <div class="form-group">
                 <label for="password">Password *</label>
-                <input type="password" id="password" name="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required>
+                <input type="password" id="password" name="password" placeholder="••••••••" required>
                 <div class="password-strength" id="passwordStrength"></div>
                 <div class="password-requirements">
                     <div class="requirement" data-requirement="length">At least 8 characters</div>
@@ -166,14 +168,14 @@
 
             <div class="form-group">
                 <label for="confirmPassword">Confirm Password *</label>
-                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" required>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required>
                 <div class="error-message">Passwords do not match</div>
             </div>
 
             <div class="form-group">
                 <label for="role">I am a *</label>
                 <select id="role" name="role" required
-                    style="width: 100%; padding: 12px 15px; border: 2px solid rgba(90, 0, 255, 0.3); border-radius: 8px; font-size: 14px; font-family: inherit; transition: all 0.3s ease; cursor: pointer; background: rgba(255, 255, 255, 0.05); color: #FFFFFF;">
+                    style="width: 100%; padding: 12px 15px; border: 2px solid rgba(90, 0, 255, 0.3); border-radius: 8px; font-size: 14px; font-family: inherit; transition: all 0.3s ease; cursor: pointer; background: #F8FAFC; color: #FFFFFF;">
                     <option value="">Select Role</option>
                     <option value="member">Member (Looking for fitness guidance)</option>
                     <option value="trainer">Trainer (Providing fitness guidance)</option>
@@ -190,6 +192,7 @@
     </div>
 
     <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script src="../js/storage.js"></script>
     <script>
 
@@ -237,9 +240,9 @@
                 passwordStrength.classList.add(strength);
 
                 const messages = {
-                    weak: '❌ Password is weak',
+                    weak: '? Password is weak',
                     medium: '⚠️ Password is medium strength',
-                    strong: '✅ Password is strong'
+                    strong: '? Password is strong'
                 };
                 passwordStrength.textContent = messages[strength];
             } else {
@@ -350,7 +353,7 @@
 
                 // Show success message
                 const successMsg = document.getElementById('successMessage');
-                successMsg.textContent = 'âœ… Account created successfully! Redirecting to profile setup...';
+                successMsg.textContent = '✅ Account created successfully! Redirecting to profile setup...';
                 successMsg.classList.add('show');
 
                 // Redirect to profile after 1.5 seconds
@@ -367,7 +370,7 @@
 
         function showApiError(message) {
             const successMsg = document.getElementById('successMessage');
-            successMsg.textContent = 'âŒ ' + message;
+            successMsg.textContent = '❌ ' + message;
             successMsg.classList.add('show');
             setTimeout(() => {
                 successMsg.classList.remove('show');

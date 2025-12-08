@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - AI Personal Trainer</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
+    <style>
+        .settings-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .settings-header {
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+        }
+
+        .settings-header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        .settings-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 2px solid #E0F2FE;
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
+        }
+
+        .settings-section h2 {
+            color: #1E40AF;
+            font-size: 20px;
+            margin: 0 0 20px 0;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #E0F2FE;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: #FAFBFC;
+            transition: all 0.3s;
+        }
+
+        .setting-item:hover {
+            background: #F0F9FF;
+            border-color: #1E40AF;
+        }
+
+        .setting-item-label {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .setting-item-label strong {
+            color: #0F172A;
+            font-size: 16px;
+        }
+
+        .setting-item-label small {
+            color: #64748B;
+            font-size: 13px;
+        }
+
+        .setting-item-control {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #CBD5E1;
+            border-radius: 14px;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.3s;
+            border: none;
+        }
+
+        .toggle-switch.active {
+            background: #10B981;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: left 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 24px;
+        }
+
+        /* Select */
+        .setting-select {
+            padding: 8px 12px;
+            border: 2px solid #E0F2FE;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0F172A;
+            background: white;
+            cursor: pointer;
+            min-width: 150px;
+        }
+
+        .setting-select:focus {
+            outline: none;
+            border-color: #1E40AF;
+        }
+
+        /* Slider */
+        .setting-slider {
+            width: 150px;
+            height: 6px;
+            border-radius: 3px;
+            background: #E0F2FE;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .setting-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1E40AF;
+            cursor: pointer;
+        }
+
+        .setting-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #1E40AF;
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: right;
+            font-weight: 600;
+            color: #1E40AF;
+        }
+
+        /* Button */
+        .setting-button {
+            padding: 8px 16px;
+            background: #1E40AF;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .setting-button:hover {
+            background: #3F2C70;
+            transform: translateY(-2px);
+        }
+
+        .setting-button.danger {
+            background: #EF4444;
+        }
+
+        .setting-button.danger:hover {
+            background: #DC2626;
+        }
+
+        .setting-button.success {
+            background: #10B981;
+        }
+
+        .setting-button.success:hover {
+            background: #059669;
+        }
+
+        .info-box {
+            background: #EFF6FF;
+            border-left: 4px solid #3B82F6;
+            padding: 12px;
+            border-radius: 6px;
+            color: #1E3A8A;
+            font-size: 13px;
+            margin-top: 12px;
+        }
+
+        .info-box.warning {
+            background: #FEF3C7;
+            border-left-color: #F59E0B;
+            color: #78350F;
+        }
+
+        .info-box.success {
+            background: #F0FDF4;
+            border-left-color: #10B981;
+            color: #15803D;
+        }
+
+        /* Rating Section */
+        .rating-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #E0F2FE;
+        }
+
+        .app-rating {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FCD34D 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stars-display {
+            display: flex;
+            gap: 4px;
+            margin: 12px 0;
+        }
+
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            color: #CBD5E1;
+        }
+
+        .star.filled {
+            color: #FCD34D;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+        }
+
+        .rating-text {
+            font-size: 13px;
+            color: #78350F;
+            margin-top: 8px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: #F8FAFC;
+            padding: 16px;
+            border-radius: 10px;
+            border: 1px solid #E2E8F0;
+            text-align: center;
+        }
+
+        .stat-card-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1E40AF;
+        }
+
+        .stat-card-label {
+            font-size: 12px;
+            color: #64748B;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .settings-container {
+                padding: 15px;
+            }
+
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .setting-item-control {
+                width: 100%;
+            }
+
+            .setting-select,
+            .setting-slider {
+                width: 100%;
+            }
+        }
+    </style>
+    <script>
+        // Check authentication immediately
+        (function() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/pages/login.html';
+            }
+        })();
+    </script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
+                <h1>AI Trainer</h1>
+            </a>
+            <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
+                <span class="hamburger-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </button>
+        </div>
+        <nav>
+            <ul>
+                <!-- Navigation items will be injected by nav.js -->
+            </ul>
+        </nav>
+    </div>
+
+    <main>
+        <div class="settings-container">
+            <div class="settings-header">
+                <h1>App Settings</h1>
+            </div>
+
+            <!-- Notification Settings -->
+            <div class="settings-section">
+                <h2>Notifications</h2>
+                
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Push Notifications</strong>
+                        <small>Receive in-app notifications for important events</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <button class="toggle-switch active" id="pushNotifications" onclick="toggleSetting('pushNotifications')"></button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Workout Reminders</strong>
+                        <small>Get notified about scheduled workouts</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <button class="toggle-switch active" id="workoutReminders" onclick="toggleSetting('workoutReminders')"></button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Trainer Messages</strong>
+                        <small>Notifications for trainer messages and feedback</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <button class="toggle-switch active" id="trainerMessages" onclick="toggleSetting('trainerMessages')"></button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Sound Effects</strong>
+                        <small>Play sound on notifications</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <button class="toggle-switch active" id="soundEffects" onclick="toggleSetting('soundEffects')"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display Settings -->
+            <div class="settings-section">
+                <h2>Display & Theme</h2>
+                
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Theme</strong>
+                        <small>Choose your preferred color scheme</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <select class="setting-select" id="themeSelect" onchange="changeSetting('theme', this.value)">
+                            <option value="light">Light (Default)</option>
+                            <option value="dark">Dark</option>
+                            <option value="auto">Auto (System)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Font Size</strong>
+                        <small>Adjust text size for better readability</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <input type="range" class="setting-slider" id="fontSizeSlider" min="12" max="18" value="14" onchange="changeSetting('fontSize', this.value)">
+                        <span class="slider-value" id="fontSizeValue">14px</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Compact Mode</strong>
+                        <small>Show more content with reduced spacing</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <button class="toggle-switch" id="compactMode" onclick="toggleSetting('compactMode')"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Workout Settings -->
+            <div class="settings-section">
+                <h2>Workout Preferences</h2>
+                
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Rest Period Between Sets</strong>
+                        <small>Default rest time in seconds</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <input type="range" class="setting-slider" id="restPeriod" min="15" max="120" value="60" onchange="changeSetting('restPeriod', this.value)">
+                        <span class="slider-value" id="restPeriodValue">60s</span>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Units</strong>
+                        <small>Choose measurement units</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <select class="setting-select" id="unitsSelect" onchange="changeSetting('units', this.value)">
+                            <option value="kg">Kilograms (kg)</option>
+                            <option value="lbs">Pounds (lbs)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Show Exercise Tips</strong>
+                        <small>Display form tips and exercise guidance</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <button class="toggle-switch active" id="exerciseTips" onclick="toggleSetting('exerciseTips')"></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy & Data -->
+            <div class="settings-section">
+                <h2>Privacy & Data</h2>
+                
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Data Collection</strong>
+                        <small>Allow app to collect usage analytics</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <button class="toggle-switch active" id="dataCollection" onclick="toggleSetting('dataCollection')"></button>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <div class="setting-item-label">
+                        <strong>Share Progress with Trainer</strong>
+                        <small>Allow trainer to see your workout data</small>
+                    </div>
+                    <div class="setting-item-control">
+                        <button class="toggle-switch active" id="shareProgress" onclick="toggleSetting('shareProgress')"></button>
+                    </div>
+                </div>
+
+                <button class="setting-button" onclick="exportData()">Export My Data</button>
+                <button class="setting-button danger" onclick="clearCache()" style="margin-left: 12px;">Clear Cache</button>
+                <div class="info-box warning">
+                    ⚠️ Clearing cache will remove locally stored workouts and settings. Make sure your data is saved to the server first.
+                </div>
+            </div>
+
+            <!-- App Rating -->
+            <div class="settings-section">
+                <h2>⭐ Rate Our App</h2>
+                <div class="app-rating">
+                    <p style="margin: 0 0 12px 0; color: #92400e; font-weight: 600;">How are we doing?</p>
+                    <div class="stars-display" id="appRating">
+                        <span class="star" onclick="rateApp(1)">★</span>
+                        <span class="star" onclick="rateApp(2)">★</span>
+                        <span class="star" onclick="rateApp(3)">★</span>
+                        <span class="star" onclick="rateApp(4)">★</span>
+                        <span class="star" onclick="rateApp(5)">★</span>
+                    </div>
+                    <div class="rating-text" id="ratingText">Click stars to rate the app</div>
+                </div>
+            </div>
+
+            <!-- App Statistics -->
+            <div class="settings-section">
+                <h2>App Statistics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="totalWorkouts">0</div>
+                        <div class="stat-card-label">Total Workouts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="totalCalories">0</div>
+                        <div class="stat-card-label">Calories Burned</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="appVersion">1.0.0</div>
+                        <div class="stat-card-label">App Version</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value" id="lastSync">Just now</div>
+                        <div class="stat-card-label">Last Sync</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- About Section -->
+            <div class="settings-section">
+                <h2>ℹ️ About</h2>
+                <div style="color: #475569; line-height: 1.6;">
+                    <p><strong>AI Personal Trainer</strong> v1.0.0</p>
+                    <p>Your personal fitness companion powered by artificial intelligence. Track workouts, get personalized recommendations, and achieve your fitness goals.</p>
+                    <p style="margin-top: 16px; font-size: 13px; color: #94A3B8;">
+                        © 2025 AI Personal Trainer. All rights reserved.<br>
+                        <a href="#" style="color: #1E40AF; text-decoration: none;">Privacy Policy</a> • 
+                        <a href="#" style="color: #1E40AF; text-decoration: none;">Terms of Service</a> • 
+                        <a href="#" style="color: #1E40AF; text-decoration: none;">Contact Support</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="settings-section">
+                <h2 style="color: #EF4444;">⚠️ Danger Zone</h2>
+                <div style="background: #FEF2F2; padding: 16px; border-radius: 8px; border: 1px solid #FCA5A5;">
+                    <p style="margin: 0 0 16px 0; color: #7F1D1D;">
+                        <strong>Delete Account</strong><br>
+                        <small>Permanently delete your account and all associated data. This action cannot be undone.</small>
+                    </p>
+                    <button class="setting-button danger" onclick="if(confirm('Are you absolutely sure? This will permanently delete your account and all data.')) { deleteAccount(); }">Delete Account</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../js/storage.js"></script>
+    <script src="../js/dark-mode.js"></script>
+    <script src="../js/notification-center.js"></script>
+    <script src="../js/nav.js"></script>
+    <script>
+        // Settings Management
+        const SETTINGS_KEY = 'app_settings';
+
+        function getSettings() {
+            return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"pushNotifications":true,"workoutReminders":true,"trainerMessages":true,"soundEffects":true,"theme":"light","fontSize":14,"compactMode":false,"restPeriod":60,"units":"kg","exerciseTips":true,"dataCollection":true,"shareProgress":true,"appRating":0}');
+        }
+
+        function saveSettings(settings) {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        }
+
+        function toggleSetting(settingId) {
+            const settings = getSettings();
+            settings[settingId] = !settings[settingId];
+            saveSettings(settings);
+            
+            // Apply settings immediately
+            applySettingsToApp(settings);
+            
+            updateUI();
+            showNotification('Setting updated', '✓ ' + settingId + ' has been updated');
+        }
+
+        function changeSetting(settingId, value) {
+            const settings = getSettings();
+            settings[settingId] = isNaN(value) ? value : parseInt(value);
+            saveSettings(settings);
+            
+            // Apply settings immediately
+            applySettingsToApp(settings);
+            
+            updateUI();
+            showNotification('Setting changed', '✓ ' + settingId + ' has been changed');
+        }
+
+        function applySettingsToApp(settings) {
+            // Apply theme
+            if (settings.theme === 'dark') {
+                document.documentElement.classList.add('dark-mode');
+            } else if (settings.theme === 'light') {
+                document.documentElement.classList.remove('dark-mode');
+            } else if (settings.theme === 'auto') {
+                // Auto detect system preference
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    document.documentElement.classList.add('dark-mode');
+                } else {
+                    document.documentElement.classList.remove('dark-mode');
+                }
+            }
+            
+            // Apply font size
+            if (settings.fontSize !== 14) {
+                document.documentElement.style.fontSize = settings.fontSize + 'px';
+            } else {
+                document.documentElement.style.fontSize = '14px';
+            }
+            
+            // Apply compact mode
+            if (settings.compactMode) {
+                document.documentElement.style.setProperty('--spacing-multiplier', '0.75');
+            } else {
+                document.documentElement.style.setProperty('--spacing-multiplier', '1');
+            }
+            
+            // Enable/disable notifications
+            if (!settings.soundEffects) {
+                document.documentElement.setAttribute('data-sound', 'disabled');
+            } else {
+                document.documentElement.removeAttribute('data-sound');
+            }
+            
+            // Store applied settings in sessionStorage to track what's active
+            sessionStorage.setItem('appliedSettings', JSON.stringify(settings));
+        }
+
+        function updateUI() {
+            const settings = getSettings();
+            
+            // Update toggles
+            ['pushNotifications', 'workoutReminders', 'trainerMessages', 'soundEffects', 'compactMode', 'exerciseTips', 'dataCollection', 'shareProgress'].forEach(key => {
+                const btn = document.getElementById(key);
+                if (btn) {
+                    btn.classList.toggle('active', settings[key]);
+                }
+            });
+
+            // Update selects
+            const themeSelect = document.getElementById('themeSelect');
+            if (themeSelect) themeSelect.value = settings.theme;
+
+            const unitsSelect = document.getElementById('unitsSelect');
+            if (unitsSelect) unitsSelect.value = settings.units;
+
+            // Update sliders
+            const fontSizeSlider = document.getElementById('fontSizeSlider');
+            if (fontSizeSlider) {
+                fontSizeSlider.value = settings.fontSize;
+                document.getElementById('fontSizeValue').textContent = settings.fontSize + 'px';
+            }
+
+            const restPeriod = document.getElementById('restPeriod');
+            if (restPeriod) {
+                restPeriod.value = settings.restPeriod;
+                document.getElementById('restPeriodValue').textContent = settings.restPeriod + 's';
+            }
+
+            // Update app rating stars
+            if (settings.appRating > 0) {
+                const stars = document.querySelectorAll('#appRating .star');
+                stars.forEach((star, index) => {
+                    star.classList.toggle('filled', index < settings.appRating);
+                });
+                const ratings = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+                document.getElementById('ratingText').textContent = '⭐ ' + ratings[settings.appRating - 1];
+            }
+        }
+
+        function rateApp(rating) {
+            const settings = getSettings();
+            settings.appRating = rating;
+            saveSettings(settings);
+            updateUI();
+            
+            const ratings = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+            window.notificationCenter.addProgress(
+                'Thanks for rating!',
+                'You rated the app ' + ratings[rating - 1] + ' ⭐'
+            );
+        }
+
+        function exportData() {
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+            const data = {
+                user: user,
+                workouts: workouts,
+                exportedAt: new Date().toISOString()
+            };
+
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'my-fitness-data-' + new Date().toISOString().split('T')[0] + '.json';
+            link.click();
+            URL.revokeObjectURL(url);
+
+            window.notificationCenter.addProgress(
+                'Data Exported',
+                'Your data has been downloaded as a JSON file'
+            );
+        }
+
+        function clearCache() {
+            const cacheKeys = ['currentWorkout', 'workouts', 'notifications'];
+            cacheKeys.forEach(key => localStorage.removeItem(key));
+            
+            window.notificationCenter.addAlert(
+                'Cache Cleared',
+                'Locally stored data has been cleared'
+            );
+            setTimeout(() => window.location.reload(), 2000);
+        }
+
+        function deleteAccount() {
+            // Call API to delete account
+            window.notificationCenter.addAlert(
+                'Account Deletion',
+                'Your account deletion request has been submitted. Please contact support to confirm.'
+            );
+        }
+
+        function showNotification(title, message) {
+            const infoBox = document.createElement('div');
+            infoBox.className = 'info-box success';
+            infoBox.textContent = message;
+            document.querySelector('.settings-section').appendChild(infoBox);
+            setTimeout(() => infoBox.remove(), 3000);
+        }
+
+        // Load stats
+        function loadStats() {
+            const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
+            document.getElementById('totalWorkouts').textContent = workouts.length;
+            
+            const totalCalories = workouts.reduce((sum, w) => sum + (w.totalCalories || 0), 0);
+            document.getElementById('totalCalories').textContent = totalCalories;
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            const settings = getSettings();
+            
+            // Apply all settings on page load
+            applySettingsToApp(settings);
+            
+            updateUI();
+            loadStats();
+            
+            // Listen for system theme changes
+            if (window.matchMedia) {
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+                    const settings = getSettings();
+                    if (settings.theme === 'auto') {
+                        applySettingsToApp(settings);
+                    }
+                });
+            }
+        });
+
+        // Update slider values on input
+        document.addEventListener('input', (e) => {
+            if (e.target.id === 'fontSizeSlider') {
+                document.getElementById('fontSizeValue').textContent = e.target.value + 'px';
+                changeSetting('fontSize', e.target.value);
+            } else if (e.target.id === 'restPeriod') {
+                document.getElementById('restPeriodValue').textContent = e.target.value + 's';
+                changeSetting('restPeriod', e.target.value);
+            }
+        });
+    </script>
+</body>
+
+</html>

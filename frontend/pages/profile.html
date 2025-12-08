@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Profile - AI Personal Trainer</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <script>
         // Check authentication immediately
         (function() {
@@ -21,17 +23,17 @@
             max-width: 900px;
             margin: 40px auto;
             padding: 30px;
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             border-radius: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(30, 64, 175, 0.2);
+            border: 2px solid #E0F2FE;
         }
 
         .profile-header {
             text-align: center;
             margin-bottom: 40px;
             padding-bottom: 20px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid #E0F2FE;
         }
 
         .profile-avatar {
@@ -52,7 +54,7 @@
         }
 
         .profile-section h3 {
-            color: #FFFFFF;
+            color: #1E40AF;
             margin-bottom: 20px;
             font-size: 20px;
             display: flex;
@@ -72,7 +74,7 @@
 
         .profile-field label {
             display: block;
-            color: rgba(255, 255, 255, 0.7);
+            color: #475569;
             font-size: 14px;
             margin-bottom: 5px;
             font-weight: 500;
@@ -82,35 +84,35 @@
         .profile-field select {
             width: 100%;
             padding: 12px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid #E0F2FE;
             border-radius: 8px;
             font-size: 16px;
             transition: all 0.3s;
-            color: #FFFFFF;
-            background: rgba(0, 0, 0, 0.6);
+            color: #0F172A;
+            background: #FFFFFF;
         }
 
         .profile-field input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
+            color: #94A3B8;
         }
 
         .profile-field input:focus,
         .profile-field select:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+            border-color: #1E40AF;
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
         }
 
         .profile-field input:disabled {
-            background: rgba(255, 255, 255, 0.05);
+            background: #F8FAFC;
             cursor: not-allowed;
         }
 
         .profile-value {
             padding: 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: #F0F9FF;
             border-radius: 8px;
-            color: #FFFFFF;
+            color: #0F172A;
             font-size: 16px;
         }
 
@@ -122,7 +124,7 @@
 
         .goal-tag {
             padding: 8px 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
             color: white;
             border-radius: 20px;
             font-size: 14px;
@@ -146,13 +148,13 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 5px 15px rgba(30, 64, 175, 0.3);
         }
 
         .btn-secondary {
@@ -217,7 +219,7 @@
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="../index.html" style="text-decoration: none; color: inherit;">
-                <h1>⚡ AI Trainer</h1>
+                <h1>AI Trainer</h1>
             </a>
             <button class="sidebar-toggle" type="button" aria-label="Toggle sidebar" title="Toggle sidebar">
                 <span class="hamburger-icon">
@@ -240,7 +242,7 @@
             <div class="alert alert-error" id="errorAlert"></div>
 
             <div class="profile-header">
-                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <div class="profile-avatar" id="profileAvatar">User</div>
                 <h2 id="profileName">Loading...</h2>
                 <p id="profileEmail" style="color: #666;"></p>
                 <span class="badge" id="roleBadge"></span>
@@ -248,7 +250,7 @@
 
             <!-- Personal Information -->
             <div class="profile-section">
-                <h3>📋 Personal Information</h3>
+                <h3>Personal Information</h3>
                 <div class="profile-grid">
                     <div class="profile-field">
                         <label>First Name</label>
@@ -281,7 +283,7 @@
 
             <!-- Physical Stats -->
             <div class="profile-section">
-                <h3>📏 Physical Stats</h3>
+                <h3>Physical Stats</h3>
                 <div class="profile-grid">
                     <div class="profile-field">
                         <label>Height (cm)</label>
@@ -309,7 +311,7 @@
 
             <!-- Fitness Goals -->
             <div class="profile-section">
-                <h3>🎯 Fitness Goals</h3>
+                <h3>Fitness Goals</h3>
                 <div class="profile-field">
                     <label>Select Your Goals</label>
                     <div class="goals-container" id="goalsDisplay"></div>
@@ -328,7 +330,7 @@
 
             <!-- Trainer Information -->
             <div class="profile-section" id="trainerSection" style="display: none;">
-                <h3>👨‍🏫 Trainer Information</h3>
+                <h3>Trainer Information</h3>
                 <div class="profile-grid">
                     <div class="profile-field">
                         <label>Specialization</label>
@@ -361,7 +363,7 @@
             <!-- Action Buttons -->
             <div class="button-group">
                 <button class="btn btn-primary" id="editBtn" onclick="toggleEditMode()">✏️ Edit Profile</button>
-                <button class="btn btn-primary" id="saveBtn" onclick="saveProfile()" style="display: none;">💾 Save
+                <button class="btn btn-primary" id="saveBtn" onclick="saveProfile()" style="display: none;">Save
                     Changes</button>
                 <button class="btn btn-secondary" id="cancelBtn" onclick="cancelEdit()" style="display: none;">❌
                     Cancel</button>
@@ -375,6 +377,7 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js?v=3"></script>
+    <script src="../js/dark-mode.js"></script>
     <script>
         const API_URL = 'http://localhost:8000/api';
         let currentUserData = null;
@@ -422,7 +425,7 @@
             document.getElementById('profileEmail').textContent = user.email || '';
 
             const avatar = document.getElementById('profileAvatar');
-            avatar.textContent = user.username ? user.username.charAt(0).toUpperCase() : '👤';
+            avatar.textContent = user.username ? user.username.charAt(0).toUpperCase() : 'U';
 
             const roleBadge = document.getElementById('roleBadge');
             roleBadge.textContent = user.role || 'member';

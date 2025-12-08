@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trainer Dashboard - AI Personal Trainer Assistant</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <style>
         .stats-overview {
             display: grid;
@@ -17,12 +19,12 @@
         }
 
         .stat-card {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid #E0F2FE;
         }
 
         .stat-card .icon {
@@ -33,12 +35,12 @@
         .stat-card .value {
             font-size: 28px;
             font-weight: bold;
-            color: #32FF7E;
+            color: #1E40AF;
             margin: 10px 0;
         }
 
         .stat-card .label {
-            color: rgba(255, 255, 255, 0.6);
+            color: #64748B;
             font-size: 14px;
         }
 
@@ -59,7 +61,7 @@
             padding: 25px;
             margin-bottom: 20px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            border-left: 4px solid #5A00FF;
+            border-left: 4px solid #1E40AF;
         }
 
         .client-header {
@@ -72,7 +74,7 @@
         .client-name {
             font-size: 20px;
             font-weight: bold;
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .client-email {
@@ -98,7 +100,7 @@
         .client-stat .value {
             font-size: 24px;
             font-weight: bold;
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .client-stat .label {
@@ -135,7 +137,7 @@
 
         .workout-muscle {
             font-weight: 600;
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .workout-calories {
@@ -150,7 +152,7 @@
         }
 
         .empty-clients h3 {
-            color: #5A00FF;
+            color: #1E40AF;
             margin-bottom: 10px;
         }
 
@@ -168,7 +170,7 @@
 
         .client-details-header h3 {
             margin: 0;
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .client-details-subtitle {
@@ -210,7 +212,7 @@
 
         .btn-view-details {
             padding: 8px 16px;
-            background: #5A00FF;
+            background: #1E40AF;
             color: white;
             border: none;
             border-radius: 6px;
@@ -256,22 +258,22 @@
 
         <div class="stats-overview">
             <div class="stat-card">
-                <div class="icon">👥</div>
+                <div class="icon">Clients</div>
                 <div class="value" id="totalClients">0</div>
                 <div class="label">Active Clients</div>
             </div>
             <div class="stat-card">
-                <div class="icon">💪</div>
+                <div class="icon">Strength</div>
                 <div class="value" id="totalWorkouts">0</div>
                 <div class="label">Total Workouts</div>
             </div>
             <div class="stat-card">
-                <div class="icon">🔥</div>
+                <div class="icon">Energy</div>
                 <div class="value" id="totalCalories">0</div>
                 <div class="label">Calories Burned</div>
             </div>
             <div class="stat-card">
-                <div class="icon">⚡</div>
+                <div class="icon">Performance</div>
                 <div class="value" id="avgStreak">0</div>
                 <div class="label">Avg. Streak</div>
             </div>
@@ -297,6 +299,7 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js?v=3"></script>
+    <script src="../js/dark-mode.js"></script>
     <script src="../js/api.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -407,14 +410,14 @@
                             </div>
                             ${recentWorkouts.length > 0 ? `
                                 <div class="workout-history">
-                                    <h4 style="margin-bottom: 15px; color: #5A00FF;">Recent Workouts</h4>
+                                    <h4 style="margin-bottom: 15px; color: #1E40AF;">Recent Workouts</h4>
                                     ${recentWorkouts.map(workout => `
                                         <div class="workout-item">
                                             <div class="workout-date">${new Date(workout.date).toLocaleDateString()}</div>
                                             <div class="workout-details">
                                                 <span class="workout-muscle">${workout.exercises?.length || 0} exercises</span>
                                             </div>
-                                            <div class="workout-calories">🔥 ${workout.totalCalories || 0} cal</div>
+                                            <div class="workout-calories">${workout.totalCalories || 0} cal</div>
                                         </div>
                                     `).join('')}
                                 </div>

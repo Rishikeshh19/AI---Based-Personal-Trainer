@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoring Dashboard - AI Trainer</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .monitoring-container {
@@ -22,7 +24,7 @@
 
         .page-header h1 {
             font-size: 36px;
-            color: #32FF7E;
+            color: #1E40AF;
             margin-bottom: 10px;
             display: flex;
             align-items: center;
@@ -51,7 +53,7 @@
         }
 
         .stat-card:hover {
-            border-color: #32FF7E;
+            border-color: #1E40AF;
             box-shadow: 0 8px 24px rgba(50, 255, 126, 0.2);
             transform: translateY(-5px);
         }
@@ -59,7 +61,7 @@
         .stat-number {
             font-size: 36px;
             font-weight: 700;
-            color: #32FF7E;
+            color: #1E40AF;
             margin: 10px 0;
         }
 
@@ -72,7 +74,7 @@
 
         .stat-icon {
             font-size: 32px;
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .content-grid {
@@ -83,17 +85,17 @@
         }
 
         .section {
-            background: rgba(31, 31, 31, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #FFFFFF;
+            border: 2px solid #E0F2FE;
             border-radius: 16px;
             padding: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.1);
         }
 
         .section-title {
             font-size: 18px;
             font-weight: 700;
-            color: #32FF7E;
+            color: #1E40AF;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
@@ -101,7 +103,7 @@
         }
 
         .section-title i {
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .list-item {
@@ -122,7 +124,7 @@
         }
 
         .item-email {
-            color: rgba(255, 255, 255, 0.6);
+            color: #64748B;
             font-size: 13px;
             margin-top: 4px;
         }
@@ -135,11 +137,11 @@
         .loading {
             text-align: center;
             padding: 40px;
-            color: rgba(255, 255, 255, 0.6);
+            color: #64748B;
         }
 
         .skeleton {
-            background: rgba(255, 255, 255, 0.05);
+            background: #F8FAFC;
             height: 60px;
             border-radius: 8px;
             margin: 10px 0;
@@ -207,6 +209,7 @@
                 <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="notifications.html" class="nav-link">Notifications</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
                 <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
@@ -219,7 +222,7 @@
     <main>
         <div class="monitoring-container">
             <div class="page-header">
-                <h1><i class="fas fa-chart-bar" style="color: #5A00FF;"></i>System Monitoring</h1>
+                <h1><i class="fas fa-chart-bar" style="color: #1E40AF;"></i>System Monitoring</h1>
                 <p>Real-time overview of members, trainers, and activity</p>
             </div>
 
@@ -291,6 +294,7 @@
     </main>
 
     <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script src="../js/storage.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

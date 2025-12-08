@@ -7,6 +7,7 @@ const exerciseDatabase = {
             name: 'Push-ups',
             description: 'Classic bodyweight exercise for chest, shoulders, and triceps',
             difficulty: 'beginner',
+            type: 'Compound',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Push ups.gif'] : null
@@ -15,14 +16,16 @@ const exerciseDatabase = {
             name: 'Bench Press',
             description: 'Fundamental compound movement for building chest mass',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 4,
-            reps: 10,
+            reps: 8,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Bench Press.gif'] : null
         },
         {
             name: 'Dumbbell Flyes',
             description: 'Isolation exercise targeting the chest muscles',
             difficulty: 'intermediate',
+            type: 'Isolation',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Dumbell Flies.gif'] : null
@@ -31,8 +34,9 @@ const exerciseDatabase = {
             name: 'Incline Bench Press',
             description: 'Targets upper chest development',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 4,
-            reps: 10,
+            reps: 8,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Incline Bench Press.gif'] : null
         }
     ],
@@ -41,22 +45,25 @@ const exerciseDatabase = {
             name: 'Overhead Press',
             description: 'Compound movement for overall shoulder development',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 4,
-            reps: 10,
+            reps: 8,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Overhead press.gif'] : null
         },
         {
             name: 'Lateral Raises',
             description: 'Isolation exercise for side deltoids',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
-            reps: 15,
+            reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Lateral Raises.gif'] : null
         },
         {
             name: 'Front Raises',
             description: 'Targets front deltoids',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Front Raises.gif'] : null
@@ -65,6 +72,7 @@ const exerciseDatabase = {
             name: 'Face Pulls',
             description: 'Great for rear deltoids and upper back',
             difficulty: 'intermediate',
+            type: 'Isolation',
             sets: 3,
             reps: 15,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Face Pull.gif'] : null
@@ -75,6 +83,7 @@ const exerciseDatabase = {
             name: 'Barbell Curls',
             description: 'Classic bicep builder',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Dumbell curls.gif'] : null
@@ -83,6 +92,7 @@ const exerciseDatabase = {
             name: 'Hammer Curls',
             description: 'Targets biceps and forearms',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Hammer curls.gif'] : null
@@ -91,6 +101,7 @@ const exerciseDatabase = {
             name: 'Concentration Curls',
             description: 'Isolation exercise for bicep peak',
             difficulty: 'intermediate',
+            type: 'Isolation',
             sets: 3,
             reps: 10,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Concentration curls.gif'] : null
@@ -99,6 +110,7 @@ const exerciseDatabase = {
             name: 'Preacher Curls',
             description: 'Strict form bicep exercise',
             difficulty: 'intermediate',
+            type: 'Isolation',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Preacher curls.gif'] : null
@@ -109,14 +121,16 @@ const exerciseDatabase = {
             name: 'Tricep Dips',
             description: 'Bodyweight exercise for triceps',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 3,
-            reps: 12,
+            reps: 10,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Triceps-Dips.gif'] : null
         },
         {
             name: 'Overhead Extension',
             description: 'Stretches and works all three heads',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Overhead extension.gif'] : null
@@ -125,16 +139,18 @@ const exerciseDatabase = {
             name: 'Tricep Pushdown',
             description: 'Cable exercise for triceps',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
-            reps: 15,
+            reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Triceps pushdown.gif'] : null
         },
         {
             name: 'Close-Grip Bench',
             description: 'Compound movement for triceps',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 4,
-            reps: 10,
+            reps: 8,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Close-Grip-Bench-Press.gif'] : null
         }
     ],
@@ -143,22 +159,25 @@ const exerciseDatabase = {
             name: 'Pull-ups',
             description: 'King of back exercises',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 3,
-            reps: 10,
+            reps: 8,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Pull-up.gif'] : null
         },
         {
             name: 'Bent-Over Rows',
             description: 'Compound back builder',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 4,
-            reps: 10,
+            reps: 8,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Barbell-Bent-Over-Row.gif'] : null
         },
         {
             name: 'Lat Pulldown',
             description: 'Great for lat development',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Lat-Pulldown.gif'] : null
@@ -167,6 +186,7 @@ const exerciseDatabase = {
             name: 'Deadlifts',
             description: 'Full body compound movement',
             difficulty: 'advanced',
+            type: 'Compound',
             sets: 4,
             reps: 6,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Barbell-Deadlift.gif'] : null
@@ -177,6 +197,7 @@ const exerciseDatabase = {
             name: 'Planks',
             description: 'Isometric core strengthener',
             difficulty: 'beginner',
+            type: 'Lighter',
             sets: 3,
             reps: '60 seconds',
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['body-saw-plank.gif'] : null
@@ -185,6 +206,7 @@ const exerciseDatabase = {
             name: 'Russian Twists',
             description: 'Oblique targeting exercise',
             difficulty: 'beginner',
+            type: 'Lighter',
             sets: 3,
             reps: 20,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Russian twists.gif'] : null
@@ -193,6 +215,7 @@ const exerciseDatabase = {
             name: 'Bicycle Crunches',
             description: 'Dynamic ab exercise',
             difficulty: 'beginner',
+            type: 'Lighter',
             sets: 3,
             reps: 20,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Bicycle-Crunch.gif'] : null
@@ -201,6 +224,7 @@ const exerciseDatabase = {
             name: 'Hanging Leg Raises',
             description: 'Advanced core exercise',
             difficulty: 'advanced',
+            type: 'Compound',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Hanging-Knee-Raises.gif'] : null
@@ -211,14 +235,16 @@ const exerciseDatabase = {
             name: 'Squats',
             description: 'King of leg exercises',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 4,
-            reps: 10,
+            reps: 8,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['smith-machine-squat.gif'] : null
         },
         {
             name: 'Leg Press',
             description: 'Machine-based quad builder',
             difficulty: 'beginner',
+            type: 'Compound',
             sets: 4,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Leg-Press.gif'] : null
@@ -227,6 +253,7 @@ const exerciseDatabase = {
             name: 'Lunges',
             description: 'Unilateral leg exercise',
             difficulty: 'beginner',
+            type: 'Compound',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['dumbbell-lunges.gif'] : null
@@ -235,6 +262,7 @@ const exerciseDatabase = {
             name: 'Leg Extensions',
             description: 'Isolation for quads',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
             reps: 15,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['LEG-EXTENSION.gif'] : null
@@ -243,6 +271,7 @@ const exerciseDatabase = {
             name: 'Standing Calf Raises',
             description: 'Primary calf exercise',
             difficulty: 'beginner',
+            type: 'Lighter',
             sets: 4,
             reps: 15,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Dumbbell-Calf-Raise.gif'] : null
@@ -253,14 +282,16 @@ const exerciseDatabase = {
             name: 'Romanian Deadlifts',
             description: 'Hamstring and glute builder',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 4,
-            reps: 10,
+            reps: 8,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Barbell-Romanian-Deadlift.gif'] : null
         },
         {
             name: 'Leg Curls',
             description: 'Isolation for hamstrings',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Leg-Curl.gif'] : null
@@ -269,6 +300,7 @@ const exerciseDatabase = {
             name: 'Hip Thrusts',
             description: 'Best glute builder',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 4,
             reps: 12,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Barbell-Hip-Thrust.gif'] : null
@@ -277,6 +309,7 @@ const exerciseDatabase = {
             name: 'Bulgarian Split Squats',
             description: 'Unilateral glute exercise',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 3,
             reps: 10,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Dumbbell-Bulgarian-Split-Squat.gif'] : null
@@ -285,6 +318,7 @@ const exerciseDatabase = {
             name: 'Glute Bridges',
             description: 'Bodyweight glute activation',
             difficulty: 'beginner',
+            type: 'Lighter',
             sets: 3,
             reps: 15,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['anim-glute-bridges.gif'] : null
@@ -295,6 +329,7 @@ const exerciseDatabase = {
             name: 'Wrist Curls',
             description: 'Forearm flexor exercise',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
             reps: 15,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Dumbbell-Wrist-Curl.gif'] : null
@@ -303,6 +338,7 @@ const exerciseDatabase = {
             name: 'Reverse Wrist Curls',
             description: 'Forearm extensor exercise',
             difficulty: 'beginner',
+            type: 'Isolation',
             sets: 3,
             reps: 15,
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Barbell-Reverse-Wrist-Curl.gif'] : null
@@ -311,6 +347,7 @@ const exerciseDatabase = {
             name: 'Farmers Walk',
             description: 'Grip and forearm strength',
             difficulty: 'intermediate',
+            type: 'Compound',
             sets: 3,
             reps: '60 seconds',
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Farmers walk.gif'] : null
@@ -319,6 +356,7 @@ const exerciseDatabase = {
             name: 'Dead Hangs',
             description: 'Grip endurance exercise',
             difficulty: 'beginner',
+            type: 'Lighter',
             sets: 3,
             reps: '30 seconds',
             gif: typeof gifDatabase !== 'undefined' ? gifDatabase['Dead hang.gif'] : null

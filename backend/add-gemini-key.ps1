@@ -2,8 +2,8 @@
 
 Write-Host "Adding Gemini API key to .env file..." -ForegroundColor Cyan
 
-$envFile = "c:\Users\POLAPALLY MANOJKUMAR\Videos\NEW PS\AI---Based-Personal-Trainer\backend\.env"
-$apiKey = "GEMINI_API_KEY=AIzaSyBdHNcP_TKqgoRVws_L-4facmS3c8oUXB0"
+$envFile = "$PSScriptRoot\.env"
+$apiKey = "GEMINI_API_KEY=your_gemini_api_key_here"
 
 # Check if .env file exists
 if (Test-Path $envFile) {
@@ -30,3 +30,4 @@ if (Test-Path $envFile) {
     Write-Host "Error: .env file not found at $envFile" -ForegroundColor Red
     Write-Host "Please create the .env file first" -ForegroundColor Yellow
 }
+

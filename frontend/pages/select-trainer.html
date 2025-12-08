@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Select Trainer - AI Personal Trainer Assistant</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <style>
         .trainers-grid {
             display: grid;
@@ -17,10 +19,10 @@
         }
 
         .trainer-card {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             border-radius: 12px;
             padding: 25px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
             border: 2px solid rgba(255, 255, 255, 0.1);
         }
@@ -28,11 +30,11 @@
         .trainer-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 4px 16px rgba(50, 255, 126, 0.2);
-            border-color: #32FF7E;
+            border-color: #1E40AF;
         }
 
         .trainer-card.selected {
-            border-color: #32FF7E;
+            border-color: #1E40AF;
             background: rgba(50, 255, 126, 0.05);
         }
 
@@ -47,7 +49,7 @@
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -58,7 +60,7 @@
 
         .trainer-info h3 {
             margin: 0 0 5px 0;
-            color: #5A00FF;
+            color: #1E40AF;
             font-size: 18px;
         }
 
@@ -91,7 +93,7 @@
         .stat-value {
             font-size: 20px;
             font-weight: bold;
-            color: #5A00FF;
+            color: #1E40AF;
         }
 
         .stat-label {
@@ -103,7 +105,7 @@
         .btn-select-trainer {
             width: 100%;
             padding: 12px;
-            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
             color: white;
             border: none;
             border-radius: 8px;
@@ -147,7 +149,7 @@
         }
 
         .empty-state h3 {
-            color: #5A00FF;
+            color: #1E40AF;
             margin-bottom: 10px;
         }
     </style>
@@ -173,6 +175,7 @@
                 <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="notifications.html" class="nav-link">Notifications</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
                 <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
@@ -198,9 +201,12 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script src="../js/api.js"></script>
+    <script src="../js/notification-center.js"></script>
     <script>
         let selectedTrainerId = null;
+        const REVIEWS_KEY = 'trainer_reviews';
 
         document.addEventListener("DOMContentLoaded", function () {
             const token = storage.getToken();
@@ -233,6 +239,26 @@
             displayCurrentTrainer();
         });
 
+        function getTrainerReviews(trainerId) {
+            const reviews = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '{}');
+            return reviews[trainerId] || [];
+        }
+
+        function getTrainerAverageRating(trainerId) {
+            const reviews = getTrainerReviews(trainerId);
+            if (reviews.length === 0) return 0;
+            const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
+            return (sum / reviews.length).toFixed(1);
+        }
+
+        function getTrainerRatingStars(rating) {
+            const fullStars = Math.floor(rating);
+            const hasHalfStar = rating % 1 >= 0.5;
+            let stars = '★'.repeat(fullStars);
+            if (hasHalfStar) stars += '☆';
+            return stars;
+        }
+
         async function loadTrainers() {
             const container = document.getElementById('trainersContainer');
 
@@ -241,18 +267,11 @@
                 const data = await api.trainer.getTrainers();
                 let trainers = data.data;
 
-                // Filter to only show trainer named Manoj
-                trainers = trainers.filter(trainer => {
-                    const username = (trainer.username || '').toLowerCase();
-                    const firstName = (trainer.profile?.firstName || '').toLowerCase();
-                    return username === 'manoj' || firstName === 'manoj';
-                });
-
                 if (trainers.length === 0) {
                     container.innerHTML = `
                         <div class="empty-state">
                             <h3>No trainers available</h3>
-                            <p>Trainer Manoj is not configured yet. Please contact admin.</p>
+                            <p>Please check back later for available trainers.</p>
                         </div>
                     `;
                     return;
@@ -267,6 +286,10 @@
                     const initials = (firstName[0] + (lastName ? lastName[0] : '')).toUpperCase();
                     const specialization = trainer.profile?.specialization || 'General Fitness';
                     const bio = trainer.profile?.bio || 'Experienced fitness professional ready to help you achieve your goals.';
+                    
+                    const avgRating = getTrainerAverageRating(trainer._id);
+                    const ratingStars = getTrainerRatingStars(avgRating);
+                    const reviews = getTrainerReviews(trainer._id);
 
                     const card = document.createElement('div');
                     card.className = 'trainer-card';
@@ -287,13 +310,18 @@
                                 <div class="stat-label">Clients</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-value">⭐ 4.8</div>
-                                <div class="stat-label">Rating</div>
+                                <div class="stat-value">${ratingStars} ${avgRating}</div>
+                                <div class="stat-label">${reviews.length} reviews</div>
                             </div>
                         </div>
-                        <button class="btn-select-trainer" onclick="selectTrainer('${trainer._id}')">
-                            Select Trainer
-                        </button>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-select-trainer" style="flex: 1;" onclick="selectTrainer('${trainer._id}')">
+                                Select Trainer
+                            </button>
+                            <button class="btn-select-trainer" style="flex: 1; background: #0891B2;" onclick="openReviewModal('${trainer._id}', '${fullName}')">
+                                ⭐ Review
+                            </button>
+                        </div>
                     `;
 
                     container.appendChild(card);
@@ -345,17 +373,199 @@
                 try {
                     const response = await api.member.assignTrainer(trainerId);
                     if (response.success) {
-                        alert('? Trainer assigned successfully!');
+                        window.notificationCenter.addProgress(
+                            'Trainer Assigned',
+                            'Your trainer has been assigned successfully!'
+                        );
                         // Update current user in storage
                         storage.setCurrentUser(response.data);
                         displayCurrentTrainer();
                         loadTrainers();
                     }
                 } catch (error) {
-                    alert('Error: ' + error.message);
+                    window.notificationCenter.addAlert(
+                        'Error',
+                        'Error: ' + error.message
+                    );
                 }
             }
         }
+
+        function openReviewModal(trainerId, trainerName) {
+            selectedTrainerId = trainerId;
+            const modal = document.createElement('div');
+            modal.id = 'reviewModal';
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="review-modal" style="animation: slideUp 0.3s ease;">
+                    <div class="review-modal-header">
+                        <h2>Review ${trainerName}</h2>
+                        <button onclick="closeReviewModal()" style="background: none; border: none; font-size: 24px; cursor: pointer;">✕</button>
+                    </div>
+                    
+                    <div class="review-modal-body">
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #0F172A;">Your Rating</label>
+                            <div class="stars-rating" id="starsRating" style="display: flex; gap: 8px; font-size: 32px;">
+                                <span class="review-star" onclick="setRating(1)">★</span>
+                                <span class="review-star" onclick="setRating(2)">★</span>
+                                <span class="review-star" onclick="setRating(3)">★</span>
+                                <span class="review-star" onclick="setRating(4)">★</span>
+                                <span class="review-star" onclick="setRating(5)">★</span>
+                            </div>
+                            <div id="ratingText" style="color: #64748B; margin-top: 8px; font-size: 14px;">Select a rating</div>
+                        </div>
+
+                        <div style="margin-bottom: 20px;">
+                            <label for="reviewText" style="display: block; margin-bottom: 10px; font-weight: 600; color: #0F172A;">Your Review (Optional)</label>
+                            <textarea id="reviewText" placeholder="Share your experience with this trainer..." style="width: 100%; min-height: 120px; padding: 12px; border: 2px solid #E0F2FE; border-radius: 8px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+
+                        <div style="display: flex; gap: 12px;">
+                            <button onclick="submitReview()" class="review-button" style="background: #10B981; color: white;">✓ Submit Review</button>
+                            <button onclick="closeReviewModal()" class="review-button" style="background: #E5E7EB; color: #0F172A;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeReviewModal();
+            });
+        }
+
+        function setRating(rating) {
+            window.currentRating = rating;
+            const stars = document.querySelectorAll('.review-star');
+            stars.forEach((star, index) => {
+                star.style.color = index < rating ? '#FCD34D' : '#CBD5E1';
+                star.style.cursor = 'pointer';
+            });
+            const ratings = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
+            document.getElementById('ratingText').textContent = `⭐ ${ratings[rating - 1]}`;
+        }
+
+        function submitReview() {
+            if (!window.currentRating) {
+                alert('Please select a rating');
+                return;
+            }
+
+            const currentUser = storage.getCurrentUser();
+            const reviewText = document.getElementById('reviewText').value;
+
+            const reviews = JSON.parse(localStorage.getItem(REVIEWS_KEY) || '{}');
+            if (!reviews[selectedTrainerId]) {
+                reviews[selectedTrainerId] = [];
+            }
+
+            reviews[selectedTrainerId].push({
+                memberId: currentUser._id,
+                memberName: currentUser.profile?.firstName || currentUser.username,
+                rating: window.currentRating,
+                review: reviewText,
+                timestamp: new Date().toISOString()
+            });
+
+            localStorage.setItem(REVIEWS_KEY, JSON.stringify(reviews));
+            
+            window.notificationCenter.addProgress(
+                'Review Submitted',
+                'Thank you for your review!'
+            );
+
+            closeReviewModal();
+            loadTrainers();
+        }
+
+        function closeReviewModal() {
+            const modal = document.getElementById('reviewModal');
+            if (modal) {
+                modal.remove();
+            }
+            window.currentRating = 0;
+        }
+
+        // Add styles for review modal
+        const style = document.createElement('style');
+        style.textContent = `
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 1000;
+            }
+
+            .review-modal {
+                background: white;
+                border-radius: 16px;
+                width: 90%;
+                max-width: 500px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            }
+
+            .review-modal-header {
+                padding: 24px;
+                border-bottom: 2px solid #E0F2FE;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .review-modal-header h2 {
+                margin: 0;
+                color: #0F172A;
+                font-size: 20px;
+            }
+
+            .review-modal-body {
+                padding: 24px;
+            }
+
+            .review-star {
+                color: #CBD5E1;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .review-star:hover {
+                color: #FCD34D;
+                transform: scale(1.2);
+            }
+
+            .review-button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 14px;
+                transition: all 0.3s;
+                flex: 1;
+            }
+
+            .review-button:hover {
+                transform: translateY(-2px);
+            }
+
+            @keyframes slideUp {
+                from {
+                    transform: translateY(30px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateY(0);
+                    opacity: 1;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 

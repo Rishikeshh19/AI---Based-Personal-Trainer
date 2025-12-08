@@ -4,26 +4,27 @@
 // Defined navigation structures
 const NAV_ITEMS = {
     member: [
-        { id: 'dashboard-item', href: 'dashboard.html', text: 'Dashboard' },
-        { id: 'workout-item', href: 'muscle-workout.html', text: 'Muscle Workout' },
-        { id: 'trainer-select-item', href: 'select-trainer.html', text: 'Select Trainer' },
-        { id: 'messages-item', href: 'messages.html', text: 'Messages' },
-        { id: 'ai-suggestions-item', href: 'ai-suggestions.html', text: 'AI Suggestions' },
-        { id: 'diet-plan-item', href: 'diet-plan.html', text: 'AI Diet Plan' },
-        { id: 'progress-item', href: 'progress.html', text: 'View Progress' },
+        { id: 'dashboard-item', href: 'dashboard.html', text: 'Dashboard', icon: 'fas fa-tachometer-alt' },
+        { id: 'workout-item', href: 'muscle-workout.html', text: 'Muscle Workout', icon: 'fas fa-dumbbell' },
+        { id: 'trainer-select-item', href: 'select-trainer.html', text: 'Select Trainer', icon: 'fas fa-user-tie' },
+        { id: 'messages-item', href: 'messages.html', text: 'Messages', icon: 'fas fa-envelope' },
+        { id: 'notifications-item', href: 'notifications.html', text: 'Notifications', icon: 'fas fa-bell' },
+        { id: 'ai-suggestions-item', href: 'ai-suggestions.html', text: 'AI Suggestions', icon: 'fas fa-robot' },
+        { id: 'diet-plan-item', href: 'diet-plan.html', text: 'AI Diet Plan', icon: 'fas fa-apple-alt' },
+        { id: 'progress-item', href: 'progress.html', text: 'View Progress', icon: 'fas fa-chart-line' },
     ],
     trainer: [
-        { id: 'trainer-dashboard-item', href: 'trainer-dashboard.html', text: 'My Clients' },
-        { id: 'client-progress-item', href: 'client-progress.html', text: 'Client Progress' },
-        { id: 'clients-interaction-item', href: 'clients-interaction.html', text: 'Client Interaction' },
+        { id: 'trainer-dashboard-item', href: 'trainer-dashboard.html', text: 'My Clients', icon: 'fas fa-users' },
+        { id: 'client-progress-item', href: 'client-progress.html', text: 'Client Progress', icon: 'fas fa-chart-line' },
+        { id: 'clients-interaction-item', href: 'clients-interaction.html', text: 'Client Interaction', icon: 'fas fa-comments' },
     ],
     trainer_shared: [
-        { id: 'profile-item', href: 'profile.html', text: 'My Profile', className: 'ml-auto' }, // Right align for trainer
-        { id: 'logout-item', href: '#', text: 'Logout', isLogout: true }
+        { id: 'settings-item', href: 'settings.html', text: 'Settings', icon: 'fas fa-cog', className: 'nav-right' },
+        { id: 'logout-item', href: '#', text: 'Logout', icon: 'fas fa-sign-out-alt', isLogout: true, className: 'nav-right logout-btn' }
     ],
     shared: [
-        { id: 'profile-item', href: 'profile.html', text: 'My Profile' },
-        { id: 'logout-item', href: '#', text: 'Logout', isLogout: true }
+        { id: 'settings-item', href: 'settings.html', text: 'Settings', icon: 'fas fa-cog', className: 'nav-right' },
+        { id: 'logout-item', href: '#', text: 'Logout', icon: 'fas fa-sign-out-alt', isLogout: true, className: 'nav-right logout-btn' }
     ],
     auth: [
         { id: 'login-item', href: 'login.html', text: 'Login' },
@@ -82,14 +83,60 @@ function updateNavigation(token) {
             menuItems = [...NAV_ITEMS.member, ...NAV_ITEMS.shared];
         }
 
-        // Render items
-        menuItems.forEach(item => {
+        // Separate left and right items
+        const leftItems = menuItems.filter(item => !item.className || !item.className.includes('nav-right'));
+        const rightItems = menuItems.filter(item => item.className && item.className.includes('nav-right'));
+
+        // Render left items
+        leftItems.forEach(item => {
             if (item) {
                 navList.appendChild(createNavItem(item));
-            } else {
-                console.error('Nav: Encountered undefined navigation item');
             }
         });
+
+        // Render right items in a container
+        if (rightItems.length > 0) {
+            const rightContainer = document.createElement('div');
+            rightContainer.style.display = 'flex';
+            rightContainer.style.marginLeft = 'auto';
+            rightContainer.style.alignItems = 'center';
+            rightContainer.style.borderLeft = '1px solid rgba(255, 255, 255, 0.2)';
+
+            rightItems.forEach(item => {
+                if (item) {
+                    const li = document.createElement('li');
+                    li.id = item.id;
+                    li.style.display = 'inline-block';
+                    
+                    const a = document.createElement('a');
+                    a.href = item.href;
+                    a.className = 'nav-link';
+                    
+                    // Add icon if provided
+                    if (item.icon) {
+                        const icon = document.createElement('i');
+                        icon.className = item.icon;
+                        a.appendChild(icon);
+                        
+                        const text = document.createElement('span');
+                        text.textContent = item.text;
+                        a.appendChild(text);
+                    } else {
+                        a.textContent = item.text;
+                    }
+
+                    if (item.id === 'logout-item') {
+                        a.id = 'logout-link';
+                        a.style.color = '#ff6b6b';
+                    }
+
+                    li.appendChild(a);
+                    rightContainer.appendChild(li);
+                }
+            });
+
+            navList.appendChild(rightContainer);
+        }
 
         // Re-attach logout listener since we recreated the element
         const logoutLink = document.getElementById('logout-link');
@@ -125,7 +172,19 @@ function createNavItem(item) {
     const a = document.createElement('a');
     a.href = item.href;
     a.className = 'nav-link';
-    a.textContent = item.text;
+    
+    // Add icon if provided
+    if (item.icon) {
+        const icon = document.createElement('i');
+        icon.className = item.icon;
+        a.appendChild(icon);
+        
+        const text = document.createElement('span');
+        text.textContent = item.text;
+        a.appendChild(text);
+    } else {
+        a.textContent = item.text;
+    }
 
     if (item.id === 'logout-item') {
         a.id = 'logout-link';

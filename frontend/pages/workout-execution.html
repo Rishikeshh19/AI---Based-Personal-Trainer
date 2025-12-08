@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Workout Execution - AI Trainer</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .workout-execution-container {
@@ -17,7 +19,7 @@
         }
 
         .workout-header {
-            background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%);
+            background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%);
             color: white;
             padding: 30px;
             border-radius: 20px;
@@ -45,14 +47,12 @@
         }
 
         .exercise-section {
-            background: rgba(31, 31, 31, 0.8);
+            background: #FFFFFF;
             border-radius: 16px;
             padding: 30px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-            border-left: 5px solid #5A00FF;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.1);
+            border: 2px solid #E0F2FE;
         }
 
         .exercise-header {
@@ -61,18 +61,18 @@
             align-items: center;
             margin-bottom: 20px;
             padding-bottom: 15px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid #E0F2FE;
         }
 
         .exercise-title {
             font-size: 24px;
             font-weight: 700;
-            color: #5A00FF;
+            color: #1E40AF;
             margin: 0;
         }
 
         .exercise-number {
-            background: #5A00FF;
+            background: #1E40AF;
             color: white;
             width: 40px;
             height: 40px;
@@ -88,7 +88,7 @@
             width: 100%;
             max-width: 600px;
             margin: 20px auto;
-            background: rgba(0, 0, 0, 0.2);
+            background: #F0F9FF;
             border-radius: 12px;
             overflow: hidden;
             border: 2px solid rgba(255, 255, 255, 0.1);
@@ -104,13 +104,13 @@
             height: 100%;
             object-fit: contain;
             display: block !important;
-            background: rgba(0, 0, 0, 0.2);
+            background: #F0F9FF;
         }
 
         .gif-placeholder {
             text-align: center;
             padding: 40px;
-            color: rgba(255, 255, 255, 0.6);
+            color: #64748B;
             position: absolute;
             width: 100%;
             height: 100%;
@@ -130,12 +130,12 @@
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 8px;
-            color: #FFFFFF;
+            color: #64748B;
         }
 
         .gif-placeholder-subtext {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.5);
+            color: #94A3B8;
         }
 
         .exercise-details {
@@ -146,23 +146,23 @@
         }
 
         .detail-card {
-            background: rgba(90, 0, 255, 0.1);
+            background: #F0F9FF;
             padding: 20px;
             border-radius: 12px;
             text-align: center;
-            border: 1px solid rgba(90, 0, 255, 0.3);
+            border: 2px solid #E0F2FE;
         }
 
         .detail-value {
             font-size: 32px;
             font-weight: 700;
-            color: #5A00FF;
+            color: #1E40AF;
             margin-bottom: 5px;
         }
 
         .detail-label {
             font-size: 14px;
-            color: rgba(255, 255, 255, 0.6);
+            color: #64748B;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -175,13 +175,13 @@
         }
 
         .set-item {
-            background: rgba(90, 0, 255, 0.1);
+            background: #F0F9FF;
             padding: 20px;
             border-radius: 12px;
             text-align: center;
-            border: 2px solid rgba(90, 0, 255, 0.3);
+            border: 2px solid #E0F2FE;
             transition: all 0.3s;
-            color: #FFFFFF;
+            color: #0F172A;
         }
 
         .set-item.completed {
@@ -192,7 +192,7 @@
         .set-number {
             font-size: 18px;
             font-weight: 700;
-            color: #5A00FF;
+            color: #1E40AF;
             margin-bottom: 10px;
         }
 
@@ -203,26 +203,26 @@
         .reps-input {
             width: 80px;
             padding: 10px;
-            border: 2px solid rgba(90, 0, 255, 0.3);
+            border: 2px solid #E0F2FE;
             border-radius: 8px;
             text-align: center;
             font-size: 18px;
             font-weight: 600;
             margin: 10px 0;
-            background: rgba(255, 255, 255, 0.05);
-            color: #FFFFFF;
+            background: #FFFFFF;
+            color: #0F172A;
         }
 
         .reps-input:focus {
             outline: none;
-            border-color: #5A00FF;
+            border-color: #1E40AF;
             background: rgba(255, 255, 255, 0.1);
         }
 
         .complete-set-btn {
             width: 100%;
             padding: 10px;
-            background: #5A00FF;
+            background: #1E40AF;
             color: white;
             border: none;
             border-radius: 8px;
@@ -243,7 +243,7 @@
         .workout-actions {
             position: sticky;
             bottom: 0;
-            background: rgba(31, 31, 31, 0.95);
+            background: #FFFFFF;
             padding: 20px;
             border-top: 2px solid #E5E7EB;
             display: flex;
@@ -273,7 +273,7 @@
         }
 
         .btn-save-progress {
-            background: #5A00FF;
+            background: #1E40AF;
             color: white;
         }
 
@@ -291,7 +291,7 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #5A00FF, #7C3FFF);
+            background: linear-gradient(90deg, #1E40AF, #0891B2);
             transition: width 0.3s;
             border-radius: 10px;
         }
@@ -319,10 +319,103 @@
             opacity: 0.9;
             margin-top: 5px;
         }
+
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            max-width: 400px;
+        }
+
+        .notification {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+            border-left: 4px solid;
+        }
+
+        .notification.success {
+            border-left-color: #10B981;
+            background: #F0FDF4;
+        }
+
+        .notification.success .icon {
+            color: #10B981;
+            font-size: 20px;
+        }
+
+        .notification.success .message {
+            color: #065F46;
+            font-weight: 600;
+        }
+
+        .notification.error {
+            border-left-color: #EF4444;
+            background: #FEF2F2;
+        }
+
+        .notification.error .icon {
+            color: #EF4444;
+            font-size: 20px;
+        }
+
+        .notification.error .message {
+            color: #7F1D1D;
+            font-weight: 600;
+        }
+
+        .notification.info {
+            border-left-color: #3B82F6;
+            background: #EFF6FF;
+        }
+
+        .notification.info .icon {
+            color: #3B82F6;
+            font-size: 20px;
+        }
+
+        .notification.info .message {
+            color: #1E3A8A;
+            font-weight: 600;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+        }
+
+        .notification.removing {
+            animation: slideOut 0.3s ease-out forwards;
+        }
     </style>
 </head>
 
 <body>
+    <div id="notification-container" class="notification-container"></div>
     <div class="sidebar">
         <div class="sidebar-header">
             <a href="../index.html" style="text-decoration: none; color: inherit; cursor: pointer;">
@@ -342,6 +435,7 @@
                 <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="notifications.html" class="nav-link">Notifications</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
                 <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
@@ -359,15 +453,15 @@
 
                 <div class="workout-meta">
                     <div class="meta-item">
-                        <span>📅</span>
+                        <span>Date:</span>
                         <span id="workoutDate"></span>
                     </div>
                     <div class="meta-item">
-                        <span>⏱️</span>
+                        <span>Duration:</span>
                         <span id="workoutDuration">00:00</span>
                     </div>
                     <div class="meta-item">
-                        <span>🔥</span>
+                        <span>Energy:</span>
                         <span id="workoutCalories">0 cal</span>
                     </div>
                 </div>
@@ -400,13 +494,14 @@
             </div>
 
             <div class="workout-actions" id="workoutActions" style="display: none;">
-                <button class="action-btn btn-save-progress" onclick="saveProgress()">💾 Save Progress</button>
+                <button class="action-btn btn-save-progress" onclick="saveProgress()">Save Progress</button>
                 <button class="action-btn btn-finish" onclick="finishWorkout()">✅ Finish Workout</button>
             </div>
         </div>
     </main>
 
     <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script src="../js/storage.js"></script>
     <script src="../js/gif_database.js"></script>
     <script>
@@ -453,7 +548,7 @@
                 ? muscleGroups.map(m => m.charAt(0).toUpperCase() + m.slice(1)).join(' + ')
                 : muscleGroup.charAt(0).toUpperCase() + muscleGroup.slice(1);
 
-            document.getElementById('workoutTitle').textContent = `?? ${muscleGroupsText} Workout`;
+            document.getElementById('workoutTitle').textContent = `${muscleGroupsText} Workout`;
             document.getElementById('workoutMuscleGroup').textContent = `${exercises.length} exercises selected`;
             document.getElementById('workoutDate').textContent = new Date().toLocaleDateString();
 
@@ -496,7 +591,7 @@
                 <div class="gif-container" id="gif-container-${exerciseNum}">
                     ${gifPath ? gifHTML : ''}
                     <div class="gif-placeholder" ${gifPath ? 'style="display: none;"' : ''}>
-                        <div class="gif-placeholder-icon">🎬</div>
+                        <div class="gif-placeholder-icon">Video</div>
                         <div class="gif-placeholder-text">Exercise GIF</div>
                         <div class="gif-placeholder-subtext">${exercise.description || 'Execute this exercise properly'}</div>
                     </div>
@@ -511,10 +606,10 @@
                         <input type="number" class="reps-input" id="reps-${exerciseNum}-${i}" 
                                value="${reps}" min="0" max="100" 
                                data-exercise="${exerciseNum}" data-set="${i}">
-                        <div style="font-size: 12px; color: rgba(255, 255, 255, 0.6); margin: 5px 0;">reps</div>
+                        <div style="font-size: 12px; color: #64748B; margin: 5px 0;">reps</div>
                         <button class="complete-set-btn" onclick="completeSet(${exerciseNum}, ${i})" 
                                 id="btn-set-${exerciseNum}-${i}">
-                            ? Complete Set
+                            ✓ Complete Set
                         </button>
                     </div>
                 `;
@@ -549,6 +644,10 @@
                             <div class="detail-value" id="duration-${exerciseNum}">00:00</div>
                             <div class="detail-label">Exercise Time</div>
                         </div>
+                        <div class="detail-card">
+                            <div class="detail-value" style="font-size: 14px; text-transform: capitalize;">${exercise.type || 'Standard'}</div>
+                            <div class="detail-label">Type</div>
+                        </div>
                     </div>
 
                     <div class="sets-reps-tracker">
@@ -568,7 +667,7 @@
             if (reps > 0) {
                 setItem.classList.add('completed');
                 completeBtn.disabled = true;
-                completeBtn.textContent = '? Completed';
+                completeBtn.textContent = '✓ Completed';
 
                 // Update progress
                 const exerciseIndex = exerciseNum - 1;
@@ -658,7 +757,15 @@
             // Database is updated once when the user finishes the workout
             sessionStorage.setItem('currentWorkout', JSON.stringify(currentProgress));
 
-            alert('?? Progress saved locally. It will be stored in history when you finish the workout.');
+            showNotification('✓ Progress saved locally. It will be stored in history when you finish the workout.', 'info');
+            
+            // Add to notification centre
+            if (window.notificationCenter) {
+                window.notificationCenter.addProgress(
+                    'Workout Progress Saved',
+                    `Progress saved with ${completedSets} sets completed`
+                );
+            }
         }
 
         async function finishWorkout() {
@@ -698,7 +805,7 @@
                 const finishBtn = document.querySelector('.btn-finish');
                 if (finishBtn) {
                     finishBtn.disabled = true;
-                    finishBtn.textContent = '?? Saving...';
+                    finishBtn.textContent = '⏳ Saving...';
                 }
 
                 try {
@@ -716,17 +823,28 @@
                     if (response.ok && data.success) {
                         sessionStorage.removeItem('currentWorkout');
                         clearInterval(workoutTimer);
-                        alert('? Workout completed and saved to database! Great job! ??');
-                        window.location.href = 'dashboard.html';
+                        showNotification('Workout completed and saved to database! Great job!', 'success');
+                        
+                        // Add to notification centre
+                        if (window.notificationCenter) {
+                            window.notificationCenter.addProgress(
+                                'Workout Completed',
+                                `${totalReps} total reps in ${Math.floor(duration / 60000)} minutes - ${exercisesArray.length} exercises completed`
+                            );
+                        }
+                        
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 2000);
                     } else {
                         throw new Error(data.message || 'Failed to save workout');
                     }
                 } catch (error) {
                     console.error('Error saving workout:', error);
-                    alert('? Error saving workout: ' + error.message + '\n\nPlease check your connection and try again.');
+                    showNotification('❌ Error saving workout: ' + error.message + '. Please check your connection and try again.', 'error');
                     if (finishBtn) {
                         finishBtn.disabled = false;
-                        finishBtn.textContent = '? Finish Workout';
+                        finishBtn.textContent = 'Finish Workout';
                     }
                 }
             }
@@ -750,6 +868,33 @@
                     if (value > 100) e.target.value = 100;
                 }
             });
+        }
+
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const icons = {
+                success: '✓',
+                error: '✕',
+                info: 'ℹ'
+            };
+            
+            notification.innerHTML = `
+                <span class="icon">${icons[type] || '•'}</span>
+                <span class="message">${message}</span>
+            `;
+            
+            container.appendChild(notification);
+            
+            // Auto remove after 4 seconds
+            setTimeout(() => {
+                notification.classList.add('removing');
+                setTimeout(() => {
+                    notification.remove();
+                }, 300);
+            }, 4000);
         }
 
         // Cleanup on page unload

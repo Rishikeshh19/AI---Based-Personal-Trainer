@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - AI Personal Trainer Assistant</title>
-    <link rel="stylesheet" href="../css/style-premium.css">
-    <link rel="stylesheet" href="../css/dashboard-premium.css">
-    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/professional.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/dark-mode.css">
     <script>
         // Check authentication immediately
         (function() {
@@ -39,6 +41,7 @@
                 <li><a href="muscle-workout.html" class="nav-link">Muscle Workout</a></li>
                 <li><a href="select-trainer.html" class="nav-link">Select Trainer</a></li>
                 <li><a href="messages.html" class="nav-link">Messages</a></li>
+                <li><a href="notifications.html" class="nav-link">Notifications</a></li>
                 <li><a href="ai-suggestions.html" class="nav-link">AI Suggestions</a></li>
                 <li id="diet-plan-item"><a href="diet-plan.html" class="nav-link">AI Diet Plan</a></li>
                 <li><a href="progress.html" class="nav-link">View Progress</a></li>
@@ -52,25 +55,25 @@
         <!-- Stats Cards -->
         <div class="dashboard-container">
             <div class="stats-card">
-                <div class="card-icon">📊</div>
+                <div class="card-icon"></div>
                 <h3>Total Workouts</h3>
                 <div class="stat-value" id="total-workouts">0</div>
                 <p>This month</p>
             </div>
             <div class="stats-card">
-                <div class="card-icon">🔥</div>
+                <div class="card-icon"></div>
                 <h3>Calories Burned</h3>
                 <div class="stat-value" id="total-calories">0</div>
                 <p>Total</p>
             </div>
             <div class="stats-card">
-                <div class="card-icon">⚡</div>
+                <div class="card-icon"></div>
                 <h3>Streak</h3>
                 <div class="stat-value" id="streak">0</div>
                 <p>Days active</p>
             </div>
             <div class="stats-card">
-                <div class="card-icon">🎯</div>
+                <div class="card-icon"></div>
                 <h3>Goal Progress</h3>
                 <div class="stat-value" id="goal-progress">75%</div>
                 <p>This week</p>
@@ -92,15 +95,15 @@
             style="margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-radius: 10px; text-align: left; display: none;">
             <h2>Your Trainer</h2>
             <div id="your-trainer-container" class="empty-state" style="text-align: center;">
-                <p>No trainer selected yet. Visit <a href="select-trainer.html" style="color: #5A00FF; text-decoration: underline;">Select Trainer</a> to choose one.</p>
+                <p>No trainer selected yet. Visit <a href="select-trainer.html" style="color: #1E40AF; text-decoration: underline;">Select Trainer</a> to choose one.</p>
             </div>
         </section>
 
         <!-- Progress Report Section -->
         <section id="progress-report">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="margin: 0;">📊 Progress Report - This Week</h2>
-                <a href="progress.html" class="button" style="padding: 8px 16px; background: #5A00FF; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; transition: all 0.3s; display: inline-block;">View More →</a>
+                <h2 style="margin: 0;">Progress Report - This Week</h2>
+                <a href="progress.html" class="button" style="padding: 8px 16px; background: #1E40AF; color: white; text-decoration: none; border-radius: 6px; font-weight: 600; transition: all 0.3s; display: inline-block;">View More →</a>
             </div>
             <div id="progress-container">
                 <div class="empty-state">
@@ -117,6 +120,7 @@
 
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
+    <script src="../js/dark-mode.js"></script>
     <script src="../js/api.js"></script>
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <script src="../js/dashboard.js"></script>
@@ -174,7 +178,7 @@
                     container.innerHTML = `
                         <div class="empty-state">
                             <h3>No trainer selected</h3>
-                            <p>Visit <a href="select-trainer.html" style="color: #5A00FF; text-decoration: underline;">Select Trainer</a> to choose one.</p>
+                            <p>Visit <a href="select-trainer.html" style="color: #1E40AF; text-decoration: underline;">Select Trainer</a> to choose one.</p>
                         </div>
                     `;
                     return;
@@ -191,7 +195,7 @@
                     <div class="card" style="text-align: center;">
                         <h3 style="margin-bottom: 8px;">${fullName}</h3>
                         <p style="margin-bottom: 12px; color:#555;">${specialization}</p>
-                        <a href="messages.html" class="button" style="padding: 8px 16px; font-size: 13px; background: #5A00FF; color: white; text-decoration: none; display: inline-block; border-radius: 5px;">Send Message</a>
+                        <a href="messages.html" class="button" style="padding: 8px 16px; font-size: 13px; background: #1E40AF; color: white; text-decoration: none; display: inline-block; border-radius: 5px;">Send Message</a>
                     </div>
                 `;
             } catch (error) {
@@ -199,7 +203,7 @@
                 container.innerHTML = `
                     <div class="empty-state">
                         <h3>No trainer selected</h3>
-                        <p>Visit <a href="select-trainer.html" style="color: #5A00FF; text-decoration: underline;">Select Trainer</a> to choose one.</p>
+                        <p>Visit <a href="select-trainer.html" style="color: #1E40AF; text-decoration: underline;">Select Trainer</a> to choose one.</p>
                     </div>
                 `;
             }
@@ -260,11 +264,11 @@
                 const muscles = workout.exercises?.map(e => e.name || e).join(', ') || 'Mixed';
                 
                 html += `
-                    <div style="background: linear-gradient(135deg, #5A00FF 0%, #7C3FFF 100%); padding: 20px; border-radius: 12px; color: white; box-shadow: 0 4px 15px rgba(90, 0, 255, 0.2);">
-                        <h4 style="margin: 0 0 10px 0;">📅 ${date}</h4>
-                        <p style="margin: 8px 0; font-size: 14px;"><strong>💪 Muscles:</strong> ${muscles}</p>
-                        <p style="margin: 8px 0; font-size: 14px;"><strong>⏱️ Duration:</strong> ${workout.totalDuration || 0} mins</p>
-                        <p style="margin: 8px 0; font-size: 14px;"><strong>🔥 Calories:</strong> ${workout.totalCalories || 0} cal</p>
+                    <div style="background: linear-gradient(135deg, #1E40AF 0%, #0891B2 100%); padding: 20px; border-radius: 12px; color: white; box-shadow: 0 4px 15px rgba(90, 0, 255, 0.2);">
+                        <h4 style="margin: 0 0 10px 0;">${date}</h4>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>Muscles:</strong> ${muscles}</p>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>Duration:</strong> ${workout.totalDuration || 0} mins</p>
+                        <p style="margin: 8px 0; font-size: 14px;"><strong>Calories:</strong> ${workout.totalCalories || 0} cal</p>
                     </div>
                 `;
             });
@@ -274,7 +278,7 @@
             if (workouts.length > 3) {
                 html += `
                     <p style="text-align: center; margin-top: 15px; color: #666; font-size: 14px;">
-                        Showing 3 of ${workouts.length} workouts this week. <a href="progress.html" style="color: #5A00FF; text-decoration: underline;">View all →</a>
+                        Showing 3 of ${workouts.length} workouts this week. <a href="progress.html" style="color: #1E40AF; text-decoration: underline;">View all →</a>
                     </p>
                 `;
             }

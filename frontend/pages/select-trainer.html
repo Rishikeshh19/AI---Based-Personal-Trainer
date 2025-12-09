@@ -198,6 +198,7 @@
         </div>
     </main>
 
+    <script src="../js/toast.js"></script>
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
         <script src="../js/api.js"></script>
@@ -215,8 +216,8 @@
 
             const currentUser = storage.getCurrentUser();
             if (!currentUser || currentUser.role !== 'member') {
-                alert('This page is for members only');
-                window.location.href = 'dashboard.html';
+                showToast('This page is for members only', 'warning', 4000);
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
                 return;
             }
 
@@ -362,31 +363,44 @@
         async function selectTrainer(trainerId) {
             const currentUser = storage.getCurrentUser();
             if (!currentUser) {
-                alert('Please login');
-                window.location.href = 'login.html';
+                showToast('Please login', 'warning', 4000);
+                setTimeout(() => window.location.href = 'login.html', 1500);
                 return;
             }
 
-            if (confirm('Are you sure you want to select this trainer?')) {
+            showConfirm('Are you sure you want to select this trainer?', async () => {
                 try {
                     const response = await api.member.assignTrainer(trainerId);
                     if (response.success) {
-                        window.notificationCenter.addProgress(
-                            'Trainer Assigned',
-                            'Your trainer has been assigned successfully!'
-                        );
+                        showToast('Trainer assigned successfully!', 'success', 4000);
+                        // Add to notification system
+                        if (typeof notificationCenter !== 'undefined' && notificationCenter) {
+                            notificationCenter.addNotification({
+                                type: 'trainer_assigned',
+                                title: 'Trainer Assigned',
+                                message: 'Your trainer has been assigned successfully!',
+                                timestamp: new Date().toISOString(),
+                                read: false
+                            });
+                        }
                         // Update current user in storage
                         storage.setCurrentUser(response.data);
                         displayCurrentTrainer();
                         loadTrainers();
                     }
                 } catch (error) {
-                    window.notificationCenter.addAlert(
-                        'Error',
-                        'Error: ' + error.message
-                    );
+                    showToast('Error: ' + error.message, 'error', 5000);
+                    if (typeof notificationCenter !== 'undefined' && notificationCenter) {
+                        notificationCenter.addNotification({
+                            type: 'error',
+                            title: 'Error',
+                            message: 'Error: ' + error.message,
+                            timestamp: new Date().toISOString(),
+                            read: false
+                        });
+                    }
                 }
-            }
+            });
         }
 
         function openReviewModal(trainerId, trainerName) {
@@ -445,7 +459,7 @@
 
         function submitReview() {
             if (!window.currentRating) {
-                alert('Please select a rating');
+                showToast('Please select a rating', 'warning', 4000);
                 return;
             }
 

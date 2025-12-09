@@ -45,7 +45,11 @@ document.addEventListener('DOMContentLoaded', function () {
         event.preventDefault();
 
         if (selectedExercises.length === 0) {
-            alert('Please select at least one exercise');
+            if (typeof showToast === 'function') {
+                showToast('Please select at least one exercise', 'warning', 4000);
+            } else {
+                alert('Please select at least one exercise');
+            }
             return;
         }
 
@@ -74,13 +78,21 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 console.log('Response:', data);
-                alert('Workout logged successfully!');
+                if (typeof showToast === 'function') {
+                    showToast('Workout logged successfully!', 'success', 4000);
+                } else {
+                    alert('Workout logged successfully!');
+                }
                 workoutForm.reset();
                 fetchWorkouts();
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error adding workout. Please try again.');
+                if (typeof showToast === 'function') {
+                    showToast('Error adding workout. Please try again.', 'error', 5000);
+                } else {
+                    alert('Error adding workout. Please try again.');
+                }
             });
     }
 

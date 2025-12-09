@@ -502,6 +502,7 @@
     <script src="../js/nav.js"></script>
         <script src="../js/storage.js"></script>
     <script src="../js/gif_database.js"></script>
+    <script src="../js/toast.js"></script>
     <script>
         let workoutData = null;
         let startTime = null;
@@ -530,8 +531,8 @@
                 startTimer();
             } else {
                 // If no workout data, redirect to muscle selection
-                alert('No workout selected. Redirecting to muscle selection...');
-                window.location.href = 'muscle-workout.html';
+                showToast('No workout selected. Redirecting to muscle selection...', 'info', 3000);
+                setTimeout(() => window.location.href = 'muscle-workout.html', 1500);
             }
         }
 
@@ -677,7 +678,7 @@
 
                 updateProgress();
             } else {
-                alert('Please enter the number of reps completed');
+                showToast('Please enter the number of reps completed', 'warning', 4000);
             }
         }
 
@@ -743,6 +744,27 @@
             }, 1000);
         }
 
+        function detectIntensity(durationMs, totalReps, completedSets) {
+            const durationMinutes = Math.floor(durationMs / 60000);
+            
+            // Calculate workout intensity based on time, reps, and sets
+            const repsPerMinute = durationMinutes > 0 ? totalReps / durationMinutes : 0;
+            const setsPerMinute = durationMinutes > 0 ? completedSets / durationMinutes : 0;
+            
+            // Intensity logic:
+            // High: > 15 reps/min or > 2 sets/min or < 20 min total
+            // Moderate: 8-15 reps/min or 1-2 sets/min or 20-45 min total
+            // Low: < 8 reps/min or < 1 set/min or > 45 min total
+            
+            if (durationMinutes < 20 && (repsPerMinute > 15 || setsPerMinute > 2)) {
+                return 'high';
+            } else if (durationMinutes > 45 || (repsPerMinute < 8 && setsPerMinute < 1)) {
+                return 'low';
+            } else {
+                return 'moderate';
+            }
+        }
+
         async function saveProgress() {
             const currentProgress = {
                 ...workoutData,
@@ -751,35 +773,44 @@
                 savedAt: new Date().toISOString()
             };
 
+            // Calculate current stats
+            const completedSets = Object.values(exerciseProgress).reduce((sum, p) => sum + (p.completedSets || 0), 0);
+            const durationMinutes = Math.floor((Date.now() - startTime) / 60000);
+
             // Only keep a local session copy so the user can resume later
             // Database is updated once when the user finishes the workout
             sessionStorage.setItem('currentWorkout', JSON.stringify(currentProgress));
 
-            showNotification('✓ Progress saved locally. It will be stored in history when you finish the workout.', 'info');
+            showNotification(`✓ Progress saved! ${completedSets} sets completed in ${durationMinutes} minutes`, 'info');
             
-            // Add to notification centre
-            if (window.notificationCenter) {
-                window.notificationCenter.addProgress(
-                    'Workout Progress Saved',
-                    `Progress saved with ${completedSets} sets completed`
-                );
+            // Add to notification system
+            if (typeof notificationCenter !== 'undefined' && notificationCenter) {
+                notificationCenter.addNotification({
+                    type: 'progress_saved',
+                    title: 'Workout Progress Saved',
+                    message: `Progress saved: ${completedSets} sets in ${durationMinutes} min`,
+                    timestamp: new Date().toISOString(),
+                    read: false
+                });
             }
         }
 
         async function finishWorkout() {
-            if (confirm('Finish workout and save to your history?')) {
-                const token = storage.getToken();
-                if (!token) {
-                    alert('Please login to save workouts');
-                    window.location.href = 'login.html';
-                    return;
-                }
+            showConfirm(
+                'Finish workout and save to your history?',
+                async () => {
+                    const token = storage.getToken();
+                    if (!token) {
+                        showToast('Please login to save workouts', 'warning', 4000);
+                        setTimeout(() => window.location.href = 'login.html', 1500);
+                        return;
+                    }
 
                 const totalReps = Object.values(exerciseProgress).reduce((sum, p) => sum + (p.completedReps || 0), 0);
                 const completedSets = Object.values(exerciseProgress).reduce((sum, p) => sum + (p.completedSets || 0), 0);
                 const duration = Date.now() - startTime;
 
-                const muscleGroups = workoutData.muscleGroups || [workoutData.muscleGroup || 'general'];
+                    const muscleGroups = workoutData.muscleGroups || [workoutData.muscleGroup || 'general'];
 
                 // Format exercises to match backend schema
                 const exercisesArray = workoutData.exercises.map((ex, idx) => ({
@@ -795,8 +826,8 @@
                     exercises: exercisesArray,
                     totalDuration: Math.floor(duration / 60000), // in minutes
                     totalCalories: Math.floor(totalReps * 0.5 + completedSets * 10),
-                    intensity: 'moderate',
-                    notes: `${muscleGroups.join(', ')} workout - ${exercisesArray.length} exercises completed`
+                    intensity: detectIntensity(duration, totalReps, completedSets),
+                    notes: `${muscleGroups.join(', ')} workout - ${exercisesArray.length} exercises completed - Duration: ${Math.floor(duration / 60000)} minutes`
                 };
 
                 // Disable finish button to prevent double submission
@@ -819,16 +850,25 @@
                     const data = await response.json();
 
                     if (response.ok && data.success) {
+                        const durationMinutes = Math.floor(duration / 60000);
+                        const durationSeconds = Math.floor((duration % 60000) / 1000);
+                        const timeDisplay = durationMinutes > 0 
+                            ? `${durationMinutes}min ${durationSeconds}sec` 
+                            : `${durationSeconds}sec`;
+                        
                         sessionStorage.removeItem('currentWorkout');
                         clearInterval(workoutTimer);
-                        showNotification('Workout completed and saved to database! Great job!', 'success');
+                        showNotification(`🎉 Workout completed in ${timeDisplay}! Great job! Saved to database.`, 'success');
                         
-                        // Add to notification centre
-                        if (window.notificationCenter) {
-                            window.notificationCenter.addProgress(
-                                'Workout Completed',
-                                `${totalReps} total reps in ${Math.floor(duration / 60000)} minutes - ${exercisesArray.length} exercises completed`
-                            );
+                        // Add to notification system
+                        if (typeof notificationCenter !== 'undefined' && notificationCenter) {
+                            notificationCenter.addNotification({
+                                type: 'workout_completed',
+                                title: 'Workout Completed',
+                                message: `${totalReps} total reps in ${durationMinutes} minutes - ${exercisesArray.length} exercises completed`,
+                                timestamp: new Date().toISOString(),
+                                read: false
+                            });
                         }
                         
                         setTimeout(() => {
@@ -845,7 +885,10 @@
                         finishBtn.textContent = 'Finish Workout';
                     }
                 }
-            }
+            }, () => {
+                // User cancelled
+                console.log('Workout finish cancelled by user');
+            });
         }
 
         function setupEventListeners() {

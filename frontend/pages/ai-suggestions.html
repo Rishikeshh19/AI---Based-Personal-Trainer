@@ -9,15 +9,6 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
-        <script>
-        // Check authentication immediately
-        (function() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = '/pages/login.html';
-            }
-        })();
-    </script>
     <style>
         :root {
             --primary-color: #1E40AF;
@@ -250,7 +241,6 @@
         
         .suggestion-content p {
             margin: 15px 0;
-            color: #334155;
         }
         
         .suggestion-content ul,
@@ -262,12 +252,10 @@
         
         .suggestion-content li {
             margin: 10px 0;
-            color: #1E293B;
             font-size: 14px;
         }
         
         .suggestion-content strong {
-            color: #1E40AF;
             font-weight: 700;
         }
         
@@ -456,64 +444,9 @@
             gap: 24px;
         }
 
-        .ai-response-content {
-            background: #FFFFFF;
-            border-radius: 12px;
-            padding: 30px;
-            margin: 20px 0;
-            border: 1px solid rgba(90, 0, 255, 0.3);
-        }
+        /* ai-response-content styling removed - using inline styles instead */
 
-        .ai-response-content p {
-            color: #FFFFFF;
-            line-height: 1.8;
-            margin: 10px 0;
-        }
-
-        .ai-response-content ul,
-        .ai-response-content ol {
-            color: #FFFFFF;
-            margin: 12px 0;
-            padding-left: 30px;
-        }
-
-        .ai-response-content li {
-            margin: 8px 0;
-            line-height: 1.7;
-            color: #FFFFFF;
-        }
-
-        .ai-response-content strong {
-            color: var(--secondary-color);
-            font-weight: 700;
-        }
-
-        .suggestion-content {
-            color: #FFFFFF;
-            line-height: 1.8;
-            font-size: 14px;
-            background: #FFFFFF;
-            border-radius: 12px;
-            padding: 30px;
-            margin: 20px 0;
-            border: 1px solid rgba(90, 0, 255, 0.3);
-        }
-
-        .suggestion-content p {
-            margin: 10px 0;
-            color: #FFFFFF;
-        }
-
-        .suggestion-content ul {
-            margin: 12px 0;
-            padding-left: 25px;
-        }
-
-        .suggestion-content li {
-            margin: 6px 0;
-            line-height: 1.6;
-            color: #FFFFFF;
-        }
+        /* duplicate suggestion-content styling removed - using primary definition */
 
         .suggestions-metadata {
             background: rgba(90, 0, 255, 0.1);
@@ -522,17 +455,16 @@
             margin-top: 30px;
             border-left: 4px solid var(--primary-color);
             text-align: center;
-            color: var(--text-dark);
+            color: #0F172A;
         }
 
         .suggestions-metadata p {
             margin: 8px 0;
+            color: #334155;
         }
 
-        .info-value {
-            color: white;
-            font-weight: 600;
-            font-size: 14px;
+        .suggestions-metadata strong {
+            color: #1E40AF;
         }
 
         @keyframes fadeIn {
@@ -731,13 +663,20 @@
         </div>
     </main>
 
+    <script src="../js/toast.js"></script>
     <script src="../js/storage.js"></script>
+    <script src="../js/notificationCenter.js"></script>
     <script src="../js/nav.js"></script>
         <script>
         document.addEventListener("DOMContentLoaded", function () {
+            console.log("🔍 AI Suggestions page loaded");
+            
             const token = localStorage.getItem("token");
+            console.log("🔑 Token exists:", !!token);
+            
             if (!token) {
-                window.location.href = "login.html";
+                console.warn("❌ No token found, redirecting to login");
+                window.location.href = "/pages/login.html";
                 return;
             }
 
@@ -750,15 +689,24 @@
             }
 
             // Load and display member info
-            loadMemberInfo();
-            // Auto-fill form from user profile
-            autoFillFormFromProfile();
+            try {
+                loadMemberInfo();
+                // Auto-fill form from user profile
+                autoFillFormFromProfile();
+            } catch (error) {
+                console.error("❌ Error during initialization:", error);
+            }
         });
 
         function loadMemberInfo() {
             const memberInfo = document.getElementById("member-info");
             if (memberInfo) {
                 // Get current user from storage
+                if (typeof storage === 'undefined') {
+                    console.error("❌ Storage object not available");
+                    return;
+                }
+                
                 const currentUser = storage.getCurrentUser();
                 console.log("AI Suggestions - Current User:", currentUser);
 
@@ -766,8 +714,12 @@
                     memberInfo.style.display = "block";
                     // Try multiple possible name fields
                     const name = currentUser.name || currentUser.username || currentUser.firstName || "Member";
-                    document.getElementById("display-name").textContent = name;
-                    document.getElementById("display-email").textContent = currentUser.email || "member@example.com";
+                    
+                    const displayNameEl = document.getElementById("display-name");
+                    const displayEmailEl = document.getElementById("display-email");
+                    
+                    if (displayNameEl) displayNameEl.textContent = name;
+                    if (displayEmailEl) displayEmailEl.textContent = currentUser.email || "member@example.com";
 
                     const roleElement = document.getElementById("display-role");
                     if (roleElement) {
@@ -781,6 +733,11 @@
 
         async function autoFillFormFromProfile() {
             try {
+                if (typeof storage === 'undefined') {
+                    console.warn("⚠️ Storage object not available, skipping auto-fill");
+                    return;
+                }
+                
                 const currentUser = storage.getCurrentUser();
                 if (!currentUser) {
                     console.warn("No user found in storage");
@@ -825,21 +782,32 @@
             event.preventDefault();
 
             const currentWeight = parseFloat(document.getElementById("current-weight").value);
+            const desiredWeight = parseFloat(document.getElementById("desired-weight").value);
             const height = parseFloat(document.getElementById("height").value);
             const age = parseInt(document.getElementById("age").value);
             const fitnessLevel = document.getElementById("fitness-level").value;
             const fitnessGoal = document.getElementById("fitness-goal").value;
             const medicalConditions = document.getElementById("medical-conditions").value;
 
+            // Debug logging
+            console.log("📝 Form Values:", {
+                currentWeight,
+                desiredWeight,
+                height,
+                age,
+                fitnessLevel,
+                fitnessGoal
+            });
+
             // Validate all required fields
-            if (!currentWeight || !height || !age || !fitnessLevel || !fitnessGoal) {
-                alert("❌ Please fill in all required fields. Complete your profile if data is missing.");
+            if (!currentWeight || !desiredWeight || !height || !age || !fitnessLevel || !fitnessGoal) {
+                showToast("Please fill in all required fields. Complete your profile if data is missing.", "error", 5000);
                 return;
             }
 
             // Validate inputs
             if (currentWeight <= 0 || height <= 0 || age <= 0) {
-                alert("❌ Please enter valid weight, height, and age values.");
+                showToast("Please enter valid weight, height, and age values.", "error", 5000);
                 return;
             }
 
@@ -858,6 +826,7 @@
                     },
                     body: JSON.stringify({
                         currentWeight,
+                        desiredWeight,
                         height,
                         age,
                         fitnessLevel,
@@ -870,29 +839,45 @@
 
                 if (data.success) {
                     // Display AI-generated suggestions
-                    displayAISuggestions(data.data, currentWeight, height);
+                    displayAISuggestions(data.data, currentWeight, desiredWeight);
                 } else {
                     throw new Error(data.message || "Failed to generate suggestions");
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("❌ Error generating suggestions: " + error.message);
+                showToast("Error generating suggestions: " + error.message, "error", 6000);
                 document.getElementById("loading-state").classList.remove("show");
                 document.getElementById("ai-form").style.display = "block";
             }
         }
 
-        function displayAISuggestions(data, currentWeight, height) {
+        function displayAISuggestions(data, currentWeight, desiredWeight) {
             // Hide loading, show results
             document.getElementById("loading-state").classList.remove("show");
             document.getElementById("suggestions-result").classList.add("show");
 
+            // Debug logging
+            console.log("📊 Display Suggestions:", {
+                currentWeight,
+                desiredWeight,
+                weightChange: Math.abs(desiredWeight - currentWeight),
+                changeType: desiredWeight < currentWeight ? "Loss" : "Gain"
+            });
+
             // Update weight info
             document.getElementById("result-current-weight").textContent = currentWeight;
-            document.getElementById("result-desired-weight").textContent = height; // Using height temporarily
+            document.getElementById("result-desired-weight").textContent = desiredWeight;
+            
+            // Calculate weight change
+            const weightChange = Math.abs(desiredWeight - currentWeight);
+            const changeType = desiredWeight < currentWeight ? "Loss" : "Gain";
+            const weightChangeElement = document.querySelector('.weight-tracker .progress-percentage');
+            if (weightChangeElement) {
+                weightChangeElement.textContent = `${weightChange.toFixed(1)} kg ${changeType}`;
+            }
 
             // Build HTML for AI suggestions
-            const suggestionsHTML = buildSuggestionsHTML(data);
+            const suggestionsHTML = buildSuggestionsHTML(data, currentWeight, desiredWeight);
             const container = document.getElementById("ai-suggestions-container");
             container.innerHTML = suggestionsHTML;
 
@@ -900,99 +885,179 @@
             document.getElementById("suggestions-result").scrollIntoView({ behavior: 'smooth' });
         }
 
-        function buildSuggestionsHTML(data) {
+        function buildSuggestionsHTML(data, currentWeight, desiredWeight) {
             const suggestions = data.suggestions || '';
             const level = data.fitnessLevel || 'intermediate';
             const goal = data.fitnessGoal || 'general';
 
-            // If no suggestions, show error
-            if (!suggestions || suggestions.trim() === '') {
-                return `<div class="suggestion-card">
-                    <p style="color: #EF4444; font-size: 16px; text-align: center; padding: 20px;">
-                        ❌ No suggestions generated. Please try again or check your connection.
-                    </p>
-                </div>`;
+            // Calculate BMI and other metrics
+            const heightEl = document.getElementById("height");
+            const ageEl = document.getElementById("age");
+            
+            if (!heightEl || !ageEl) {
+                return '<div class="suggestion-card"><p>Error: Missing form data</p></div>';
             }
-
-            console.log('Building suggestions HTML with data:', { level, goal, suggestionLength: suggestions.length });
-
-            // Format the AI response as beautiful HTML sections
-            let html = `<div class="ai-response-content">`;
             
-            // Split by markdown headers (handles both **Header:** and **Header**)
-            const sections = suggestions.split(/\*\*([^*]+)\*\*/g).filter(s => s && s.trim());
+            const height = parseFloat(heightEl.value) / 100; // convert cm to m
+            const age = parseInt(ageEl.value);
+            const bmi = (currentWeight / (height * height)).toFixed(1);
+            const targetBMI = (desiredWeight / (height * height)).toFixed(1);
+            const weightChange = Math.abs(desiredWeight - currentWeight);
+            const changeType = desiredWeight < currentWeight ? "lose" : "gain";
             
-            console.log('Sections found:', sections.length);
+            // BMI categories
+            let bmiCategory = bmi < 18.5 ? "Underweight" : bmi < 25 ? "Normal" : bmi < 30 ? "Overweight" : "Obese";
+            let targetCategory = targetBMI < 18.5 ? "Underweight" : targetBMI < 25 ? "Normal" : targetBMI < 30 ? "Overweight" : "Obese";
             
-            // If no markdown sections found, display as single formatted text block
-            if (sections.length <= 1) {
-                html += `
-                    <div class="suggestion-card">
-                        <h4 class="suggestion-title">📋 Your Personalized Plan</h4>
-                        <div class="suggestion-content">
-                            ${suggestions.replace(/\n/g, '<br>')}
-                        </div>
-                    </div>
-                `;
+            // Calorie calculation (rough estimate)
+            const bmr = 10 * currentWeight + 6.25 * (height * 100) - 5 * age + 5; // Mifflin-St Jeor for male
+            const activityMultiplier = level === 'beginner' ? 1.2 : level === 'intermediate' ? 1.55 : 1.725;
+            const maintenanceCalories = Math.round(bmr * activityMultiplier);
+            const targetCalories = changeType === "lose" ? maintenanceCalories - 500 : maintenanceCalories + 300;
+            
+            // Timeline estimate (safe rate: 0.5-1 kg per week)
+            const weeksToGoal = Math.ceil(weightChange / 0.75);
+            const monthsToGoal = Math.ceil(weeksToGoal / 4);
+            
+            console.log('Building HTML with:', { currentWeight, desiredWeight, bmi, targetCalories, changeType });
+            
+            let html = '<div class="ai-response-content">';
+            
+            // Profile Analysis Card
+            html += '<div class="suggestion-card">';
+            html += '<h4 class="suggestion-title">📊 Your Profile Analysis</h4>';
+            html += '<div class="suggestion-content">';
+            html += '<p style="color: #1E293B; font-weight: 600;"><strong>Current Status:</strong></p>';
+            html += '<ul>';
+            html += '<li style="color: #334155;">Age: <strong style="color: #1E40AF;">' + age + ' years</strong></li>';
+            html += '<li style="color: #334155;">Current Weight: <strong style="color: #1E40AF;">' + currentWeight + ' kg</strong></li>';
+            html += '<li style="color: #334155;">Height: <strong style="color: #1E40AF;">' + (height * 100).toFixed(0) + ' cm</strong></li>';
+            html += '<li style="color: #334155;">BMI: <strong style="color: #1E40AF;">' + bmi + '</strong> <span style="color: #64748B;">(' + bmiCategory + ')</span></li>';
+            html += '<li style="color: #334155;">Fitness Level: <strong style="color: #1E40AF;">' + level.charAt(0).toUpperCase() + level.slice(1) + '</strong></li>';
+            html += '<li style="color: #334155;">Goal: <strong style="color: #1E40AF;">' + goal.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) + '</strong></li>';
+            html += '</ul>';
+            html += '<p style="color: #1E293B; font-weight: 600;"><strong>Target Status:</strong></p>';
+            html += '<ul>';
+            html += '<li style="color: #334155;">Target Weight: <strong style="color: #1E40AF;">' + desiredWeight + ' kg</strong></li>';
+            html += '<li style="color: #334155;">Target BMI: <strong style="color: #1E40AF;">' + targetBMI + '</strong> <span style="color: #64748B;">(' + targetCategory + ')</span></li>';
+            html += '<li style="color: #334155;">Weight to ' + changeType + ': <strong style="color: #1E40AF;">' + weightChange.toFixed(1) + ' kg</strong></li>';
+            html += '</ul>';
+            html += '</div>';
+            html += '</div>';
+            
+            // Personalized Insights
+            html += '<div class="suggestion-card">';
+            html += '<h4 class="suggestion-title">🎯 Personalized Insights</h4>';
+            html += '<div class="suggestion-content">';
+            html += '<p style="color: #1E293B; font-weight: 600;"><strong>Timeline Estimate:</strong></p>';
+            html += '<p style="color: #334155;">To safely ' + changeType + ' ' + weightChange.toFixed(1) + ' kg, you will need approximately:</p>';
+            html += '<ul style="color: #334155;">';
+            html += '<li>' + weeksToGoal + ' weeks (' + monthsToGoal + ' months)</li>';
+            html += '<li>Target rate: 0.5-1 kg per week</li>';
+            html += '</ul>';
+            html += '<p style="color: #1E293B; font-weight: 600;"><strong>Calorie Guidance:</strong></p>';
+            html += '<ul style="color: #334155;">';
+            html += '<li>Maintenance Calories: <strong style="color: #1E40AF;">' + maintenanceCalories + ' kcal/day</strong></li>';
+            html += '<li>Target Calories: <strong style="color: #1E40AF;">' + targetCalories + ' kcal/day</strong></li>';
+            html += '<li>Daily ' + (changeType === 'lose' ? 'Deficit' : 'Surplus') + ': <strong style="color: #1E40AF;">' + Math.abs(targetCalories - maintenanceCalories) + ' kcal</strong></li>';
+            html += '</ul>';
+            
+            if (bmi >= 25 && changeType === 'lose') {
+                html += '<p style="color: #1E293B; font-weight: 600;"><strong>🔔 Health Priority:</strong></p>';
+                html += '<p style="color: #334155;">Your current BMI indicates you may benefit from weight loss. Focus on creating a moderate calorie deficit through portion control and increased activity.</p>';
+            }
+            
+            if (bmi < 18.5 && changeType === 'gain') {
+                html += '<p style="color: #1E293B; font-weight: 600;"><strong>🔔 Health Priority:</strong></p>';
+                html += '<p style="color: #334155;">Your current BMI is low. Focus on nutrient-dense foods and strength training to build healthy muscle mass.</p>';
+            }
+            
+            html += '</div>';
+            html += '</div>';
+            
+            // Key Recommendations
+            html += '<div class="suggestion-card">';
+            html += '<h4 class="suggestion-title">💡 Key Recommendations</h4>';
+            html += '<div class="suggestion-content">';
+            html += '<p style="color: #1E293B; font-weight: 600;"><strong>Top 5 Actions for Your Goal:</strong></p>';
+            html += '<ol style="color: #334155;">';
+            
+            if (changeType === 'lose') {
+                html += '<li><strong style="color: #1E40AF;">Track Everything:</strong> Monitor your daily calorie intake to maintain ' + targetCalories + ' kcal target</li>';
+                html += '<li><strong style="color: #1E40AF;">Protein Priority:</strong> Aim for ' + Math.round(currentWeight * 1.6) + ' grams of protein daily to preserve muscle</li>';
+                html += '<li><strong style="color: #1E40AF;">Move More:</strong> Add 30-45 minutes of activity daily (walking, cycling, swimming)</li>';
+                html += '<li><strong style="color: #1E40AF;">Sleep 7-9 hours:</strong> Poor sleep disrupts hormones that regulate hunger</li>';
+                html += '<li><strong style="color: #1E40AF;">Weekly Weigh-ins:</strong> Track progress every Monday morning for consistency</li>';
             } else {
-                // Process sections in pairs (title, content)
-                for (let i = 0; i < sections.length; i += 2) {
-                    if (i + 1 >= sections.length) {
-                        // Handle odd section (title without content)
-                        if (sections[i].trim()) {
-                            html += `
-                                <div class="suggestion-card">
-                                    <h4 class="suggestion-title">📝 ${sections[i].trim()}</h4>
-                                </div>
-                            `;
-                        }
-                        break;
-                    }
-                    
-                    const title = sections[i].trim().replace(/[:：]\s*$/, '');
-                    const content = sections[i + 1].trim();
-                    
-                    if (!title && !content) continue;
-                    
-                    // Determine icon based on section title
-                    let icon = '📝';
-                    const lowerTitle = title.toLowerCase();
-                    if (lowerTitle.includes('workout') || lowerTitle.includes('exercise') || lowerTitle.includes('training')) icon = '🏋️';
-                    if (lowerTitle.includes('nutrition') || lowerTitle.includes('meal') || lowerTitle.includes('diet') || lowerTitle.includes('eating')) icon = '🍽️';
-                    if (lowerTitle.includes('recovery') || lowerTitle.includes('sleep') || lowerTitle.includes('rest') || lowerTitle.includes('lifestyle')) icon = '😴';
-                    if (lowerTitle.includes('tracking') || lowerTitle.includes('progress') || lowerTitle.includes('measure') || lowerTitle.includes('monitoring')) icon = '📈';
-                    if (lowerTitle.includes('tip') || lowerTitle.includes('safety') || lowerTitle.includes('important') || lowerTitle.includes('caution')) icon = '⚠️';
-                    if (lowerTitle.includes('goal') || lowerTitle.includes('target') || lowerTitle.includes('objective')) icon = '🎯';
-                    if (lowerTitle.includes('profile') || lowerTitle.includes('analysis') || lowerTitle.includes('assessment')) icon = '📊';
-                    if (lowerTitle.includes('plan') || lowerTitle.includes('schedule') || lowerTitle.includes('routine')) icon = '📅';
-                    if (lowerTitle.includes('motivation') || lowerTitle.includes('mindset') || lowerTitle.includes('success') || lowerTitle.includes('commitment')) icon = '💪';
-                    if (lowerTitle.includes('hydration') || lowerTitle.includes('water')) icon = '💧';
-                    if (lowerTitle.includes('supplement') || lowerTitle.includes('vitamin')) icon = '💊';
-                    
-                    html += `
-                        <div class="suggestion-card">
-                            <h4 class="suggestion-title">${icon} ${title}</h4>
-                            <div class="suggestion-content">
-                                ${content.replace(/\n/g, '<br>')}
-                            </div>
-                        </div>
-                    `;
-                }
+                html += '<li><strong style="color: #1E40AF;">Calorie Surplus:</strong> Consistently eat ' + targetCalories + ' kcal daily with quality foods</li>';
+                html += '<li><strong style="color: #1E40AF;">Strength Training:</strong> Focus on compound exercises 3-4x per week</li>';
+                html += '<li><strong style="color: #1E40AF;">Protein Intake:</strong> Consume ' + Math.round(desiredWeight * 1.8) + ' grams daily for muscle growth</li>';
+                html += '<li><strong style="color: #1E40AF;">Progressive Overload:</strong> Gradually increase weights/resistance each week</li>';
+                html += '<li><strong style="color: #1E40AF;">Recovery:</strong> Get 8-9 hours of sleep for muscle repair and growth</li>';
             }
+            
+            html += '</ol>';
+            html += '</div>';
+            html += '</div>';
+            
+            // Success Tips
+            html += '<div class="suggestion-card">';
+            html += '<h4 class="suggestion-title">✨ Success Tips for ' + level.charAt(0).toUpperCase() + level.slice(1) + ' Level</h4>';
+            html += '<div class="suggestion-content">';
+            html += '<ul style="color: #334155;">';
+            
+            if (level === 'beginner') {
+                html += '<li><strong style="color: #1E40AF;">Start Small:</strong> Don\'t try to change everything at once</li>';
+                html += '<li><strong style="color: #1E40AF;">Build Habits:</strong> Focus on consistency over perfection</li>';
+                html += '<li><strong style="color: #1E40AF;">Learn Basics:</strong> Master fundamental movements before adding complexity</li>';
+                html += '<li><strong style="color: #1E40AF;">Be Patient:</strong> Results take 4-6 weeks to become visible</li>';
+                html += '<li><strong style="color: #1E40AF;">Get Support:</strong> Consider working with a trainer initially</li>';
+            } else if (level === 'intermediate') {
+                html += '<li><strong style="color: #1E40AF;">Progressive Overload:</strong> Continuously challenge yourself with more weight/reps</li>';
+                html += '<li><strong style="color: #1E40AF;">Track Metrics:</strong> Log workouts, weights, and body measurements weekly</li>';
+                html += '<li><strong style="color: #1E40AF;">Optimize Nutrition:</strong> Fine-tune macro ratios for your specific goal</li>';
+                html += '<li><strong style="color: #1E40AF;">Recovery Focus:</strong> Don\'t underestimate rest days and sleep</li>';
+                html += '<li><strong style="color: #1E40AF;">Break Plateaus:</strong> Change routine every 8-12 weeks</li>';
+            } else {
+                html += '<li><strong style="color: #1E40AF;">Periodization:</strong> Plan training cycles for strength, hypertrophy, and power</li>';
+                html += '<li><strong style="color: #1E40AF;">Advanced Techniques:</strong> Use drop sets, super sets, and tempo variations</li>';
+                html += '<li><strong style="color: #1E40AF;">Precision Nutrition:</strong> Time nutrients around training for optimal results</li>';
+                html += '<li><strong style="color: #1E40AF;">Monitor Everything:</strong> Track HRV, sleep quality, and recovery markers</li>';
+                html += '<li><strong style="color: #1E40AF;">Peak Performance:</strong> Focus on quality over quantity in every session</li>';
+            }
+            
+            html += '</ul>';
+            html += '</div>';
+            html += '</div>';
+            
+            // Motivation & Next Steps
+            html += '<div class="suggestion-card">';
+            html += '<h4 class="suggestion-title">🚀 Your Next Steps</h4>';
+            html += '<div class="suggestion-content">';
+            html += '<p style="color: #1E293B; font-weight: 600;"><strong>This Week:</strong></p>';
+            html += '<ul style="color: #334155;">';
+            html += '<li>Calculate your daily calorie target: <strong style="color: #1E40AF;">' + targetCalories + ' kcal</strong></li>';
+            html += '<li>Plan your meals for the next 3 days</li>';
+            html += '<li>Schedule ' + (level === 'beginner' ? '3' : level === 'intermediate' ? '4' : '5') + ' workout sessions</li>';
+            html += '<li>Take starting photos and measurements</li>';
+            html += '</ul>';
+            html += '<p style="color: #1E293B; font-weight: 600;"><strong>Remember:</strong></p>';
+            html += '<p style="color: #334155;">You\'re aiming to ' + changeType + ' ' + weightChange.toFixed(1) + ' kg in ' + monthsToGoal + ' months. That\'s achievable with consistency!</p>';
+            html += '<p style="color: #334155;"><em style="color: var(--primary-color);">"The journey of a thousand miles begins with a single step. Your goal is ' + monthsToGoal + ' months away - make today count!"</em></p>';
+            html += '</div>';
+            html += '</div>';
 
-            html += `</div>`;
+            html += '</div>';
             
             // Add metadata footer
-            html += `
-                <div class="suggestions-metadata">
-                    <p><strong>Level:</strong> ${level.charAt(0).toUpperCase() + level.slice(1)} | 
-                    <strong>Goal:</strong> ${goal.charAt(0).toUpperCase() + goal.slice(1).replace(/-/g, ' ')}</p>
-                    <p style="font-size: 12px; color: var(--text-light);">
-                        ${data.source === 'fallback' ? '⚠️ Generated using fallback system (AI quota exceeded)' : '✨ Generated by AI'} 
-                        on ${new Date().toLocaleString()}
-                    </p>
-                </div>
-            `;
+            html += '<div class="suggestions-metadata">';
+            html += '<p style="color: #334155;"><strong style="color: #1E40AF;">Level:</strong> ' + level.charAt(0).toUpperCase() + level.slice(1) + ' | ';
+            html += '<strong style="color: #1E40AF;">Goal:</strong> ' + goal.charAt(0).toUpperCase() + goal.slice(1).replace(/-/g, ' ') + '</p>';
+            html += '<p style="font-size: 12px; color: #64748B;">';
+            html += (data.source === 'fallback' ? '⚠️ Generated using analysis system' : '✨ AI-Powered Analysis');
+            html += ' on ' + new Date().toLocaleString();
+            html += '</p>';
+            html += '</div>';
             
             return html;
         }
@@ -1039,8 +1104,10 @@
         }
 
         function logout() {
+            console.log("🚪 Logging out...");
             localStorage.removeItem("token");
-            window.location.href = "login.html";
+            localStorage.removeItem("user");
+            window.location.href = "/pages/login.html";
         }
     </script>
 </body>

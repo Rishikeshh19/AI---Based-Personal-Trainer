@@ -592,6 +592,7 @@
     <script src="../js/clear-old-tokens.js"></script>
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
+    <script src="../js/toast.js"></script>
     <script>
         const API_URL = 'http://localhost:8000/api';
 
@@ -673,12 +674,12 @@
 
             // Validate all required fields
             if (!currentWeight || !targetWeight || !height || !age || !fitnessLevel || !goal || !cuisinePreference) {
-                alert("❌ Please fill in all required fields.");
+                showToast("❌ Please fill in all required fields.", 'warning', 5000);
                 return;
             }
 
             if (currentWeight <= 0 || targetWeight <= 0 || height <= 0 || age <= 0) {
-                alert("❌ Please enter valid values for weight, height, and age.");
+                showToast("❌ Please enter valid values for weight, height, and age.", 'warning', 5000);
                 return;
             }
 
@@ -722,7 +723,7 @@
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('❌ Failed to generate diet plan. Please try again.\n\nError: ' + error.message);
+                showToast('❌ Failed to generate diet plan. Please try again.\n\nError: ' + error.message, 'error', 6000);
                 document.getElementById("loading-state").classList.remove("show");
                 document.getElementById("diet-form-section").style.display = "block";
             }

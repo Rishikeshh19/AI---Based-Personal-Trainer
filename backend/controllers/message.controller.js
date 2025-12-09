@@ -67,6 +67,21 @@ exports.sendMessage = async (req, res) => {
         await newMessage.populate('sender', 'username email profile.firstName profile.lastName');
         await newMessage.populate('receiver', 'username email profile.firstName profile.lastName');
 
+        // Create notification for receiver
+        try {
+            const notification = {
+                userId: receiverId,
+                type: 'new_message',
+                title: 'New Message',
+                message: `${sender.profile?.firstName || sender.username} sent you a message`,
+                metadata: { senderId: senderId, messageId: newMessage._id },
+                read: false
+            };
+            await global.notificationQueue?.add(notification);
+        } catch (notifError) {
+            logger.error('Error creating message notification:', notifError);
+        }
+
         logger.info(`Message sent from ${senderId} to ${receiverId}`);
 
         res.status(201).json({

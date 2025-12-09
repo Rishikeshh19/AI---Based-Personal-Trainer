@@ -55,6 +55,35 @@ exports.createWorkout = asyncHandler(async (req, res, next) => {
         workout: workout._id
     });
 
+    // Create notification for workout completion
+    try {
+        const user = await User.findById(req.user.id);
+        const notification = {
+            userId: req.user.id,
+            type: 'workout_completed',
+            title: 'Workout Completed',
+            message: `Great job! You completed a workout with ${workout.exercises?.length || 0} exercises`,
+            metadata: { workoutId: workout._id, duration: workout.totalDuration, calories: workout.totalCalories },
+            read: false
+        };
+        await global.notificationQueue?.add(notification);
+        
+        // Notify trainer if member has one
+        if (user.trainerId) {
+            const trainerNotification = {
+                userId: user.trainerId,
+                type: 'client_workout',
+                title: 'Client Workout Completed',
+                message: `${user.profile?.firstName || user.username} completed a workout (${workout.totalDuration} min, ${workout.totalCalories} cal)`,
+                metadata: { memberId: req.user.id, workoutId: workout._id },
+                read: false
+            };
+            await global.notificationQueue?.add(trainerNotification);
+        }
+    } catch (notifError) {
+        logger.error('Error creating workout notifications:', notifError);
+    }
+
     // Emit real-time update
     await emitProgressUpdate(req.user.id);
 

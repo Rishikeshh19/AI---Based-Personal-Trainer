@@ -62,9 +62,11 @@ Use ONLY English names and descriptions. No Hindi translations.
    - Ragi Malt or Finger Millet Porridge
    - Upma (made with semolina)
    - Ven Pongal (savory rice and lentil dish)
-   - Puttu with Curry
-   - Appam (fermented rice cake)
+   - Puttu with Curry or Egg Curry
+   - Appam (fermented rice cake) with Chicken Stew
    - Adai (lentil crepe - high protein)
+   - **High-Protein Options**: Egg Dosa, Egg Uthappam, Boiled Eggs with Idli/Dosa
+   - **Protein Boost**: Add Whey Protein to Ragi Malt or Smoothies (banana, dates, milk)
 
 2. **Lunch Components (in ENGLISH only)**:
    - Rice (white, brown, or red rice)
@@ -73,18 +75,23 @@ Use ONLY English names and descriptions. No Hindi translations.
    - Curry preparations with coconut
    - Kootu (mixed vegetables with lentils)
    - Avial (mixed vegetables in coconut gravy)
+   - **Protein Options**: Chicken Curry (Chettinad style, Curry with coconut), Egg Curry, Fish Curry
+   - **Non-Veg Additions**: Chicken Biryani (South Indian style), Egg Biryani, Chicken 65
    - Yogurt or Buttermilk
 
 3. **Dinner (in ENGLISH only)**:
    - Idli or Light Dosa
    - Rice porridge (Kanji)
    - Light curry with vegetables
+   - **Protein Options**: Light Chicken Soup (Rasam style), Boiled Eggs, Egg Uthappam
 
 4. **Snacks (in ENGLISH only)**:
    - Sundal (chickpea or peanut salad)
    - Roasted peanuts
    - Buttermilk
    - Fresh fruit
+   - **Protein Snacks**: Boiled Eggs (1-2 eggs), Egg Bhurji, Whey Protein Shake (with banana/mango)
+   - **Post-Workout**: Whey Protein with water or almond milk, Banana + Boiled Egg whites
 
 **DETAILED REQUIREMENTS - PROVIDE COMPLETE INFORMATION:**
 
@@ -505,21 +512,25 @@ async function generateDietPlanVariation(userData, variation) {
 3. **Cooking Oil**: Coconut Oil, Gingelly (Sesame) Oil, or Groundnut Oil.
 4. **Breakfast Options**: 
    - Idli/Dosa with Sambar/Chutney
-   - Ragi Malt/Porridge
+   - Ragi Malt/Porridge (can add Whey Protein)
    - Upma/Uppumavu
    - Pongal (Ven Pongal)
-   - Puttu/Appam/Idiyappam
+   - Puttu/Appam/Idiyappam with Egg Curry or Chicken Stew
    - Adai (high protein lentil dosa)
    - Pesarattu
+   - **Protein Boost**: Egg Dosa, Egg Uthappam, Boiled Eggs (2-3 whites + 1 yolk)
 5. **Lunch Components**: 
    - Rice (White/Brown/Red Matta Rice) or Millets (Ragi, Thinai, Samai)
    - Sambar/Rasam/Vatha Kuzhambu/Mor Kuzhambu
    - Kootu (Lentil + Veg)
    - Poriyal/Thoran/Avial
+   - **Protein Options**: Chicken Curry (Chettinad/Kerala style), Egg Curry, Fish Curry/Fry
+   - **Non-Veg Options**: Chicken Biryani, Chicken 65, Pepper Chicken, Egg Roast
    - Curd/Buttermilk
-6. **Dinner**: Idli, Millet Dosa, Uthappam, Ragi Mudde, or Kanji
-7. **Snacks**: Sundal, Roasted Makhana, Buttermilk, Pori (Puffed rice), Boiled Peanuts
-8. **Hydration**: Warm water, Jeera water, Buttermilk
+6. **Dinner**: Idli, Millet Dosa, Uthappam, Ragi Mudde, Kanji, or Light Chicken Rasam
+7. **Snacks**: Sundal, Roasted Makhana, Buttermilk, Pori (Puffed rice), Boiled Peanuts, **Boiled Eggs, Whey Protein Shake**
+8. **Protein Supplements**: Whey Protein can be added to Ragi Malt, Smoothies (Banana/Mango), or taken post-workout
+9. **Hydration**: Warm water, Jeera water, Buttermilk
 `;
     } else if (isNorthIndian) {
         cuisineSection = `
@@ -527,21 +538,26 @@ async function generateDietPlanVariation(userData, variation) {
 1. **FOCUS ON NORTH INDIAN STYLE**: Use whole wheat Roti/Chapati, Bajra, Jowar preparations.
 2. **Cooking Oil**: Mustard Oil, Ghee, or Refined Oil.
 3. **Breakfast Options**:
-   - Paratha (Plain/Vegetable/Egg)
-   - Poha
+   - Paratha (Plain/Vegetable/Egg/Paneer)
+   - Poha with vegetables
    - Upma (with suji/semolina)
-   - Daliya (broken wheat porridge)
+   - Daliya (broken wheat porridge with milk or savory)
    - Khichdi
    - Stuffed Aloo Parathas
+   - **Protein Boost**: Egg Paratha, Scrambled Eggs, Boiled Eggs (2-3 whites + 1 yolk)
+   - **High-Protein**: Paneer Paratha, Whey Protein added to Daliya or Smoothies
 4. **Lunch Components**:
-   - Whole wheat Roti/Chapati
-   - White/Basmati Rice (moderate)
-   - Dal preparations (Tadka, Makhni, Chana)
+   - Whole wheat Roti/Chapati (2-3 pieces)
+   - White/Basmati Rice (moderate portions)
+   - Dal preparations (Tadka Dal, Dal Makhni, Chana Dal)
    - Curries (Aloo Gobi, Rajma, Chole, Paneer)
-   - Plain yogurt/Lassi
-5. **Dinner**: Light roti, khichdi, or dal preparation
-6. **Snacks**: Chickpea salad, Roasted chana, Homemade laddoos
-7. **Hydration**: Water, herbal teas, fresh juices
+   - **Protein Options**: Chicken Curry (Butter Chicken, Kadai Chicken), Egg Curry, Fish Curry
+   - **Non-Veg Options**: Chicken Biryani, Tandoori Chicken, Chicken Tikka, Egg Bhurji
+   - Plain yogurt/Lassi/Chaas (Buttermilk)
+5. **Dinner**: Light roti, khichdi, dal preparation, or Light Chicken Soup
+6. **Snacks**: Chickpea salad, Roasted chana, Homemade laddoos, **Boiled Eggs, Whey Protein Shake, Paneer Cubes**
+7. **Protein Supplements**: Whey Protein can be added to Daliya, Lassi, Smoothies, or taken post-workout
+8. **Hydration**: Water, herbal teas, fresh juices, Jeera water
 `;
     } else {
         cuisineSection = `
@@ -550,8 +566,11 @@ async function generateDietPlanVariation(userData, variation) {
 2. **Balance**: Use variety of cooking methods and regional specialties.
 3. **Cooking Oil**: Mix of Coconut Oil, Mustard Oil, Groundnut Oil, Ghee.
 4. **Breakfast Options**: Rotate between South Indian (Idli, Dosa) and North Indian (Paratha, Poha)
+   - **Protein Options**: Egg preparations, Paneer dishes, Whey Protein Smoothies
 5. **Lunch**: Mix Rice and Roti preparations with regional curries
+   - **Protein Options**: Chicken Curry (both styles), Egg Curry, Fish preparations, Paneer dishes
 6. **Dinner**: Light preparations from both regions
+7. **Snacks**: Boiled Eggs, Whey Protein Shakes, Paneer Cubes, Sundal, Roasted Chana
 `;
     }
     

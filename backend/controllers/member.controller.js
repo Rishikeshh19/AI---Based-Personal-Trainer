@@ -150,6 +150,32 @@ exports.assignTrainer = asyncHandler(async (req, res, next) => {
     await global.cacheService.deletePattern(`user:${req.user.id}:*`);
     await global.cacheService.deletePattern(`trainer:${trainerId}:*`);
 
+    // Create notification for member
+    try {
+        const memberNotification = {
+            userId: req.user.id,
+            type: 'trainer_assigned',
+            title: 'Trainer Assigned',
+            message: `You have been assigned to trainer ${trainer.profile?.firstName || trainer.username}`,
+            metadata: { trainerId: trainerId },
+            read: false
+        };
+        await global.notificationQueue?.add(memberNotification);
+        
+        // Create notification for trainer
+        const trainerNotification = {
+            userId: trainerId,
+            type: 'client_assigned',
+            title: 'New Client Assigned',
+            message: `${member.profile?.firstName || member.username} has selected you as their trainer`,
+            metadata: { memberId: req.user.id },
+            read: false
+        };
+        await global.notificationQueue?.add(trainerNotification);
+    } catch (notifError) {
+        logger.error('Error creating notifications:', notifError);
+    }
+
     logger.info(`Member ${req.user.id} assigned to trainer ${trainerId}`);
 
     res.status(200).json({

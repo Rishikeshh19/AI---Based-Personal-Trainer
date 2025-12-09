@@ -533,7 +533,7 @@
                         <strong>Delete Account</strong><br>
                         <small>Permanently delete your account and all associated data. This action cannot be undone.</small>
                     </p>
-                    <button class="setting-button danger" onclick="if(confirm('Are you absolutely sure? This will permanently delete your account and all data.')) { deleteAccount(); }">Delete Account</button>
+                    <button class="setting-button danger" onclick="showConfirm('Are you absolutely sure? This will permanently delete your account and all data.', () => { deleteAccount(); })">Delete Account</button>
                 </div>
             </div>
         </div>
@@ -542,6 +542,7 @@
     <script src="../js/storage.js"></script>
     <script src="../js/notification-center.js"></script>
     <script src="../js/nav.js"></script>
+    <script src="../js/toast.js"></script>
     <script>
         // Settings Management
         const SETTINGS_KEY = 'app_settings';

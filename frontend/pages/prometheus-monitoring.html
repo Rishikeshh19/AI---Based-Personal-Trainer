@@ -397,6 +397,7 @@
     </div>
 
     <script src="../js/storage.js"></script>
+    <script src="../js/toast.js"></script>
     <script>
         let requestChart = null;
         let responseChart = null;
@@ -407,8 +408,8 @@
             const user = storage.getCurrentUser();
             
             if (!token || !user || user.role !== 'admin') {
-                alert('Access denied. Admin only.');
-                window.location.href = 'dashboard.html';
+                showToast('Access denied. Admin only.', 'error', 4000);
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
                 return;
             }
         })();

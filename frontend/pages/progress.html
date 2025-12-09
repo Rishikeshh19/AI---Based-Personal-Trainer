@@ -129,9 +129,11 @@
         <p>&copy; 2025 AI Personal Trainer Assistant. All rights reserved.</p>
     </div>
 
+    <script src="../js/clear-old-tokens.js"></script>
     <script src="../js/storage.js"></script>
     <script src="../js/nav.js"></script>
-        <script src="../js/api.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/toast.js"></script>
     <script src="http://localhost:8000/socket.io/socket.io.js"></script>
     <script src="../js/progress.js"></script>
 
@@ -157,6 +159,11 @@
     </style>
 
     <script>
+        // Global variables
+        let currentTimeRange = 'today';
+        let allWorkoutsData = [];
+        const API_URL = 'http://localhost:8000/api';
+
         // Initialize date picker with today's date
         const today = new Date().toISOString().split('T')[0];
         const datePickerInput = document.getElementById('progress-date-picker');
@@ -165,9 +172,16 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            const token = localStorage.getItem("token");
+            const token = storage.getToken();
             if (!token) {
                 window.location.href = "login.html";
+                return;
+            }
+
+            const currentUser = storage.getCurrentUser();
+            if (!currentUser) {
+                showToast('Please login to view progress', 'warning', 3000);
+                setTimeout(() => window.location.href = 'login.html', 1500);
                 return;
             }
 
@@ -178,12 +192,14 @@
                     timeRangeBtns.forEach(b => {
                         b.style.background = '#E5E7EB';
                         b.style.color = '#333';
+                        b.classList.remove('active');
                     });
                     this.style.background = '#1E40AF';
                     this.style.color = 'white';
+                    this.classList.add('active');
                     
-                    const range = this.getAttribute('data-range');
-                    loadProgressByTimeRange(range);
+                    currentTimeRange = this.getAttribute('data-range');
+                    loadProgressByTimeRange(currentTimeRange);
                 });
             });
 
@@ -209,73 +225,159 @@
             if (logoutLink) {
                 logoutLink.addEventListener("click", function (e) {
                     e.preventDefault();
-                    logout();
+                    storage.clearToken();
+                    storage.clearUser();
+                    window.location.href = 'login.html';
                 });
             }
 
             // Load initial data for today
-            loadProgressByTimeRange('today');
+            loadAllWorkoutsFromDatabase();
         });
+
+        // Fetch all workouts from database
+        async function loadAllWorkoutsFromDatabase() {
+            try {
+                const token = storage.getToken();
+                if (!token) {
+                    showToast('Please login to view progress', 'warning', 3000);
+                    return;
+                }
+
+                // Show loading state
+                document.getElementById('progress-list').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <div style="font-size: 48px; margin-bottom: 10px;">⏳</div>
+                        <p>Loading your workout data...</p>
+                    </div>
+                `;
+
+                const response = await fetch(`${API_URL}/progress?filter=all`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        showToast('Session expired. Please login again', 'warning', 3000);
+                        setTimeout(() => window.location.href = 'login.html', 1500);
+                        return;
+                    }
+                    throw new Error('Failed to fetch workouts');
+                }
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    allWorkoutsData = data.workouts || [];
+                    console.log(`Loaded ${allWorkoutsData.length} workouts from database`);
+                    
+                    // Load data for current time range
+                    loadProgressByTimeRange(currentTimeRange);
+                } else {
+                    throw new Error(data.message || 'Failed to load workouts');
+                }
+            } catch (error) {
+                console.error('Error loading workouts:', error);
+                showToast('Failed to load workout data', 'error', 5000);
+                
+                document.getElementById('progress-list').innerHTML = `
+                    <div class="empty-state">
+                        <h3>⚠️ Error loading data</h3>
+                        <p>${error.message}</p>
+                        <button onclick="loadAllWorkoutsFromDatabase()" style="margin-top: 15px; padding: 10px 20px; background: #1E40AF; color: white; border: none; border-radius: 6px; cursor: pointer;">Retry</button>
+                    </div>
+                `;
+            }
+        }
 
         async function loadProgressByTimeRange(range) {
             try {
-                const token = localStorage.getItem('token');
-                const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
-                
                 const now = new Date();
                 let filteredWorkouts = [];
+
+                const getStartOfDay = (date) => {
+                    const d = new Date(date);
+                    d.setHours(0, 0, 0, 0);
+                    return d;
+                };
 
                 const getStartOfWeek = (date) => {
                     const d = new Date(date);
                     const day = d.getDay();
                     const diff = d.getDate() - day;
-                    return new Date(d.setDate(diff));
+                    const weekStart = new Date(d.setDate(diff));
+                    weekStart.setHours(0, 0, 0, 0);
+                    return weekStart;
                 };
 
                 const getStartOfMonth = (date) => {
-                    return new Date(date.getFullYear(), date.getMonth(), 1);
+                    const monthStart = new Date(date.getFullYear(), date.getMonth(), 1);
+                    monthStart.setHours(0, 0, 0, 0);
+                    return monthStart;
                 };
+
+                const todayStart = getStartOfDay(now);
 
                 switch(range) {
                     case 'today':
-                        filteredWorkouts = workouts.filter(w => {
+                        filteredWorkouts = allWorkoutsData.filter(w => {
                             const wDate = new Date(w.date);
-                            return wDate.toDateString() === now.toDateString();
+                            return getStartOfDay(wDate).getTime() === todayStart.getTime();
                         });
                         break;
                     case 'week':
                         const weekStart = getStartOfWeek(now);
-                        filteredWorkouts = workouts.filter(w => {
+                        filteredWorkouts = allWorkoutsData.filter(w => {
                             const wDate = new Date(w.date);
                             return wDate >= weekStart && wDate <= now;
                         });
                         break;
                     case 'month':
                         const monthStart = getStartOfMonth(now);
-                        filteredWorkouts = workouts.filter(w => {
+                        filteredWorkouts = allWorkoutsData.filter(w => {
                             const wDate = new Date(w.date);
                             return wDate >= monthStart && wDate <= now;
                         });
                         break;
                     case 'all':
-                        filteredWorkouts = workouts;
+                        filteredWorkouts = allWorkoutsData;
                         break;
                 }
 
+                console.log(`Filtered ${filteredWorkouts.length} workouts for range: ${range}`);
                 displayProgressMetrics(filteredWorkouts, range);
                 displayProgressList(filteredWorkouts);
             } catch (error) {
                 console.error('Error loading progress data:', error);
+                showToast('Error filtering workout data', 'error', 4000);
             }
         }
 
         function displayProgressMetrics(workouts, range) {
             const totalWorkouts = workouts.length;
             const totalCalories = workouts.reduce((sum, w) => sum + (w.totalCalories || 0), 0);
-            const totalMinutes = workouts.reduce((sum, w) => sum + (w.duration || 0), 0);
-            const avgSets = workouts.length > 0 
-                ? (workouts.reduce((sum, w) => sum + (w.sets || 0), 0) / workouts.length).toFixed(1)
-                : 0;
+            const totalMinutes = workouts.reduce((sum, w) => sum + (w.totalDuration || 0), 0);
+            
+            // Calculate average sets across all exercises
+            let totalSets = 0;
+            let totalReps = 0;
+            let exerciseCount = 0;
+            
+            workouts.forEach(w => {
+                if (w.exercises && Array.isArray(w.exercises)) {
+                    w.exercises.forEach(ex => {
+                        totalSets += ex.sets || 0;
+                        totalReps += ex.reps || 0;
+                        exerciseCount++;
+                    });
+                }
+            });
+
+            const avgSets = exerciseCount > 0 ? (totalSets / exerciseCount).toFixed(1) : 0;
+            const avgReps = exerciseCount > 0 ? (totalReps / exerciseCount).toFixed(1) : 0;
 
             const hours = Math.floor(totalMinutes / 60);
             const mins = totalMinutes % 60;
@@ -296,9 +398,9 @@
             };
 
             document.getElementById('metric-workouts-label').textContent = `in ${labels[range]}`;
-            document.getElementById('metric-calories-label').textContent = `kcal burned (${labels[range]})`;
-            document.getElementById('metric-time-label').textContent = `training (${labels[range]})`;
-            document.getElementById('metric-avg-reps').textContent = `avg sets (${labels[range]})`;
+            document.getElementById('metric-calories-label').textContent = `kcal burned`;
+            document.getElementById('metric-time-label').textContent = `training time`;
+            document.getElementById('metric-avg-reps').textContent = `avg ${avgReps} reps per set`;
         }
 
         function displayProgressList(workouts) {
@@ -308,8 +410,10 @@
             if (!workouts || workouts.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
+                        <div style="font-size: 64px; margin-bottom: 15px;">📊</div>
                         <h3>No workouts recorded</h3>
                         <p>Start logging workouts to see your detailed progress</p>
+                        <a href="muscle-workout.html" style="display: inline-block; margin-top: 15px; padding: 12px 24px; background: #1E40AF; color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">Start a Workout</a>
                     </div>
                 `;
                 countSpan.textContent = '0 workouts';
@@ -333,40 +437,71 @@
                 });
                 const formattedTime = date.toLocaleTimeString('en-US', {
                     hour: '2-digit',
-                    minute: '2-digit'
+                    minute: '2-digit',
+                    hour12: true
                 });
 
-                const muscles = Array.isArray(workout.exercises)
-                    ? workout.exercises.map(e => e.name || e.muscle || e).join(', ')
-                    : (workout.muscle || 'N/A');
+                // Extract exercise names
+                let exercisesList = '';
+                if (workout.exercises && Array.isArray(workout.exercises)) {
+                    const exerciseNames = workout.exercises.map(e => e.name || 'Exercise').slice(0, 3);
+                    exercisesList = exerciseNames.join(', ');
+                    if (workout.exercises.length > 3) {
+                        exercisesList += ` +${workout.exercises.length - 3} more`;
+                    }
+                } else {
+                    exercisesList = workout.notes || 'Workout completed';
+                }
+
+                // Calculate total sets and reps
+                let totalSets = 0;
+                let totalReps = 0;
+                if (workout.exercises && Array.isArray(workout.exercises)) {
+                    workout.exercises.forEach(ex => {
+                        totalSets += ex.sets || 0;
+                        totalReps += ex.reps || 0;
+                    });
+                }
+
+                // Intensity color
+                const intensityColors = {
+                    'low': '#43e97b',
+                    'moderate': '#4facfe',
+                    'high': '#f5576c'
+                };
+                const intensityColor = intensityColors[workout.intensity] || '#1E40AF';
 
                 html += `
-                    <div style="background: white; border-left: 4px solid #1E40AF; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <div style="background: white; border-left: 4px solid ${intensityColor}; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(0,0,0,0.12)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.08)';">
                         <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 12px;">
                             <div>
-                                <h4 style="margin: 0 0 5px 0; color: #1E40AF; font-size: 16px;">${formattedDate}</h4>
+                                <h4 style="margin: 0 0 5px 0; color: #1E40AF; font-size: 16px; font-weight: 700;">📅 ${formattedDate}</h4>
                                 <p style="margin: 0; color: #999; font-size: 13px;">⏰ ${formattedTime}</p>
                             </div>
-                            <span style="background: #1E40AF; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">Completed</span>
+                            <span style="background: ${intensityColor}; color: white; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: capitalize;">${workout.intensity || 'Moderate'}</span>
+                        </div>
+                        <div style="margin: 12px 0; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                            <p style="margin: 0; color: #333; font-size: 14px; font-weight: 500;">💪 ${exercisesList}</p>
                         </div>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 12px;">
-                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
-                                <p style="margin: 0; color: #666; font-size: 12px;">Muscle Groups</p>
-                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 600;">${muscles}</p>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; text-align: center;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">⏱️ Duration</p>
+                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 700; font-size: 16px;">${workout.totalDuration || 0} min</p>
                             </div>
-                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
-                                <p style="margin: 0; color: #666; font-size: 12px;">Duration</p>
-                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 600;">${workout.duration || 0} min</p>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; text-align: center;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">🔥 Calories</p>
+                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 700; font-size: 16px;">${workout.totalCalories || 0} kcal</p>
                             </div>
-                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
-                                <p style="margin: 0; color: #666; font-size: 12px;">Calories Burned</p>
-                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 600;">${workout.totalCalories || 0} kcal</p>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; text-align: center;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">📊 Sets</p>
+                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 700; font-size: 16px;">${totalSets}</p>
                             </div>
-                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px;">
-                                <p style="margin: 0; color: #666; font-size: 12px;">Sets × Reps</p>
-                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 600;">${workout.sets || 0} × ${workout.reps || 0}</p>
+                            <div style="background: #f8f9fa; padding: 10px; border-radius: 6px; text-align: center;">
+                                <p style="margin: 0; color: #666; font-size: 12px;">🔢 Total Reps</p>
+                                <p style="margin: 5px 0 0 0; color: #1E40AF; font-weight: 700; font-size: 16px;">${totalReps}</p>
                             </div>
                         </div>
+                        ${workout.notes ? `<div style="margin-top: 12px; padding: 10px; background: #fff3cd; border-radius: 6px; border-left: 3px solid #ffc107;"><p style="margin: 0; color: #856404; font-size: 13px;">📝 ${workout.notes}</p></div>` : ''}
                     </div>
                 `;
             });
@@ -376,12 +511,12 @@
 
         async function loadWorkoutsByDate(selectedDate) {
             try {
-                const workouts = JSON.parse(localStorage.getItem('workouts') || '[]');
-                
-                const selectedDateObj = new Date(selectedDate);
-                const workoutsOnDate = workouts.filter(w => {
+                const selectedDateObj = new Date(selectedDate + 'T00:00:00');
+                const workoutsOnDate = allWorkoutsData.filter(w => {
                     const wDate = new Date(w.date);
-                    return wDate.toDateString() === selectedDateObj.toDateString();
+                    const wDateStart = new Date(wDate.getFullYear(), wDate.getMonth(), wDate.getDate());
+                    const selectedStart = new Date(selectedDateObj.getFullYear(), selectedDateObj.getMonth(), selectedDateObj.getDate());
+                    return wDateStart.getTime() === selectedStart.getTime();
                 });
 
                 const container = document.getElementById('date-specific-workouts');
@@ -394,29 +529,41 @@
 
                 if (!workoutsOnDate || workoutsOnDate.length === 0) {
                     container.innerHTML = `
-                        <p style="color: #999;"><strong>${selectedDateFormatted}</strong></p>
-                        <p style="color: #999;">No workouts recorded on this date</p>
+                        <p style="color: #999; margin: 0 0 8px 0;"><strong>${selectedDateFormatted}</strong></p>
+                        <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; text-align: center;">
+                            <p style="color: #999; margin: 0;">📭 No workouts recorded on this date</p>
+                        </div>
                     `;
                     return;
                 }
 
-                let html = `<p style="margin: 0 0 10px 0; font-weight: 600; color: #1E40AF;">${selectedDateFormatted}</p>`;
+                let html = `<p style="margin: 0 0 12px 0; font-weight: 700; color: #1E40AF; font-size: 15px;">📅 ${selectedDateFormatted}</p>`;
                 
-                workoutsOnDate.forEach(workout => {
+                workoutsOnDate.forEach((workout, index) => {
                     const time = new Date(workout.date).toLocaleTimeString('en-US', {
                         hour: '2-digit',
                         minute: '2-digit'
                     });
 
-                    const muscles = Array.isArray(workout.exercises)
-                        ? workout.exercises.map(e => e.name || e.muscle || e).join(', ')
-                        : (workout.muscle || 'N/A');
+                    let exercisesList = '';
+                    if (workout.exercises && Array.isArray(workout.exercises)) {
+                        exercisesList = workout.exercises.map(e => e.name || 'Exercise').join(', ');
+                    } else {
+                        exercisesList = workout.notes || 'Workout';
+                    }
 
                     html += `
-                        <div style="background: #F0F4F8; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
-                            <p style="margin: 0 0 5px 0; font-weight: 600;">⏰ ${time}</p>
-                            <p style="margin: 3px 0; font-size: 13px;">${muscles}</p>
-                            <p style="margin: 3px 0; font-size: 13px;">${workout.duration || 0} min | ${workout.totalCalories || 0} kcal</p>
+                        <div style="background: #F0F4F8; padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 3px solid #1E40AF;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                <p style="margin: 0; font-weight: 600; color: #1E40AF; font-size: 14px;">⏰ ${time}</p>
+                                <span style="background: #1E40AF; color: white; padding: 3px 8px; border-radius: 12px; font-size: 11px;">#${index + 1}</span>
+                            </div>
+                            <p style="margin: 4px 0; font-size: 13px; color: #333;">💪 ${exercisesList}</p>
+                            <div style="display: flex; gap: 12px; margin-top: 6px;">
+                                <span style="font-size: 12px; color: #666;">⏱️ ${workout.totalDuration || 0} min</span>
+                                <span style="font-size: 12px; color: #666;">🔥 ${workout.totalCalories || 0} kcal</span>
+                                <span style="font-size: 12px; color: #666; text-transform: capitalize;">📊 ${workout.intensity || 'Moderate'}</span>
+                            </div>
                         </div>
                     `;
                 });
@@ -424,7 +571,7 @@
                 container.innerHTML = html;
             } catch (error) {
                 console.error('Error loading date-specific workouts:', error);
-                document.getElementById('date-specific-workouts').innerHTML = '<p style="color: red;">Error loading data</p>';
+                document.getElementById('date-specific-workouts').innerHTML = '<p style="color: red;">⚠️ Error loading data</p>';
             }
         }
     </script>

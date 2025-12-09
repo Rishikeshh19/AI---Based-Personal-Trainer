@@ -521,6 +521,7 @@
     <script src="../js/nav.js"></script>
         <script src="../js/gif_database.js"></script>
     <script src="../js/exercises.js"></script>
+    <script src="../js/toast.js"></script>
     <script>
         let selectedMuscles = new Set();
         let selectedExercises = new Set();
@@ -536,8 +537,8 @@
             const currentUser = storage.getCurrentUser();
             // Check if member has trainer
             if (currentUser && currentUser.role === 'member' && !currentUser.trainerId) {
-                alert('You must select a trainer before logging workouts. Redirecting to trainer selection...');
-                window.location.href = 'select-trainer.html';
+                showToast('You must select a trainer before logging workouts. Redirecting to trainer selection...', 'warning', 4000);
+                setTimeout(() => window.location.href = 'select-trainer.html', 1500);
                 return;
             }
 
@@ -750,14 +751,14 @@
 
         function startWorkout() {
             if (selectedExercises.size === 0) {
-                alert('Please select at least one exercise to start your workout');
+                showToast('Please select at least one exercise to start your workout', 'warning', 4000);
                 return;
             }
 
             const currentUser = storage.getCurrentUser();
             if (!currentUser) {
-                alert('Please login to start workouts');
-                window.location.href = 'login.html';
+                showToast('Please login to start workouts', 'warning', 4000);
+                setTimeout(() => window.location.href = 'login.html', 1500);
                 return;
             }
 
@@ -805,7 +806,7 @@
             });
 
             if (allSelectedExercises.length === 0) {
-                alert('Please select at least one exercise');
+                showToast('Please select at least one exercise', 'warning', 4000);
                 return;
             }
 

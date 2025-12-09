@@ -181,10 +181,18 @@ window.addEventListener('DOMContentLoaded', () => {
     const startNewWeekBtn = document.getElementById('start-new-week-btn');
     if (startNewWeekBtn) {
         startNewWeekBtn.addEventListener('click', () => {
-            if (confirm('Start a new week? This will reset your "Weekly Statistics" view to zero. Your historical data remains safe.')) {
-                localStorage.setItem(`weeklyResetDate_${currentUser.id}`, new Date().toISOString());
-                fetchAndRenderProgress(currentUser);
-                alert('Weekly stats reset!');
+            if (typeof showConfirm === 'function') {
+                showConfirm('Start a new week? This will reset your "Weekly Statistics" view to zero. Your historical data remains safe.', () => {
+                    localStorage.setItem(`weeklyResetDate_${currentUser.id}`, new Date().toISOString());
+                    fetchAndRenderProgress(currentUser);
+                    showToast('Weekly stats reset!', 'success', 3000);
+                });
+            } else {
+                if (confirm('Start a new week? This will reset your "Weekly Statistics" view to zero. Your historical data remains safe.')) {
+                    localStorage.setItem(`weeklyResetDate_${currentUser.id}`, new Date().toISOString());
+                    fetchAndRenderProgress(currentUser);
+                    alert('Weekly stats reset!');
+                }
             }
         });
     }

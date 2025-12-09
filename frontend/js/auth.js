@@ -52,13 +52,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (data.token) {
                     localStorage.setItem("token", data.token);
-                    window.location.href = "../pages/dashboard.html";
+                    
+                    // Store user data if provided
+                    if (data.user) {
+                        localStorage.setItem("user", JSON.stringify(data.user));
+                    }
+                    
+                    // Redirect based on role
+                    const userRole = data.user?.role || 'member';
+                    
+                    if (userRole === 'admin') {
+                        window.location.href = "../pages/monitoring-dashboard.html";
+                    } else if (userRole === 'trainer') {
+                        window.location.href = "../pages/dashboard.html";
+                    } else {
+                        window.location.href = "../pages/dashboard.html";
+                    }
                 } else {
-                    alert(data.detail || data.message || "Login failed");
+                    if (typeof showToast === 'function') {
+                        showToast(data.detail || data.message || "Login failed", 'error', 5000);
+                    } else {
+                        alert(data.detail || data.message || "Login failed");
+                    }
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert(error.message || "Login failed. Backend may not be running.");
+                if (typeof showToast === 'function') {
+                    showToast(error.message || "Login failed. Backend may not be running.", 'error', 5000);
+                } else {
+                    alert(error.message || "Login failed. Backend may not be running.");
+                }
             } finally {
                 // Re-enable button
                 submitBtn.disabled = false;
@@ -92,14 +115,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 const data = await response.json();
 
                 if (data.success) {
-                    alert("Signup successful! Please log in.");
-                    window.location.href = "login.html";
+                    if (typeof showToast === 'function') {
+                        showToast("Signup successful! Please log in.", 'success', 4000);
+                    } else {
+                        alert("Signup successful! Please log in.");
+                    }
+                    setTimeout(() => window.location.href = "login.html", 1500);
                 } else {
-                    alert(data.detail || data.message || "Signup failed");
+                    if (typeof showToast === 'function') {
+                        showToast(data.detail || data.message || "Signup failed", 'error', 5000);
+                    } else {
+                        alert(data.detail || data.message || "Signup failed");
+                    }
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert(error.message || "Signup failed. Backend may not be running.");
+                if (typeof showToast === 'function') {
+                    showToast(error.message || "Signup failed. Backend may not be running.", 'error', 5000);
+                } else {
+                    alert(error.message || "Signup failed. Backend may not be running.");
+                }
             } finally {
                 // Re-enable button
                 submitBtn.disabled = false;

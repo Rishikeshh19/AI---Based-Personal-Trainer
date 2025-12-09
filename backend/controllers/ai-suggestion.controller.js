@@ -3,7 +3,15 @@ const User = require('../models/User');
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const logger = require('../utils/logger');
-const geminiService = require('../config/gemini.config');
+// Try SambaNova first, fallback to Gemini if not available
+let aiService;
+try {
+    aiService = require('../config/sambanova.config');
+    logger.info('✅ Using SambaNova AI service');
+} catch (error) {
+    aiService = require('../config/gemini.config');
+    logger.info('✅ Using Gemini AI service');
+}
 
 // @desc    Get AI workout suggestions
 // @route   GET /api/ai-suggestions/workout
@@ -328,8 +336,8 @@ exports.getPersonalizedSuggestions = asyncHandler(async (req, res, next) => {
 
         logger.info(`Generating personalized AI suggestions for fitness level: ${fitnessLevel}, goal: ${fitnessGoal}`);
         
-        // Call Gemini API
-        const aiSuggestions = await geminiService.generateContent(prompt);
+        // Call AI API (SambaNova or Gemini)
+        const aiSuggestions = await aiService.generateContent(prompt);
 
         // Parse and structure the response
         const structuredSuggestions = parseAISuggestions(aiSuggestions, fitnessLevel, fitnessGoal);
@@ -341,7 +349,7 @@ exports.getPersonalizedSuggestions = asyncHandler(async (req, res, next) => {
                 structured: structuredSuggestions,
                 fitnessLevel,
                 fitnessGoal,
-                source: 'gemini-ai',
+                source: 'sambanova-ai',
                 generatedAt: new Date(),
             }
         });

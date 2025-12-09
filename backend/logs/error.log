@@ -1750,3 +1750,13 @@ Please retry in 10.340996356s. [{"@type":"type.googleapis.com/google.rpc.Help","
   "ip": "::1",
   "user": "unauthenticated"
 }
+2025-12-09 19:50:33 [[31merror[39m]: AI Suggestions Generation Error: Failed to generate content: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
+2025-12-09 19:56:59 [[31merror[39m]: Uncaught Exception: listen EADDRINUSE: address already in use :::8000
+{
+  "code": "EADDRINUSE",
+  "errno": -4091,
+  "syscall": "listen",
+  "address": "::",
+  "port": 8000,
+  "stack": "Error: listen EADDRINUSE: address already in use :::8000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (C:\\Users\\Rishikesh\\Downloads\\Code\\AI---Based-Personal-Trainer\\backend\\app.js:146:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}

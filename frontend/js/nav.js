@@ -21,11 +21,9 @@ const NAV_ITEMS = {
         { id: 'profile-item', href: 'profile.html', text: 'Profile', icon: 'fas fa-user' },
     ],
     trainer_shared: [
-        { id: 'settings-item', href: 'settings.html', text: 'Settings', icon: 'fas fa-cog', className: 'nav-right' },
         { id: 'logout-item', href: '#', text: 'Logout', icon: 'fas fa-sign-out-alt', isLogout: true, className: 'nav-right logout-btn' }
     ],
     shared: [
-        { id: 'settings-item', href: 'settings.html', text: 'Settings', icon: 'fas fa-cog', className: 'nav-right' },
         { id: 'logout-item', href: '#', text: 'Logout', icon: 'fas fa-sign-out-alt', isLogout: true, className: 'nav-right logout-btn' }
     ],
     auth: [

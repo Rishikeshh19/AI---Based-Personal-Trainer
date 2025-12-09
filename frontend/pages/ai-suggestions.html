@@ -202,30 +202,41 @@
         }
         
         .suggestion-content {
-            color: #475569;
-            font-size: 14px;
-            line-height: 1.8;
+            color: #1E293B;
+            font-size: 15px;
+            line-height: 1.9;
             white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: 'Urbanist', sans-serif;
         }
         
         .suggestion-content p {
-            margin: 12px 0;
+            margin: 15px 0;
+            color: #334155;
         }
         
         .suggestion-content ul,
         .suggestion-content ol {
-            margin: 12px 0;
-            padding-left: 25px;
+            margin: 15px 0;
+            padding-left: 28px;
+            line-height: 1.9;
         }
         
         .suggestion-content li {
-            margin: 8px 0;
+            margin: 10px 0;
             color: #1E293B;
+            font-size: 14px;
         }
         
         .suggestion-content strong {
             color: #1E40AF;
-            font-weight: 600;
+            font-weight: 700;
+        }
+        
+        .suggestion-content br {
+            display: block;
+            content: "";
+            margin: 8px 0;
         }
         
         .ai-response-content {
@@ -841,52 +852,72 @@
             // If no suggestions, show error
             if (!suggestions || suggestions.trim() === '') {
                 return `<div class="suggestion-card">
-                    <p style="color: #EF4444;">❌ No suggestions generated. Please try again.</p>
+                    <p style="color: #EF4444; font-size: 16px; text-align: center; padding: 20px;">
+                        ❌ No suggestions generated. Please try again or check your connection.
+                    </p>
                 </div>`;
             }
+
+            console.log('Building suggestions HTML with data:', { level, goal, suggestionLength: suggestions.length });
 
             // Format the AI response as beautiful HTML sections
             let html = `<div class="ai-response-content">`;
             
             // Split by markdown headers (handles both **Header:** and **Header**)
-            const sections = suggestions.split(/\*\*([^*\n]+)\*\*/g).filter(s => s.trim());
+            const sections = suggestions.split(/\*\*([^*]+)\*\*/g).filter(s => s && s.trim());
             
-            // If no sections found, display as single formatted text block
+            console.log('Sections found:', sections.length);
+            
+            // If no markdown sections found, display as single formatted text block
             if (sections.length <= 1) {
                 html += `
                     <div class="suggestion-card">
-                        <div class="suggestion-content" style="white-space: pre-wrap; line-height: 1.8;">
-                            ${escapeHtml(suggestions)}
+                        <h4 class="suggestion-title">📋 Your Personalized Plan</h4>
+                        <div class="suggestion-content">
+                            ${suggestions.replace(/\n/g, '<br>')}
                         </div>
                     </div>
                 `;
             } else {
                 // Process sections in pairs (title, content)
                 for (let i = 0; i < sections.length; i += 2) {
-                    if (i + 1 >= sections.length) break;
+                    if (i + 1 >= sections.length) {
+                        // Handle odd section (title without content)
+                        if (sections[i].trim()) {
+                            html += `
+                                <div class="suggestion-card">
+                                    <h4 class="suggestion-title">📝 ${sections[i].trim()}</h4>
+                                </div>
+                            `;
+                        }
+                        break;
+                    }
                     
-                    const title = sections[i].trim();
+                    const title = sections[i].trim().replace(/[:：]\s*$/, '');
                     const content = sections[i + 1].trim();
                     
-                    if (!title || !content) continue;
+                    if (!title && !content) continue;
                     
                     // Determine icon based on section title
                     let icon = '📝';
-                    if (title.toLowerCase().includes('workout') || title.toLowerCase().includes('exercise')) icon = '🏋️';
-                    if (title.toLowerCase().includes('nutrition') || title.toLowerCase().includes('meal') || title.toLowerCase().includes('diet')) icon = '🍽️';
-                    if (title.toLowerCase().includes('recovery') || title.toLowerCase().includes('sleep') || title.toLowerCase().includes('lifestyle')) icon = '😴';
-                    if (title.toLowerCase().includes('tracking') || title.toLowerCase().includes('progress') || title.toLowerCase().includes('measure')) icon = '📈';
-                    if (title.toLowerCase().includes('tip') || title.toLowerCase().includes('safety') || title.toLowerCase().includes('important')) icon = '⚠️';
-                    if (title.toLowerCase().includes('goal') || title.toLowerCase().includes('target')) icon = '🎯';
-                    if (title.toLowerCase().includes('profile') || title.toLowerCase().includes('analysis')) icon = '📊';
-                    if (title.toLowerCase().includes('plan') || title.toLowerCase().includes('schedule')) icon = '📅';
-                    if (title.toLowerCase().includes('motivation') || title.toLowerCase().includes('mindset') || title.toLowerCase().includes('success')) icon = '💪';
+                    const lowerTitle = title.toLowerCase();
+                    if (lowerTitle.includes('workout') || lowerTitle.includes('exercise') || lowerTitle.includes('training')) icon = '🏋️';
+                    if (lowerTitle.includes('nutrition') || lowerTitle.includes('meal') || lowerTitle.includes('diet') || lowerTitle.includes('eating')) icon = '🍽️';
+                    if (lowerTitle.includes('recovery') || lowerTitle.includes('sleep') || lowerTitle.includes('rest') || lowerTitle.includes('lifestyle')) icon = '😴';
+                    if (lowerTitle.includes('tracking') || lowerTitle.includes('progress') || lowerTitle.includes('measure') || lowerTitle.includes('monitoring')) icon = '📈';
+                    if (lowerTitle.includes('tip') || lowerTitle.includes('safety') || lowerTitle.includes('important') || lowerTitle.includes('caution')) icon = '⚠️';
+                    if (lowerTitle.includes('goal') || lowerTitle.includes('target') || lowerTitle.includes('objective')) icon = '🎯';
+                    if (lowerTitle.includes('profile') || lowerTitle.includes('analysis') || lowerTitle.includes('assessment')) icon = '📊';
+                    if (lowerTitle.includes('plan') || lowerTitle.includes('schedule') || lowerTitle.includes('routine')) icon = '📅';
+                    if (lowerTitle.includes('motivation') || lowerTitle.includes('mindset') || lowerTitle.includes('success') || lowerTitle.includes('commitment')) icon = '💪';
+                    if (lowerTitle.includes('hydration') || lowerTitle.includes('water')) icon = '💧';
+                    if (lowerTitle.includes('supplement') || lowerTitle.includes('vitamin')) icon = '💊';
                     
                     html += `
                         <div class="suggestion-card">
-                            <h4 class="suggestion-title">${icon} ${escapeHtml(title)}</h4>
-                            <div class="suggestion-content" style="white-space: pre-wrap; line-height: 1.8;">
-                                ${escapeHtml(content)}
+                            <h4 class="suggestion-title">${icon} ${title}</h4>
+                            <div class="suggestion-content">
+                                ${content.replace(/\n/g, '<br>')}
                             </div>
                         </div>
                     `;
@@ -901,7 +932,7 @@
                     <p><strong>Level:</strong> ${level.charAt(0).toUpperCase() + level.slice(1)} | 
                     <strong>Goal:</strong> ${goal.charAt(0).toUpperCase() + goal.slice(1).replace(/-/g, ' ')}</p>
                     <p style="font-size: 12px; color: var(--text-light);">
-                        ${data.source === 'fallback' ? '⚠️ Generated using fallback system (AI quota exceeded)' : 'Generated by AI'} 
+                        ${data.source === 'fallback' ? '⚠️ Generated using fallback system (AI quota exceeded)' : '✨ Generated by AI'} 
                         on ${new Date().toLocaleString()}
                     </p>
                 </div>
@@ -911,9 +942,13 @@
         }
         
         function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+            // Escape HTML special characters but preserve formatting
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         function resetForm() {

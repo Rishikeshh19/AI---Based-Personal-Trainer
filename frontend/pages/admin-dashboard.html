@@ -545,34 +545,21 @@
                     </iframe>
                 </div>
             </div>
-
-            <!-- Database Operations -->
-            <div class="card">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                    <i class="fas fa-database" style="color: #06B6D4; font-size: 24px;"></i>
-                    <h3 style="margin: 0;">Database Operations</h3>
-                </div>
-                <div style="border-radius: 12px; overflow: hidden; border: 2px solid #E5E7EB;">
-                    <iframe
-                        src="http://localhost:9090/graph?g0.expr=rate(database_operations_total[5m])&g0.tab=0&g0.range_input=1h"
-                        width="100%" height="350" frameborder="0" style="display: block;">
-                    </iframe>
-                </div>
-                <div style="margin-top: 15px; padding: 15px; background: #F3F4F6; border-radius: 8px;">
-                    <p style="margin: 0; font-size: 14px; color: #6B7280;">
-                        <i class="fas fa-info-circle" style="color: #3B82F6;"></i>
-                        <strong>Monitoring Coverage:</strong> HTTP requests, response times, active users, workouts,
-                        errors, system resources, and database operations.
-                    </p>
-                    <div style="margin-top: 10px; text-align: right;">
-                        <a href="http://localhost:9090" target="_blank"
-                            style="color: #E6522C; text-decoration: none; font-size: 14px;">
-                            <i class="fas fa-external-link-alt"></i> Open Full Prometheus
-                        </a>
-                    </div>
+            <div style="margin-top: 15px; padding: 15px; background: #F3F4F6; border-radius: 8px;">
+                <p style="margin: 0; font-size: 14px; color: #6B7280;">
+                    <i class="fas fa-info-circle" style="color: #3B82F6;"></i>
+                    <strong>Monitoring Coverage:</strong> HTTP requests, response times, active users, API errors, and
+                    system resources.
+                </p>
+                <div style="margin-top: 10px; text-align: right;">
+                    <a href="http://localhost:9090" target="_blank"
+                        style="color: #E6522C; text-decoration: none; font-size: 14px;">
+                        <i class="fas fa-external-link-alt"></i> Open Full Prometheus
+                    </a>
                 </div>
             </div>
         </div>
+    </div>
 
     </div>
 

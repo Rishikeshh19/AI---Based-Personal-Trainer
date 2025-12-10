@@ -10,39 +10,6 @@
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
     <style>
-        .stats-overview {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .stat-card {
-            background: #FFFFFF;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(30, 64, 175, 0.1);
-            text-align: center;
-            border: 2px solid #E0F2FE;
-        }
-
-        .stat-card .icon {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-
-        .stat-card .value {
-            font-size: 28px;
-            font-weight: bold;
-            color: #1E40AF;
-            margin: 10px 0;
-        }
-
-        .stat-card .label {
-            color: #64748B;
-            font-size: 14px;
-        }
-
         .clients-section {
             margin: 30px 0;
         }
@@ -249,30 +216,7 @@
 
     <main>
         <h1>My Clients</h1>
-        <p style="color: #666; margin-bottom: 30px;">Monitor and analyze your clients' progress</p>
-
-        <div class="stats-overview">
-            <div class="stat-card">
-                <div class="icon">Clients</div>
-                <div class="value" id="totalClients">0</div>
-                <div class="label">Active Clients</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">Strength</div>
-                <div class="value" id="totalWorkouts">0</div>
-                <div class="label">Total Workouts</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">Energy</div>
-                <div class="value" id="totalCalories">0</div>
-                <div class="label">Calories Burned</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">Performance</div>
-                <div class="value" id="avgStreak">0</div>
-                <div class="label">Avg. Streak</div>
-            </div>
-        </div>
+        <p style="color: #666; margin-bottom: 30px;">Select a client to view their individual progress</p>
 
         <div class="clients-section">
             <div class="clients-layout">
@@ -285,7 +229,7 @@
 
                 <div class="client-details-panel" id="clientDetailsPanel">
                     <div class="client-details-empty">
-                        <p>Select a client to view details</p>
+                        <p>👈 Select a client to view their details</p>
                     </div>
                 </div>
             </div>
@@ -336,27 +280,6 @@
                 const response = await api.trainer.getAssignedClients();
                 const clients = response.data || [];
 
-                // Update overview stats
-                let totalWorkouts = 0;
-                let totalCalories = 0;
-
-                for (const client of clients) {
-                    try {
-                        const clientDetails = await api.trainer.getClientDetails(client._id);
-                        totalWorkouts += clientDetails.data.stats.totalWorkouts;
-                        totalCalories += clientDetails.data.stats.totalCalories;
-                    } catch (error) {
-                        console.error('Error fetching client details:', error);
-                    }
-                }
-
-                const avgStreak = 0; // Can be calculated from individual stats
-
-                document.getElementById('totalClients').textContent = clients.length;
-                document.getElementById('totalWorkouts').textContent = totalWorkouts;
-                document.getElementById('totalCalories').textContent = totalCalories.toLocaleString();
-                document.getElementById('avgStreak').textContent = avgStreak;
-
                 if (clients.length === 0) {
                     container.innerHTML = `
                         <div class="empty-clients">
@@ -381,6 +304,8 @@
                         const card = document.createElement('div');
                         card.className = 'client-card';
                         card.dataset.clientId = client._id;
+                        card.style.cursor = 'pointer';
+                        card.style.transition = 'all 0.3s ease';
 
                         card.innerHTML = `
                             <div class="client-header">
@@ -420,6 +345,18 @@
                         `;
 
                         card.addEventListener('click', function () {
+                            // Remove selection from all cards
+                            document.querySelectorAll('.client-card').forEach(c => {
+                                c.style.borderLeft = '4px solid #1E40AF';
+                                c.style.transform = 'none';
+                                c.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                            });
+
+                            // Highlight selected card
+                            this.style.borderLeft = '4px solid #10B981';
+                            this.style.transform = 'scale(1.02)';
+                            this.style.boxShadow = '0 4px 16px rgba(16, 185, 129, 0.2)';
+
                             showClientDetails(client, clientDetails.data);
                         });
 

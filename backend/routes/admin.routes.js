@@ -9,6 +9,7 @@ router.use(protect);
 router.use(checkAdminRole);
 
 // User management routes
+router.post('/users', adminController.createUser);
 router.get('/users', adminController.getAllUsers);
 router.get('/users/:userId', adminController.getUserDetails);
 router.put('/users/:userId', adminController.updateUser);

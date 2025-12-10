@@ -1,12 +1,81 @@
 const User = require('../models/User');
 const Workout = require('../models/Workout');
 
+// Create new user (admin only)
+exports.createUser = async (req, res) => {
+    try {
+        const { name, email, password, role } = req.body;
+
+        // Validate required fields
+        if (!name || !email || !password || !role) {
+            return res.status(400).json({
+                success: false,
+                message: 'Name, email, password, and role are required'
+            });
+        }
+
+        // Validate role
+        const validRoles = ['user', 'member', 'trainer', 'admin'];
+        if (!validRoles.includes(role)) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid role. Must be one of: ${validRoles.join(', ')}`
+            });
+        }
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: 'User with this email already exists'
+            });
+        }
+
+        // Generate username from email (before @)
+        const username = email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '');
+
+        // Split name into first and last
+        const nameParts = name.trim().split(' ');
+        const firstName = nameParts[0];
+        const lastName = nameParts.slice(1).join(' ') || firstName;
+
+        // Create user
+        const user = await User.create({
+            username,
+            email,
+            password, // Will be hashed by the User model pre-save hook
+            role,
+            status: 'active',
+            profile: {
+                firstName,
+                lastName
+            }
+        });
+
+        res.status(201).json({
+            success: true,
+            message: 'User created successfully',
+            user: {
+                _id: user._id,
+                name: `${firstName} ${lastName}`,
+                email: user.email,
+                role: user.role,
+                createdAt: user.createdAt
+            }
+        });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ success: false, message: error.message || 'Error creating user' });
+    }
+};
+
 // Delete user (admin only)
 exports.deleteUser = async (req, res) => {
     try {
         const { userId } = req.params;
         const user = await User.findByIdAndDelete(userId);
-        
+
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
@@ -26,14 +95,25 @@ exports.deleteUser = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
     try {
         const users = await User.find()
-            .select('_id name email role createdAt')
+            .select('_id username email role createdAt profile.firstName profile.lastName')
             .sort({ createdAt: -1 })
             .limit(100);
 
+        // Transform users to include a displayName
+        const transformedUsers = users.map(user => ({
+            _id: user._id,
+            name: user.profile?.firstName && user.profile?.lastName
+                ? `${user.profile.firstName} ${user.profile.lastName}`
+                : user.username || 'Unknown User',
+            email: user.email,
+            role: user.role,
+            createdAt: user.createdAt
+        }));
+
         res.json({
             success: true,
-            count: users.length,
-            users
+            count: transformedUsers.length,
+            users: transformedUsers
         });
     } catch (error) {
         console.error('Error fetching users:', error);
@@ -46,7 +126,7 @@ exports.getUserDetails = async (req, res) => {
     try {
         const { userId } = req.params;
         const user = await User.findById(userId).select('-password');
-        
+
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
@@ -70,9 +150,9 @@ exports.updateUser = async (req, res) => {
         // Validate role
         const validRoles = ['user', 'member', 'trainer', 'admin'];
         if (role && !validRoles.includes(role)) {
-            return res.status(400).json({ 
-                success: false, 
-                message: `Invalid role. Must be one of: ${validRoles.join(', ')}` 
+            return res.status(400).json({
+                success: false,
+                message: `Invalid role. Must be one of: ${validRoles.join(', ')}`
             });
         }
 
@@ -104,7 +184,7 @@ exports.getSystemStats = async (req, res) => {
     try {
         const totalUsers = await User.countDocuments();
         const usersByRole = {};
-        
+
         const roles = ['user', 'member', 'trainer', 'admin'];
         for (const role of roles) {
             usersByRole[role] = await User.countDocuments({ role });

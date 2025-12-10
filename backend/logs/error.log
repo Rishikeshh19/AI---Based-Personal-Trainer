@@ -1820,3 +1820,61 @@ Please retry in 10.340996356s. [{"@type":"type.googleapis.com/google.rpc.Help","
 2025-12-10 15:18:26 [[31merror[39m]: Error generating Traditional Mixed Indian plan: Failed to generate content: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
 2025-12-10 15:18:26 [[31merror[39m]: Error generating High-Protein Mixed Indian plan: Failed to generate content: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
 2025-12-10 15:18:26 [[31merror[39m]: Error generating Light & Healthy Mixed Indian plan: Failed to generate content: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent: [400 Bad Request] API key not valid. Please pass a valid API key. [{"@type":"type.googleapis.com/google.rpc.ErrorInfo","reason":"API_KEY_INVALID","domain":"googleapis.com","metadata":{"service":"generativelanguage.googleapis.com"}},{"@type":"type.googleapis.com/google.rpc.LocalizedMessage","locale":"en-US","message":"API key not valid. Please pass a valid API key."}]
+2025-12-10 15:43:43 [[31merror[39m]: Error: Invalid credentials
+    at C:\Users\HP\OneDrive\Desktop\Project\AI---Based-Personal-Trainer\backend\controllers\auth.controller.js:49:21
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-12-10 15:43:43 [[31merror[39m]: Error: Invalid credentials
+{
+  "statusCode": 401,
+  "path": "/api/auth/login",
+  "method": "POST",
+  "ip": "::1",
+  "user": "unauthenticated"
+}
+2025-12-10 15:43:50 [[31merror[39m]: Error: Invalid credentials
+    at C:\Users\HP\OneDrive\Desktop\Project\AI---Based-Personal-Trainer\backend\controllers\auth.controller.js:49:21
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-12-10 15:43:50 [[31merror[39m]: Error: Invalid credentials
+{
+  "statusCode": 401,
+  "path": "/api/auth/login",
+  "method": "POST",
+  "ip": "::1",
+  "user": "unauthenticated"
+}
+2025-12-10 15:45:06 [[31merror[39m]: MongoNetworkError: getaddrinfo ENOTFOUND ac-qhqdhgm-shard-00-02.l1vr8dg.mongodb.net
+    at connectionFailureError (C:\Users\HP\OneDrive\Desktop\Project\AI---Based-Personal-Trainer\backend\node_modules\mongodb\lib\cmap\connect.js:367:20)
+    at TLSSocket.<anonymous> (C:\Users\HP\OneDrive\Desktop\Project\AI---Based-Personal-Trainer\backend\node_modules\mongodb\lib\cmap\connect.js:290:22)
+    at Object.onceWrapper (node:events:633:26)
+    at TLSSocket.emit (node:events:518:28)
+    at emitErrorNT (node:internal/streams/destroy:170:8)
+    at emitErrorCloseNT (node:internal/streams/destroy:129:3)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+2025-12-10 15:45:06 [[31merror[39m]: Error: getaddrinfo ENOTFOUND ac-qhqdhgm-shard-00-02.l1vr8dg.mongodb.net
+{
+  "statusCode": 500,
+  "path": "/api/auth/login",
+  "method": "POST",
+  "ip": "::1",
+  "user": "unauthenticated"
+}
+2025-12-10 15:59:14 [[31merror[39m]: Redis Client Error
+{
+  "error": "Socket closed unexpectedly"
+}
+2025-12-10 15:59:14 [[31merror[39m]: Redis Client Error
+{
+  "error": "Socket closed unexpectedly"
+}
+2025-12-10 15:59:14 [[31merror[39m]: Redis Client Error
+{
+  "error": "Socket closed unexpectedly"
+}
+2025-12-10 15:59:14 [[31merror[39m]: Redis Client Error
+{
+  "error": "Socket closed unexpectedly"
+}
+2025-12-10 15:59:14 [[31merror[39m]: Redis Client Error
+{
+  "error": "Socket closed unexpectedly"
+}

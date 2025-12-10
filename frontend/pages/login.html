@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="../css/login.css">
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .error-message {
             display: none;
@@ -44,12 +44,18 @@
         <nav>
             <ul class="nav-links">
                 <li><a href="../index.html" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
-                <li id="login-item"><a href="login.html" class="nav-link active"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-                <li id="signup-item"><a href="signup.html" class="nav-link btn-signup"><i class="fas fa-user-plus"></i> Sign Up</a></li>
-                <li id="dashboard-item" style="display: none;"><a href="dashboard.html" class="nav-link"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li id="ai-suggestions-item" style="display: none;"><a href="ai-suggestions.html" class="nav-link"><i class="fas fa-robot"></i> AI Coach</a></li>
-                <li id="progress-item" style="display: none;"><a href="progress.html" class="nav-link"><i class="fas fa-chart-line"></i> Progress</a></li>
-                <li id="logout-item" style="display: none;"><a href="#" class="nav-link" id="logout-link"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li id="login-item"><a href="login.html" class="nav-link active"><i class="fas fa-sign-in-alt"></i>
+                        Login</a></li>
+                <li id="signup-item"><a href="signup.html" class="nav-link btn-signup"><i class="fas fa-user-plus"></i>
+                        Sign Up</a></li>
+                <li id="dashboard-item" style="display: none;"><a href="dashboard.html" class="nav-link"><i
+                            class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li id="ai-suggestions-item" style="display: none;"><a href="ai-suggestions.html" class="nav-link"><i
+                            class="fas fa-robot"></i> AI Coach</a></li>
+                <li id="progress-item" style="display: none;"><a href="progress.html" class="nav-link"><i
+                            class="fas fa-chart-line"></i> Progress</a></li>
+                <li id="logout-item" style="display: none;"><a href="#" class="nav-link" id="logout-link"><i
+                            class="fas fa-sign-out-alt"></i> Logout</a></li>
             </ul>
         </nav>
         <div class="social-links">
@@ -86,7 +92,7 @@
     </div>
 
     <script src="../js/nav.js"></script>
-        <script src="../js/storage.js"></script>
+    <script src="../js/storage.js"></script>
     <script src="../js/toast.js"></script>
     <script>
         // PASSWORD LOGIN
@@ -128,8 +134,10 @@
 
                 // Small delay to ensure storage is written
                 setTimeout(() => {
-                    // Always redirect to dashboard based on role (profile is optional)
-                    if (data.data.role === 'trainer') {
+                    // Redirect to dashboard based on role
+                    if (data.data.role === 'admin') {
+                        window.location.href = '/pages/admin-dashboard.html';
+                    } else if (data.data.role === 'trainer') {
                         window.location.href = '/pages/trainer-dashboard.html';
                     } else {
                         window.location.href = '/pages/dashboard.html';
@@ -153,7 +161,9 @@
                 if (userStr) {
                     try {
                         const user = JSON.parse(userStr);
-                        if (user.role === 'trainer') {
+                        if (user.role === 'admin') {
+                            window.location.href = '/pages/admin-dashboard.html';
+                        } else if (user.role === 'trainer') {
                             window.location.href = '/pages/trainer-dashboard.html';
                         } else {
                             window.location.href = '/pages/dashboard.html';

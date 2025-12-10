@@ -1878,3 +1878,124 @@ Please retry in 10.340996356s. [{"@type":"type.googleapis.com/google.rpc.Help","
 {
   "error": "Socket closed unexpectedly"
 }
+2025-12-10 18:54:06 [[31merror[39m]: Error: Invalid credentials
+    at C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\controllers\auth.controller.js:56:21
+    at runNextTicks (node:internal/process/task_queues:65:5)
+    at process.processImmediate (node:internal/timers:473:9)
+2025-12-10 18:54:06 [[31merror[39m]: Error: Invalid credentials
+{
+  "statusCode": 401,
+  "path": "/api/auth/login",
+  "method": "POST",
+  "ip": "::1",
+  "user": "unauthenticated"
+}
+2025-12-10 18:58:35 [[31merror[39m]: Uncaught Exception: listen EADDRINUSE: address already in use :::8000
+{
+  "code": "EADDRINUSE",
+  "errno": -4091,
+  "syscall": "listen",
+  "address": "::",
+  "port": 8000,
+  "stack": "Error: listen EADDRINUSE: address already in use :::8000\n    at Server.setupListenHandle [as _listen2] (node:net:1940:16)\n    at listenInCluster (node:net:1997:12)\n    at Server.listen (node:net:2102:7)\n    at startServer (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\app.js:160:12)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)"
+}
+2025-12-10 19:52:09 [[31merror[39m]: CastError: Cast to ObjectId failed for value "clients" (type string) at path "_id" for model "User"
+    at ObjectId.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schema\objectid.js:250:11)
+    at SchemaType.applySetters (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1219:12)
+    at SchemaType.castForQuery (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1633:15)
+    at cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\cast.js:389:32)
+    at Query.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4927:12)
+    at Query._castConditions (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2237:10)
+    at model.Query._findOne (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2533:8)
+    at model.Query.exec (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4447:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\controllers\trainer.controller.js:24:21
+2025-12-10 19:52:09 [[31merror[39m]: Error: Resource not found with id of clients
+{
+  "statusCode": 404,
+  "stack": "Error: Resource not found with id of clients\n    at errorHandler (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\middleware\\error.js:14:17)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:71:5)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:67:12)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)",
+  "path": "/api/trainers/clients",
+  "method": "GET",
+  "ip": "::1",
+  "user": "693009fc645d76acdf4f1d60"
+}
+2025-12-10 19:52:12 [[31merror[39m]: CastError: Cast to ObjectId failed for value "clients" (type string) at path "_id" for model "User"
+    at ObjectId.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schema\objectid.js:250:11)
+    at SchemaType.applySetters (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1219:12)
+    at SchemaType.castForQuery (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1633:15)
+    at cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\cast.js:389:32)
+    at Query.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4927:12)
+    at Query._castConditions (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2237:10)
+    at model.Query._findOne (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2533:8)
+    at model.Query.exec (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4447:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\controllers\trainer.controller.js:24:21
+2025-12-10 19:52:12 [[31merror[39m]: Error: Resource not found with id of clients
+{
+  "statusCode": 404,
+  "stack": "Error: Resource not found with id of clients\n    at errorHandler (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\middleware\\error.js:14:17)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:71:5)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:67:12)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)",
+  "path": "/api/trainers/clients",
+  "method": "GET",
+  "ip": "::1",
+  "user": "693009fc645d76acdf4f1d60"
+}
+2025-12-10 19:52:13 [[31merror[39m]: CastError: Cast to ObjectId failed for value "clients" (type string) at path "_id" for model "User"
+    at ObjectId.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schema\objectid.js:250:11)
+    at SchemaType.applySetters (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1219:12)
+    at SchemaType.castForQuery (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1633:15)
+    at cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\cast.js:389:32)
+    at Query.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4927:12)
+    at Query._castConditions (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2237:10)
+    at model.Query._findOne (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2533:8)
+    at model.Query.exec (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4447:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\controllers\trainer.controller.js:24:21
+2025-12-10 19:52:13 [[31merror[39m]: Error: Resource not found with id of clients
+{
+  "statusCode": 404,
+  "stack": "Error: Resource not found with id of clients\n    at errorHandler (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\middleware\\error.js:14:17)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:71:5)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:67:12)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)",
+  "path": "/api/trainers/clients",
+  "method": "GET",
+  "ip": "::1",
+  "user": "693009fc645d76acdf4f1d60"
+}
+2025-12-10 19:52:18 [[31merror[39m]: CastError: Cast to ObjectId failed for value "clients" (type string) at path "_id" for model "User"
+    at ObjectId.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schema\objectid.js:250:11)
+    at SchemaType.applySetters (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1219:12)
+    at SchemaType.castForQuery (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1633:15)
+    at cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\cast.js:389:32)
+    at Query.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4927:12)
+    at Query._castConditions (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2237:10)
+    at model.Query._findOne (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2533:8)
+    at model.Query.exec (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4447:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\controllers\trainer.controller.js:24:21
+2025-12-10 19:52:18 [[31merror[39m]: Error: Resource not found with id of clients
+{
+  "statusCode": 404,
+  "stack": "Error: Resource not found with id of clients\n    at errorHandler (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\middleware\\error.js:14:17)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:71:5)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:67:12)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)",
+  "path": "/api/trainers/clients",
+  "method": "GET",
+  "ip": "::1",
+  "user": "693009fc645d76acdf4f1d60"
+}
+2025-12-10 19:52:19 [[31merror[39m]: CastError: Cast to ObjectId failed for value "clients" (type string) at path "_id" for model "User"
+    at ObjectId.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schema\objectid.js:250:11)
+    at SchemaType.applySetters (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1219:12)
+    at SchemaType.castForQuery (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\schematype.js:1633:15)
+    at cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\cast.js:389:32)
+    at Query.cast (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4927:12)
+    at Query._castConditions (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2237:10)
+    at model.Query._findOne (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:2533:8)
+    at model.Query.exec (C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\node_modules\mongoose\lib\query.js:4447:28)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async C:\Users\Rishikesh\Downloads\Final_App\AI---Based-Personal-Trainer\backend\controllers\trainer.controller.js:24:21
+2025-12-10 19:52:19 [[31merror[39m]: Error: Resource not found with id of clients
+{
+  "statusCode": 404,
+  "stack": "Error: Resource not found with id of clients\n    at errorHandler (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\middleware\\error.js:14:17)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:71:5)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at Layer.handle_error (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\layer.js:67:12)\n    at trim_prefix (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:326:13)\n    at C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Users\\Rishikesh\\Downloads\\Final_App\\AI---Based-Personal-Trainer\\backend\\node_modules\\express\\lib\\router\\index.js:346:12)",
+  "path": "/api/trainers/clients",
+  "method": "GET",
+  "ip": "::1",
+  "user": "693009fc645d76acdf4f1d60"
+}

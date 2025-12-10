@@ -142,7 +142,10 @@ const notificationCenter = {
     fetchFromBackend: async function() {
         try {
             const token = localStorage.getItem('token');
-            if (!token) return;
+            if (!token) {
+                console.log('⚠️ No auth token, using local notifications only');
+                return this.getAll();
+            }
             
             const response = await fetch('http://localhost:8000/api/notifications', {
                 headers: {
@@ -166,16 +169,23 @@ const notificationCenter = {
                 });
                 
                 // Sort by timestamp (newest first)
-                merged.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                merged.sort((a, b) => new Date(b.timestamp || b.createdAt || 0) - new Date(a.timestamp || a.createdAt || 0));
                 
                 localStorage.setItem('notifications', JSON.stringify(merged));
                 this.updateBadge();
                 
                 console.log('📡 Notifications synced from backend');
                 return merged;
+            } else if (response.status === 404) {
+                console.log('⚠️ Notifications API not available, using local storage');
+                return this.getAll();
+            } else {
+                console.warn('⚠️ Failed to fetch notifications, using local storage');
+                return this.getAll();
             }
         } catch (error) {
-            console.error('Error fetching notifications from backend:', error);
+            console.log('⚠️ Backend unavailable, using local notifications:', error.message);
+            return this.getAll();
         }
     },
     

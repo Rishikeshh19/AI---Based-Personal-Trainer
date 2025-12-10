@@ -8,7 +8,9 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/professional.css">
     <link rel="stylesheet" href="css/responsive.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/components-enhanced.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary: #4361ee;
@@ -154,78 +156,82 @@
 
     <main class="main-content">
         <!-- Hero Section -->
-        <section class="hero" data-aos="fade-up">
+        <section class="hero animate-fade-in-up">
             <div class="hero-content text-center">
-                <h1 class="hero-title">Welcome to <span class="gradient-text">AI Trainer Pro</span></h1>
-                <p class="hero-subtitle">Your personal AI-powered fitness companion. Track workouts, get insights, and
+                <h1 class="hero-title animate-fade-in-down" style="animation-delay: 0.2s;">Welcome to <span class="gradient-text animate-gradient-shift">AI Trainer Pro</span></h1>
+                <p class="hero-subtitle animate-fade-in-up" style="animation-delay: 0.4s;">Your personal AI-powered fitness companion. Track workouts, get insights, and
                     achieve your goals.</p>
-                <div class="hero-buttons">
-                    <a href="pages/login.html" class="btn btn-primary btn-lg">Login</a>
-                    <a href="pages/signup.html" class="btn btn-outline btn-lg">Sign Up</a>
+                <div class="hero-buttons animate-fade-in-up" style="animation-delay: 0.6s;">
+                    <a href="pages/login.html" class="btn btn-primary btn-lg btn-premium hover-lift">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="pages/signup.html" class="btn btn-outline btn-lg btn-neon hover-scale">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </a>
                 </div>
             </div>
         </section>
 
         <!-- Features Section -->
-        <section id="features" class="section-padding" data-aos="fade-up">
-            <div class="section-header">
+        <section id="features" class="section-padding">
+            <div class="section-header animate-fade-in-up">
                 <h2 class="section-title">Features</h2>
                 <div class="section-divider"></div>
             </div>
 
-            <div class="features-grid">
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
-                    <div class="feature-icon">
+            <div class="features-grid stagger-animation">
+                <div class="feature-card card-premium hover-lift">
+                    <div class="feature-icon animate-pulse">
                         <i class="fas fa-dumbbell"></i>
                     </div>
                     <h3>Workout Tracking</h3>
-                    <p>Log your exercises and keep track of your progress.</p>
+                    <p>Log your exercises and keep track of your progress with real-time synchronization.</p>
                 </div>
 
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
-                    <div class="feature-icon">
+                <div class="feature-card card-premium hover-lift">
+                    <div class="feature-icon animate-pulse" style="animation-delay: 0.2s;">
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <h3>Analytics</h3>
-                    <p>Visualize your performance with simple charts.</p>
+                    <p>Visualize your performance with beautiful interactive charts and insights.</p>
                 </div>
 
-                <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-                    <div class="feature-icon">
+                <div class="feature-card card-premium hover-lift">
+                    <div class="feature-icon animate-pulse" style="animation-delay: 0.4s;">
                         <i class="fas fa-robot"></i>
                     </div>
                     <h3>AI Coach</h3>
-                    <p>Get smart recommendations for your workouts.</p>
+                    <p>Get smart recommendations powered by advanced AI technology.</p>
                 </div>
             </div>
         </section>
 
         <!-- Why Choose Us Section -->
-        <section id="why-choose-us" class="section-padding bg-light" data-aos="fade-up">
+        <section id="why-choose-us" class="section-padding bg-light">
             <div class="container">
-                <div class="section-header text-center">
+                <div class="section-header text-center" data-scroll-reveal="fade-up">
                     <h2 class="section-title">Why Choose AI Trainer Pro?</h2>
                     <div class="section-divider mx-auto"></div>
                 </div>
-                <div class="why-us-grid">
-                    <div class="why-us-item">
-                        <div class="icon-box">
+                <div class="why-us-grid" data-scroll-reveal-stagger>
+                    <div class="why-us-item card-premium hover-lift">
+                        <div class="icon-box animate-pulse">
                             <i class="fas fa-brain"></i>
                         </div>
                         <h3>Smarter Training</h3>
                         <p>Our AI adapts to your performance in real-time, ensuring you're always challenged just
                             enough.</p>
                     </div>
-                    <div class="why-us-item">
-                        <div class="icon-box">
+                    <div class="why-us-item card-premium hover-lift">
+                        <div class="icon-box animate-pulse" style="animation-delay: 0.2s;">
                             <i class="fas fa-clock"></i>
                         </div>
                         <h3>Time Efficient</h3>
                         <p>Get maximum results in minimum time with optimized workout plans tailored to your schedule.
                         </p>
                     </div>
-                    <div class="why-us-item">
-                        <div class="icon-box">
+                    <div class="why-us-item card-premium hover-lift">
+                        <div class="icon-box animate-pulse" style="animation-delay: 0.4s;">
                             <i class="fas fa-shield-alt"></i>
                         </div>
                         <h3>Data Privacy</h3>
@@ -253,6 +259,10 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="js/scroll-reveal.js"></script>
+    <script src="js/loading-screen.js"></script>
+    <script src="js/toast-notifications.js"></script>
     <script src="js/main.js"></script>
     <script>
         // Auth Check - Redirect if logged in

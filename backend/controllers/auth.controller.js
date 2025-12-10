@@ -109,19 +109,31 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
 
     await user.save({ validateBeforeSave: false });
 
-    // Create reset URL
-    const resetUrl = `${req.protocol}://${req.get('host')}/api/auth/reset-password/${resetToken}`;
+    // Create frontend reset URL
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const resetUrl = `${frontendUrl}/pages/reset-password.html?token=${resetToken}`;
 
-    const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+    const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please click the link below to reset your password:\n\n${resetUrl}\n\nThis link will expire in 10 minutes.\n\nIf you did not request this, please ignore this email.`;
 
     try {
         await sendEmail({
             email: user.email,
-            subject: 'Password reset token',
+            subject: 'Password Reset Request - AI Personal Trainer',
             message
         });
 
-        res.status(200).json({ success: true, data: 'Email sent' });
+        // In development, also return the reset URL for testing
+        const response = { 
+            success: true, 
+            message: 'Password reset email sent'
+        };
+        
+        if (process.env.NODE_ENV === 'development') {
+            response.resetUrl = resetUrl;
+            logger.info(`Password reset URL (dev only): ${resetUrl}`);
+        }
+
+        res.status(200).json(response);
     } catch (err) {
         console.log(err);
         user.resetPasswordToken = undefined;

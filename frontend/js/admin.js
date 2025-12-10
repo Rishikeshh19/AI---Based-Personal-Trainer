@@ -128,13 +128,16 @@ async function loadUsers() {
 
         tbody.innerHTML = '';
         data.users.forEach(user => {
+            const displayName = user.name || 'User';
+            const initial = displayName[0]?.toUpperCase() || 'U';
             tbody.innerHTML += `
                 <tr>
                     <td>
                         <div class="user-info">
-                            <div class="user-avatar secondary">${user.email?.[0]?.toUpperCase() || 'U'}</div>
+                            <div class="user-avatar secondary">${initial}</div>
                             <div>
-                                <div class="font-medium">${user.email}</div>
+                                <div class="font-medium">${displayName}</div>
+                                <div class="text-xs text-muted">${user.email}</div>
                             </div>
                         </div>
                     </td>
@@ -142,7 +145,7 @@ async function loadUsers() {
                     <td>${new Date(user.createdAt).toLocaleDateString()}</td>
                     <td>
                         <div class="flex gap-2">
-                            <button class="btn-icon" onclick="openEditModal('${user._id}', '${user.email}', '${user.role}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn-icon" onclick="openEditModal('${user._id}', '${displayName}', '${user.role}')"><i class="fas fa-edit"></i></button>
                             ${user.role !== 'admin' ? `<button class="btn-icon danger" onclick="deleteUser('${user._id}')"><i class="fas fa-trash"></i></button>` : ''}
                         </div>
                     </td>
@@ -263,15 +266,82 @@ window.createNewUser = async () => {
 
 
 // ==========================================
-// MONITORING TAB (Prometheus/Grafana)
+// MONITORING TAB (Enhanced)
 // ==========================================
 async function refreshMonitoring() {
     try {
-        // Fetch raw metrics from backend
-        // Note: In docker setup, browser can't hit 'http://prometheus:9090' directly easily without port mapping.
-        // We rely on backend /api/metrics endpoint which proxies or exposes metrics.
+        // Fetch enhanced monitoring data
+        await Promise.all([
+            loadSystemHealth(),
+            loadPerformanceMetrics(),
+            loadPrometheusMetrics()
+        ]);
 
-        const response = await fetch(`${API_BASE}/metrics`); // This is the backend exposing prom-client metrics
+    } catch (e) {
+        console.error('Monitoring error:', e);
+    }
+}
+
+async function loadSystemHealth() {
+    try {
+        const response = await fetch(`${API_BASE}/monitoring/health`, {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            const health = data.health;
+            
+            // Update system metrics
+            document.getElementById('cpu-usage').textContent = health.system.loadAverage['1min'];
+            document.getElementById('memory-usage').textContent = health.system.memory.usagePercent + '%';
+            document.getElementById('system-uptime').textContent = formatUptime(health.process.uptime);
+            document.getElementById('db-status').textContent = health.database.status;
+            document.getElementById('db-status').className = `badge ${health.database.connected ? 'badge-success' : 'badge-danger'}`;
+
+            // Update detailed system info
+            document.getElementById('total-memory').textContent = health.system.memory.total + ' MB';
+            document.getElementById('free-memory').textContent = health.system.memory.free + ' MB';
+            document.getElementById('used-memory').textContent = health.system.memory.used + ' MB';
+            document.getElementById('cpu-count').textContent = health.system.cpuCount;
+            document.getElementById('platform').textContent = health.system.platform;
+            document.getElementById('node-version').textContent = health.process.nodeVersion;
+            document.getElementById('heap-used').textContent = health.process.memory.heapUsed + ' MB';
+            document.getElementById('heap-total').textContent = health.process.memory.heapTotal + ' MB';
+        }
+    } catch (error) {
+        console.error('Error loading system health:', error);
+    }
+}
+
+async function loadPerformanceMetrics() {
+    try {
+        const response = await fetch(`${API_BASE}/monitoring/performance`, {
+            headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            const metrics = data.metrics;
+            
+            // Update performance stats
+            document.getElementById('workouts-7days').textContent = metrics.workouts.last7Days;
+            document.getElementById('workouts-30days').textContent = metrics.workouts.last30Days;
+            document.getElementById('avg-workout-duration').textContent = metrics.workouts.avgDuration + ' min';
+            document.getElementById('new-users-7days').textContent = metrics.users.newLast7Days;
+            document.getElementById('new-users-30days').textContent = metrics.users.newLast30Days;
+
+            // Update workout trend chart
+            updateWorkoutTrendChart(metrics.workouts.dailyTrend);
+        }
+    } catch (error) {
+        console.error('Error loading performance metrics:', error);
+    }
+}
+
+async function loadPrometheusMetrics() {
+    try {
+        const response = await fetch(`${API_BASE}/metrics`);
         const text = await response.text();
 
         // Parse basic metrics
@@ -284,10 +354,10 @@ async function refreshMonitoring() {
         document.getElementById('mon-active-users').textContent = Math.floor(activeUsers);
 
         // Update Charts
-        updateCharts(activeUsers, reqDuration);
+        updateLiveChart(activeUsers, reqDuration);
 
     } catch (e) {
-        console.error('Monitoring error:', e);
+        console.error('Prometheus metrics error:', e);
     }
 }
 
@@ -303,7 +373,7 @@ function parseMetric(text, name) {
     return sum;
 }
 
-function updateCharts(users, latency) {
+function updateLiveChart(users, latency) {
     const ctx = document.getElementById('liveChart');
     if (!ctx) return;
 
@@ -312,33 +382,154 @@ function updateCharts(users, latency) {
             type: 'line',
             data: {
                 labels: [],
-                datasets: [{
-                    label: 'Active Users',
-                    borderColor: '#10B981', // Emerald 500
-                    data: [],
-                    tension: 0.4
-                }]
+                datasets: [
+                    {
+                        label: 'Active Users',
+                        borderColor: '#10B981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        data: [],
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Latency (ms)',
+                        borderColor: '#F59E0B',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        data: [],
+                        tension: 0.4,
+                        fill: true,
+                        yAxisID: 'y1'
+                    }
+                ]
             },
             options: {
                 responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { x: { display: false } }
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    x: { display: true },
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Users' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Latency (ms)' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
             }
         });
     }
 
-    // Add data
     const chart = charts.live;
     const now = new Date().toLocaleTimeString();
 
     if (chart.data.labels.length > 20) {
         chart.data.labels.shift();
         chart.data.datasets[0].data.shift();
+        chart.data.datasets[1].data.shift();
     }
 
     chart.data.labels.push(now);
     chart.data.datasets[0].data.push(users);
-    chart.update();
+    chart.data.datasets[1].data.push((latency * 1000).toFixed(1));
+    chart.update('none');
+}
+
+function updateWorkoutTrendChart(dailyTrend) {
+    const ctx = document.getElementById('workoutTrendChart');
+    if (!ctx) return;
+
+    const labels = dailyTrend.map(d => d._id);
+    const counts = dailyTrend.map(d => d.count);
+    const calories = dailyTrend.map(d => d.totalCalories);
+
+    if (!charts.workoutTrend) {
+        charts.workoutTrend = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Workouts',
+                        data: counts,
+                        backgroundColor: 'rgba(79, 70, 229, 0.8)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Total Calories',
+                        data: calories,
+                        type: 'line',
+                        borderColor: 'rgba(236, 72, 153, 1)',
+                        backgroundColor: 'rgba(236, 72, 153, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: { display: true, text: 'Workouts' }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: { display: true, text: 'Calories' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+    } else {
+        charts.workoutTrend.data.labels = labels;
+        charts.workoutTrend.data.datasets[0].data = counts;
+        charts.workoutTrend.data.datasets[1].data = calories;
+        charts.workoutTrend.update();
+    }
+}
+
+function formatUptime(seconds) {
+    const days = Math.floor(seconds / 86400);
+    const hours = Math.floor((seconds % 86400) / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    
+    if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+    if (hours > 0) return `${hours}h ${minutes}m`;
+    return `${minutes}m`;
 }
 
 function logout() {

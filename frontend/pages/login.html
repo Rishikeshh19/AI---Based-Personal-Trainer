@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="../css/login.css">
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/components-enhanced.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .error-message {
@@ -65,23 +67,25 @@
         </div>
     </div>
 
-    <div class="login-container">
-        <h1>Welcome Back</h1>
-        <p class="login-subtitle">Sign in to your fitness journey</p>
+    <div class="login-container animate-scale-in">
+        <h1 class="animate-fade-in-down">Welcome Back</h1>
+        <p class="login-subtitle animate-fade-in-up" style="animation-delay: 0.2s;">Sign in to your fitness journey</p>
 
-        <div class="error-message" id="passwordError"></div>
-        <form id="password-form">
-            <div class="form-group">
+        <div class="error-message alert-premium alert-danger" id="passwordError" style="display: none;"></div>
+        <form id="password-form" class="animate-fade-in-up" style="animation-delay: 0.4s;">
+            <div class="form-group input-group">
                 <label for="password-email">Email Address</label>
-                <input type="email" id="password-email" name="email" placeholder="your@email.com" required>
-                <div class="error-message">Please enter a valid email</div>
+                <input type="email" id="password-email" name="email" placeholder="your@email.com" class="input-premium" required>
+                <i class="fas fa-envelope input-icon"></i>
             </div>
-            <div class="form-group">
+            <div class="form-group input-group">
                 <label for="password-password">Password</label>
-                <input type="password" id="password-password" name="password" placeholder="••••••••" required>
-                <div class="error-message">Password is required</div>
+                <input type="password" id="password-password" name="password" placeholder="••••••••" class="input-premium" required>
+                <i class="fas fa-lock input-icon"></i>
             </div>
-            <button type="submit">Login with Password</button>
+            <button type="submit" class="btn-premium btn-gradient hover-lift">
+                <i class="fas fa-sign-in-alt"></i> Login with Password
+            </button>
         </form>
 
         <div class="form-footer">
@@ -94,6 +98,8 @@
     <script src="../js/nav.js"></script>
     <script src="../js/storage.js"></script>
     <script src="../js/toast.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="../js/toast-notifications.js"></script>
     <script>
         // PASSWORD LOGIN
         document.getElementById('password-form').addEventListener('submit', async (e) => {
@@ -105,9 +111,9 @@
             const submitBtn = e.target.querySelector('button[type="submit"]');
 
             try {
-                errorDiv.classList.remove('show');
+                errorDiv.style.display = 'none';
                 submitBtn.disabled = true;
-                submitBtn.textContent = 'Logging in...';
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
 
                 const response = await fetch('http://localhost:8000/api/auth/login', {
                     method: 'POST',
@@ -126,6 +132,11 @@
                 // Success - store session
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('current_user', JSON.stringify(data.data));
+
+                // Show success toast
+                if (window.toast) {
+                    window.toast.success('Login successful! Redirecting...', 'Welcome back!', { duration: 2000 });
+                }
 
                 // Store profile status (optional, no longer mandatory)
                 if (data.isProfileComplete !== undefined) {
@@ -147,9 +158,14 @@
             } catch (error) {
                 console.error('Login error:', error);
                 errorDiv.textContent = '❌ ' + error.message;
-                errorDiv.classList.add('show');
+                errorDiv.style.display = 'block';
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Login with Password';
+                submitBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Login with Password';
+                
+                // Show error toast
+                if (window.toast) {
+                    window.toast.error(error.message, 'Login Failed');
+                }
             }
         });
 

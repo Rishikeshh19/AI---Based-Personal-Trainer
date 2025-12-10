@@ -17,6 +17,28 @@ exports.getAllTrainers = asyncHandler(async (req, res, next) => {
     });
 });
 
+// @desc    Get specific trainer by ID
+// @route   GET /api/trainers/:id
+// @access  Private
+exports.getTrainerById = asyncHandler(async (req, res, next) => {
+    const trainer = await User.findOne({ _id: req.params.id, role: 'trainer' }).select('-password');
+
+    if (!trainer) {
+        return next(new ErrorResponse('Trainer not found', 404));
+    }
+
+    // Get trainer's stats
+    const clientCount = await User.countDocuments({ trainerId: trainer._id });
+    
+    res.status(200).json({
+        success: true,
+        data: {
+            ...trainer.toObject(),
+            clientCount
+        }
+    });
+});
+
 // @desc    Get all assigned clients for trainer
 // @route   GET /api/trainers/clients
 // @access  Private

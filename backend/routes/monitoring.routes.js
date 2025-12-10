@@ -12,4 +12,9 @@ router.get('/trainers', protect, monitoringController.getAllTrainers);
 router.get('/activity', protect, monitoringController.getActivity);
 router.get('/dashboard', protect, monitoringController.getDashboard);
 
+// New enhanced monitoring routes
+router.get('/health', protect, monitoringController.getSystemHealth);
+router.get('/performance', protect, monitoringController.getPerformanceMetrics);
+router.get('/database', protect, monitoringController.getDatabaseMetrics);
+
 module.exports = router;

@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="../css/dashboard.css">
     <link rel="stylesheet" href="../css/professional.css">
     <link rel="stylesheet" href="../css/responsive.css">
+    <link rel="stylesheet" href="../css/animations.css">
+    <link rel="stylesheet" href="../css/components-enhanced.css">
     <script>
         // Check authentication immediately
         (function() {
@@ -69,10 +71,10 @@
 
     <main>
         <!-- Stats Cards -->
-        <div class="dashboard-container">
-            <div class="stats-card" data-tooltip="Track your monthly workout count">
+        <div class="dashboard-container stagger-animation">
+            <div class="stats-card card-premium hover-lift" data-tooltip="Track your monthly workout count">
                 <div class="card-icon-wrapper">
-                    <div class="card-icon">🏋️‍♂️</div>
+                    <div class="card-icon animate-pulse">🏋️‍♂️</div>
                     <div class="icon-pulse"></div>
                 </div>
                 <h3>Total Workouts</h3>
@@ -80,11 +82,11 @@
                     <span class="count-up">0</span>
                 </div>
                 <p>This month</p>
-                <div class="stat-trend" id="workout-trend">↗️ +2 from last month</div>
+                <div class="stat-trend badge-premium badge-success" id="workout-trend">↗️ +2 from last month</div>
             </div>
-            <div class="stats-card" data-tooltip="Total calories burned across all workouts">
+            <div class="stats-card card-premium hover-lift" data-tooltip="Total calories burned across all workouts">
                 <div class="card-icon-wrapper">
-                    <div class="card-icon">🔥</div>
+                    <div class="card-icon animate-pulse" style="animation-delay: 0.2s;">🔥</div>
                     <div class="icon-pulse"></div>
                 </div>
                 <h3>Calories Burned</h3>
@@ -92,11 +94,11 @@
                     <span class="count-up">0</span>
                 </div>
                 <p>Total</p>
-                <div class="stat-trend" id="calorie-trend">🔥 Keep it up!</div>
+                <div class="stat-trend badge-premium badge-warning" id="calorie-trend">🔥 Keep it up!</div>
             </div>
-            <div class="stats-card" data-tooltip="Consecutive days of activity">
+            <div class="stats-card card-premium hover-lift" data-tooltip="Consecutive days of activity">
                 <div class="card-icon-wrapper">
-                    <div class="card-icon">⚡</div>
+                    <div class="card-icon animate-pulse" style="animation-delay: 0.4s;">⚡</div>
                     <div class="icon-pulse"></div>
                 </div>
                 <h3>Streak</h3>
@@ -373,6 +375,122 @@
 
             container.innerHTML = html;
         }
+    </script>
+    
+    <!-- Socket.IO and Real-time Notifications -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script src="../js/toast-notifications.js"></script>
+    <script>
+        // Initialize real-time dashboard updates
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const userStr = localStorage.getItem('current_user');
+                if (!userStr) return;
+                
+                const user = JSON.parse(userStr);
+                
+                // Connect to Socket.IO for real-time updates
+                const socket = io('http://localhost:8000', {
+                    auth: { token },
+                    transports: ['websocket', 'polling']
+                });
+
+                socket.on('connect', () => {
+                    console.log('🔄 Dashboard connected to real-time updates');
+                    socket.emit('joinDashboard', user.id);
+                });
+
+                // Real-time workout updates
+                socket.on('workoutCompleted', (data) => {
+                    console.log('New workout completed:', data);
+                    
+                    // Animate stat card update
+                    const workoutCard = document.getElementById('total-workouts').closest('.stats-card');
+                    if (workoutCard) {
+                        workoutCard.classList.add('stat-updated');
+                        setTimeout(() => workoutCard.classList.remove('stat-updated'), 300);
+                    }
+                    
+                    // Refresh dashboard data
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1500);
+                    
+                    // Show celebration toast
+                    if (window.toast) {
+                        window.toast.success(
+                            `Great job! You burned ${data.calories || 0} calories!`,
+                            '🎉 Workout Completed',
+                            { 
+                                duration: 7000,
+                                actions: [
+                                    {
+                                        label: 'View Progress',
+                                        primary: true,
+                                        onClick: () => window.location.href = 'progress.html'
+                                    }
+                                ]
+                            }
+                        );
+                    }
+                });
+
+                // Real-time achievement notifications
+                socket.on('achievementUnlocked', (data) => {
+                    if (window.toast) {
+                        window.toast.success(
+                            data.message,
+                            '🏆 New Achievement!',
+                            { 
+                                duration: 10000,
+                                actions: [
+                                    {
+                                        label: 'View All',
+                                        primary: true,
+                                        onClick: () => window.location.href = 'progress.html'
+                                    }
+                                ]
+                            }
+                        );
+                    }
+                });
+
+                // Real-time streak updates
+                socket.on('streakUpdated', (data) => {
+                    const streakElement = document.getElementById('current-streak');
+                    if (streakElement) {
+                        const countElement = streakElement.querySelector('.count-up');
+                        if (countElement) {
+                            countElement.textContent = data.streak;
+                            countElement.classList.add('animate-tada');
+                            setTimeout(() => countElement.classList.remove('animate-tada'), 1000);
+                        }
+                    }
+                    
+                    if (data.milestone && window.toast) {
+                        window.toast.success(
+                            `You've maintained a ${data.streak}-day streak! Keep it going!`,
+                            '🔥 Streak Milestone',
+                            { duration: 7000 }
+                        );
+                    }
+                });
+
+                socket.on('disconnect', () => {
+                    console.log('🔄 Dashboard disconnected from real-time updates');
+                });
+
+                socket.on('error', (error) => {
+                    console.error('Dashboard Socket.IO error:', error);
+                });
+
+            } catch (error) {
+                console.error('Error initializing real-time dashboard:', error);
+            }
+        });
     </script>
 </body>
 

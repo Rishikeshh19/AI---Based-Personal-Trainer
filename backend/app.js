@@ -25,9 +25,9 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || '*',
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:3000', process.env.FRONTEND_URL || '*'],
     credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
   },
   transports: ['websocket', 'polling'],
   perMessageDeflate: {
@@ -49,14 +49,34 @@ global.io = io;
 global.cacheService = cacheService;
 
 // Performance & Security Middleware
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 app.use(compression({ level: 6, threshold: 1024 }));
 
-// Middleware
+// CORS Configuration
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL
+].filter(Boolean);
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   optionsSuccessStatus: 204
 }));
 
@@ -112,6 +132,24 @@ io.on('connection', (socket) => {
     const roomName = `user:${userId}`;
     socket.leave(roomName);
     logger.info(`User ${socket.id} left notification room: ${roomName}`);
+  });
+
+  // Dashboard real-time updates
+  socket.on('joinDashboard', (userId) => {
+    const roomName = `dashboard:${userId}`;
+    socket.join(roomName);
+    logger.info(`User ${socket.id} joined dashboard room: ${roomName}`);
+  });
+
+  socket.on('leaveDashboard', (userId) => {
+    const roomName = `dashboard:${userId}`;
+    socket.leave(roomName);
+    logger.info(`User ${socket.id} left dashboard room: ${roomName}`);
+  });
+
+  // Handle errors
+  socket.on('error', (error) => {
+    logger.error(`Socket error for ${socket.id}:`, error);
   });
 });
 

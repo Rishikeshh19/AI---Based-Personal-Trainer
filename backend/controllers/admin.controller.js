@@ -215,15 +215,41 @@ exports.getSystemStats = async (req, res) => {
 exports.getActivityLog = async (req, res) => {
     try {
         const recentWorkouts = await Workout.find()
-            .select('userId date exercises totalDuration totalCalories')
+            .select('user date exercises totalDuration totalCalories')
             .sort({ date: -1 })
             .limit(50)
-            .populate('userId', 'name email role');
+            .populate({
+                path: 'user',
+                select: 'username email role profile.firstName profile.lastName'
+            })
+            .lean();
+
+        // Filter out workouts without valid users and format the response
+        const formattedActivity = recentWorkouts
+            .filter(workout => workout.user) // Only include workouts with valid user references
+            .map(workout => {
+                const user = workout.user;
+                const displayName = user.profile?.firstName && user.profile?.lastName
+                    ? `${user.profile.firstName} ${user.profile.lastName}`
+                    : user.username || user.email?.split('@')[0] || 'User';
+                
+                return {
+                    userId: {
+                        name: displayName,
+                        email: user.email || 'N/A',
+                        role: user.role || 'user'
+                    },
+                    date: workout.date,
+                    exercises: workout.exercises,
+                    totalDuration: workout.totalDuration,
+                    totalCalories: workout.totalCalories
+                };
+            });
 
         res.json({
             success: true,
-            count: recentWorkouts.length,
-            activity: recentWorkouts
+            count: formattedActivity.length,
+            activity: formattedActivity
         });
     } catch (error) {
         console.error('Error fetching activity log:', error);

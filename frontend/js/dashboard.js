@@ -2,6 +2,33 @@
 let socket = null;
 let progressUpdateTimeout = null;
 
+// Count-up animation function
+function animateCount(element, start, end, duration = 1000) {
+    const range = end - start;
+    const increment = range / (duration / 16);
+    let current = start;
+    
+    const timer = setInterval(() => {
+        current += increment;
+        if ((increment > 0 && current >= end) || (increment < 0 && current <= end)) {
+            current = end;
+            clearInterval(timer);
+        }
+        element.textContent = Math.round(current);
+    }, 16);
+}
+
+// Update progress ring
+function updateProgressRing(percentage) {
+    const circle = document.getElementById('progress-circle');
+    if (!circle) return;
+    
+    const circumference = 2 * Math.PI * 52; // radius = 52
+    const offset = circumference - (percentage / 100) * circumference;
+    
+    circle.style.strokeDashoffset = offset;
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -18,8 +45,22 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Initialize Socket.IO connection
     initializeSocket(currentUser);
 
-    // Always show base static stats
+    // Always show base static stats with animation
     await updateDashboardStats(currentUser);
+    
+    // Animate stats on load
+    setTimeout(() => {
+        const workoutCount = parseInt(document.getElementById('total-workouts').querySelector('.count-up').textContent) || 0;
+        const calorieCount = parseInt(document.getElementById('total-calories').querySelector('.count-up').textContent) || 0;
+        const streakCount = parseInt(document.getElementById('streak').querySelector('.count-up').textContent) || 0;
+        const goalProgress = parseInt(document.getElementById('goal-progress').querySelector('.count-up').textContent) || 75;
+        
+        animateCount(document.getElementById('total-workouts').querySelector('.count-up'), 0, workoutCount);
+        animateCount(document.getElementById('total-calories').querySelector('.count-up'), 0, calorieCount);
+        animateCount(document.getElementById('streak').querySelector('.count-up'), 0, streakCount);
+        animateCount(document.getElementById('goal-progress').querySelector('.count-up'), 0, goalProgress);
+        updateProgressRing(goalProgress);
+    }, 300);
 
     // Only fetch member workout data for members
     if (currentUser && currentUser.role === 'member') {

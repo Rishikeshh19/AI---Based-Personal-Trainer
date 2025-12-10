@@ -503,6 +503,7 @@
         <script src="../js/storage.js"></script>
     <script src="../js/gif_database.js"></script>
     <script src="../js/toast.js"></script>
+    <script src="../js/confetti.js"></script>
     <script>
         let workoutData = null;
         let startTime = null;
@@ -858,6 +859,12 @@
                         
                         sessionStorage.removeItem('currentWorkout');
                         clearInterval(workoutTimer);
+                        
+                        // Trigger confetti animation! 🎉
+                        if (typeof createConfetti === 'function') {
+                            createConfetti();
+                        }
+                        
                         showNotification(`🎉 Workout completed in ${timeDisplay}! Great job! Saved to database.`, 'success');
                         
                         // Add to notification system
@@ -945,6 +952,9 @@
             }
         });
     </script>
+    
+    <!-- Socket.IO for real-time notifications -->
+    <script src="http://localhost:8000/socket.io/socket.io.js"></script>
 </body>
 
 </html>

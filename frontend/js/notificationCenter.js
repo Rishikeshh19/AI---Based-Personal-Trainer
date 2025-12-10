@@ -179,10 +179,108 @@ const notificationCenter = {
         }
     },
     
+    // Initialize Socket.IO for real-time notifications
+    initSocketIO: function() {
+        try {
+            const token = localStorage.getItem('token');
+            const userStr = localStorage.getItem('user');
+            
+            if (!token || !userStr) return;
+            
+            const user = JSON.parse(userStr);
+            const userId = user._id || user.id;
+            
+            if (!userId) return;
+            
+            // Connect to Socket.IO server
+            if (typeof io !== 'undefined') {
+                this.socket = io('http://localhost:8000', {
+                    transports: ['websocket', 'polling'],
+                    auth: { token }
+                });
+                
+                this.socket.on('connect', () => {
+                    console.log('🔌 Socket.IO connected for notifications');
+                    // Join user-specific notification room
+                    this.socket.emit('joinNotificationRoom', userId);
+                });
+                
+                // Listen for real-time notifications
+                this.socket.on('notification', (notification) => {
+                    console.log('🔔 Real-time notification received:', notification);
+                    this.addNotification(notification);
+                    
+                    // Show browser notification if permitted
+                    this.showBrowserNotification(notification);
+                });
+                
+                this.socket.on('disconnect', () => {
+                    console.log('🔌 Socket.IO disconnected');
+                });
+                
+                this.socket.on('error', (error) => {
+                    console.error('Socket.IO error:', error);
+                });
+            }
+        } catch (error) {
+            console.error('Error initializing Socket.IO:', error);
+        }
+    },
+    
+    // Show browser notification
+    showBrowserNotification: function(notification) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification(notification.title, {
+                body: notification.message,
+                icon: '/favicon.ico',
+                tag: notification.id || Date.now()
+            });
+        }
+    },
+    
+    // Request browser notification permission
+    requestNotificationPermission: function() {
+        if ('Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission().then(permission => {
+                console.log('Notification permission:', permission);
+            });
+        }
+    },
+    
     // Initialize notification center
     init: function() {
         console.log('🔔 Notification Center initialized');
+        
+        // Clean up corrupted notifications on init
+        try {
+            const notifications = this.getAll();
+            const cleaned = notifications.filter(n => 
+                n && 
+                n.title && 
+                n.message &&
+                n.title !== 'undefined' && 
+                n.message !== 'undefined' &&
+                typeof n.title === 'string' &&
+                typeof n.message === 'string' &&
+                !n.title.includes('storage.setCurrentUser')
+            );
+            
+            if (cleaned.length !== notifications.length) {
+                console.log(`🧹 Cleaned ${notifications.length - cleaned.length} corrupted notifications`);
+                localStorage.setItem('notifications', JSON.stringify(cleaned));
+            }
+        } catch (e) {
+            console.warn('Error cleaning notifications:', e);
+            localStorage.setItem('notifications', '[]');
+        }
+        
         this.updateBadge();
+        
+        // Request browser notification permission
+        this.requestNotificationPermission();
+        
+        // Initialize Socket.IO for real-time notifications
+        this.initSocketIO();
         
         // Fetch from backend periodically (every 30 seconds)
         setInterval(() => {

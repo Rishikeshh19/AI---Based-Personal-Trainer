@@ -49,23 +49,35 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
                 const data = await response.json();
+                console.log("🔍 Full API Response:", data);
 
                 if (data.token) {
                     localStorage.setItem("token", data.token);
                     
-                    // Store user data if provided
-                    if (data.user) {
-                        localStorage.setItem("user", JSON.stringify(data.user));
+                    // Store user data - backend returns user in 'data' field
+                    const userData = data.data || data.user;
+                    console.log("🔍 User data extracted:", userData);
+                    console.log("🔍 data.data:", data.data);
+                    console.log("🔍 data.user:", data.user);
+                    
+                    if (userData) {
+                        localStorage.setItem("user", JSON.stringify(userData));
                     }
                     
                     // Redirect based on role
-                    const userRole = data.user?.role || 'member';
+                    const userRole = userData?.role || 'member';
+                    
+                    console.log("✅ Login successful - User role:", userRole);
+                    console.log("✅ Full user data:", JSON.stringify(userData, null, 2));
                     
                     if (userRole === 'admin') {
-                        window.location.href = "../pages/monitoring-dashboard.html";
+                        console.log("➡️ Redirecting to admin panel");
+                        window.location.href = "../pages/admin-panel.html";
                     } else if (userRole === 'trainer') {
+                        console.log("➡️ Redirecting to trainer dashboard");
                         window.location.href = "../pages/dashboard.html";
                     } else {
+                        console.log("➡️ Redirecting to member dashboard");
                         window.location.href = "../pages/dashboard.html";
                     }
                 } else {

@@ -281,6 +281,21 @@
             const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = '/pages/login.html';
+                return;
+            }
+            
+            // Redirect admin users to admin panel
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    if (user.role === 'admin') {
+                        window.location.href = '/pages/admin-panel.html';
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
             }
         })();
     </script>
@@ -347,7 +362,7 @@
     </main>
 
     <script src="../js/storage.js"></script>
-    <script src="../js/notification-center.js"></script>
+    <script src="../js/notificationCenter.js"></script>
     <script src="../js/nav.js"></script>
     <script src="../js/toast.js"></script>
         <script>
@@ -366,7 +381,22 @@
                 const token = localStorage.getItem('token');
                 
                 // Get notifications from localStorage (for offline support)
-                const savedNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+                let savedNotifications = [];
+                try {
+                    savedNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+                    // Clean up any corrupted notifications with "undefined" strings
+                    savedNotifications = savedNotifications.filter(n => 
+                        n && 
+                        n.title !== 'undefined' && 
+                        n.message !== 'undefined' &&
+                        typeof n.title === 'string' &&
+                        typeof n.message === 'string'
+                    );
+                } catch (e) {
+                    console.warn('Error parsing saved notifications, resetting:', e);
+                    savedNotifications = [];
+                    localStorage.setItem('notifications', '[]');
+                }
                 
                 // Try to fetch from backend
                 try {
@@ -391,6 +421,7 @@
             } catch (error) {
                 console.error('Error loading notifications:', error);
                 allNotifications = [];
+                localStorage.setItem('notifications', '[]');
             }
         }
 
@@ -411,11 +442,16 @@
             saveNotificationToBackend(newNotif);
         }
 
-        // Save notification to backend
+        // Save notification to backend (optional sync)
         async function saveNotificationToBackend(notification) {
             try {
                 const token = localStorage.getItem('token');
-                await fetch('http://localhost:8000/api/notifications', {
+                if (!token) {
+                    console.log('No token, skipping backend sync');
+                    return;
+                }
+                
+                const response = await fetch('http://localhost:8000/api/notifications', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -423,8 +459,12 @@
                     },
                     body: JSON.stringify(notification)
                 });
+                
+                if (!response.ok) {
+                    console.log('Backend notification endpoint not available, using local storage only');
+                }
             } catch (error) {
-                console.log('Notification saved locally, will sync when online');
+                console.log('Notification saved locally only:', error.message);
             }
         }
 
@@ -436,7 +476,15 @@
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
             });
-            event.target.classList.add('active');
+            
+            // Find and activate the clicked button
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(filter) || 
+                    (filter === 'all' && btn.textContent === 'All')) {
+                    btn.classList.add('active');
+                }
+            });
             
             renderNotifications();
         }
@@ -461,24 +509,44 @@
                 return;
             }
 
-            container.innerHTML = filteredNotifications.map(notif => `
-                <div class="notification-item ${notif.type} ${notif.isRead ? '' : 'unread'}" data-id="${notif.id}">
-                    <div class="notification-icon">${notif.icon}</div>
-                    <div class="notification-content">
-                        <div class="notification-title">
-                            ${notif.title}
-                            ${!notif.isRead ? '<span class="unread-badge">New</span>' : ''}
+            container.innerHTML = filteredNotifications.map(notif => {
+                // Ensure we have valid values, not undefined strings
+                const icon = (notif.icon && notif.icon !== 'undefined') ? notif.icon : getIconForType(notif.type);
+                const title = (notif.title && notif.title !== 'undefined') ? notif.title : 'Notification';
+                const message = (notif.message && notif.message !== 'undefined') ? notif.message : '';
+                const sender = (notif.sender && notif.sender !== 'undefined') ? notif.sender : null;
+                
+                return `
+                    <div class="notification-item ${notif.type || 'system'} ${notif.isRead ? '' : 'unread'}" data-id="${notif.id}">
+                        <div class="notification-icon">${icon}</div>
+                        <div class="notification-content">
+                            <div class="notification-title">
+                                ${title}
+                                ${!notif.isRead ? '<span class="unread-badge">New</span>' : ''}
+                            </div>
+                            <div class="notification-message">${message}</div>
+                            ${sender ? `<div class="notification-sender">From: ${sender}</div>` : ''}
                         </div>
-                        <div class="notification-message">${notif.message}</div>
-                        ${notif.sender ? `<div class="notification-sender">From: ${notif.sender}</div>` : ''}
+                        <div class="notification-time">${formatTime(notif.timestamp)}</div>
+                        <div class="notification-actions">
+                            <button class="notification-action-btn" onclick="markAsRead(${notif.id})" title="Mark as read">✓</button>
+                            <button class="notification-action-btn" onclick="deleteNotification(${notif.id})" title="Delete">✕</button>
+                        </div>
                     </div>
-                    <div class="notification-time">${formatTime(notif.timestamp)}</div>
-                    <div class="notification-actions">
-                        <button class="notification-action-btn" onclick="markAsRead(${notif.id})" title="Mark as read">✓</button>
-                        <button class="notification-action-btn" onclick="deleteNotification(${notif.id})" title="Delete">✕</button>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+        }
+        
+        // Helper function to get icon based on notification type
+        function getIconForType(type) {
+            const icons = {
+                'message': '💬',
+                'progress': '📊',
+                'system': '⚙️',
+                'alert': '⚠️',
+                'error': '❌'
+            };
+            return icons[type] || '🔔';
         }
 
         // Mark notification as read
@@ -507,11 +575,11 @@
 
         // Clear all notifications
         function clearAllNotifications() {
-            showConfirm('Are you sure you want to delete all notifications?', () => {
+            if (confirm('Are you sure you want to delete all notifications?')) {
                 allNotifications = [];
                 localStorage.setItem('notifications', JSON.stringify(allNotifications));
                 renderNotifications();
-            });
+            }
         }
 
         // Format time

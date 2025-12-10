@@ -15,6 +15,23 @@
             const token = localStorage.getItem('token');
             if (!token) {
                 window.location.href = '/pages/login.html';
+                return;
+            }
+            
+            // Redirect admin users to admin panel
+            const userStr = localStorage.getItem('user');
+            if (userStr) {
+                try {
+                    const user = JSON.parse(userStr);
+                    console.log('Dashboard - User role check:', user.role);
+                    if (user.role === 'admin') {
+                        console.log('Admin detected, redirecting to admin panel');
+                        window.location.href = '/pages/admin-panel.html';
+                        return;
+                    }
+                } catch (e) {
+                    console.error('Error parsing user data:', e);
+                }
             }
         })();
     </script>
@@ -53,31 +70,90 @@
     <main>
         <!-- Stats Cards -->
         <div class="dashboard-container">
-            <div class="stats-card">
-                <div class="card-icon">🏋️‍♂️</div>
+            <div class="stats-card" data-tooltip="Track your monthly workout count">
+                <div class="card-icon-wrapper">
+                    <div class="card-icon">🏋️‍♂️</div>
+                    <div class="icon-pulse"></div>
+                </div>
                 <h3>Total Workouts</h3>
-                <div class="stat-value" id="total-workouts">0</div>
+                <div class="stat-value" id="total-workouts">
+                    <span class="count-up">0</span>
+                </div>
                 <p>This month</p>
+                <div class="stat-trend" id="workout-trend">↗️ +2 from last month</div>
             </div>
-            <div class="stats-card">
-                <div class="card-icon">🔥</div>
+            <div class="stats-card" data-tooltip="Total calories burned across all workouts">
+                <div class="card-icon-wrapper">
+                    <div class="card-icon">🔥</div>
+                    <div class="icon-pulse"></div>
+                </div>
                 <h3>Calories Burned</h3>
-                <div class="stat-value" id="total-calories">0</div>
+                <div class="stat-value" id="total-calories">
+                    <span class="count-up">0</span>
+                </div>
                 <p>Total</p>
+                <div class="stat-trend" id="calorie-trend">🔥 Keep it up!</div>
             </div>
-            <div class="stats-card">
-                <div class="card-icon">⚡</div>
+            <div class="stats-card" data-tooltip="Consecutive days of activity">
+                <div class="card-icon-wrapper">
+                    <div class="card-icon">⚡</div>
+                    <div class="icon-pulse"></div>
+                </div>
                 <h3>Streak</h3>
-                <div class="stat-value" id="streak">0</div>
+                <div class="stat-value" id="streak">
+                    <span class="count-up">0</span>
+                </div>
                 <p>Days active</p>
+                <div class="stat-trend" id="streak-trend">⚡ Building momentum!</div>
             </div>
-            <div class="stats-card">
-                <div class="card-icon">🎯</div>
+            <div class="stats-card" data-tooltip="Weekly goal completion percentage">
+                <div class="card-icon-wrapper">
+                    <div class="card-icon">🎯</div>
+                    <div class="icon-pulse"></div>
+                </div>
                 <h3>Goal Progress</h3>
-                <div class="stat-value" id="goal-progress">75%</div>
+                <div class="stat-value" id="goal-progress">
+                    <span class="count-up">75</span>%
+                </div>
+                <div class="progress-ring">
+                    <svg class="progress-ring-svg" width="120" height="120">
+                        <circle class="progress-ring-circle-bg" cx="60" cy="60" r="52" />
+                        <circle class="progress-ring-circle" cx="60" cy="60" r="52" id="progress-circle" />
+                    </svg>
+                </div>
                 <p>This week</p>
+                <div class="stat-trend" id="goal-trend">🎯 On track!</div>
             </div>
         </div>
+
+        <!-- Quick Start Guide for New Users -->
+        <section id="quick-start-guide" style="background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%); border-left: 4px solid #F59E0B; display: none;">
+            <h2 style="color: #92400E;">🚀 Quick Start Guide</h2>
+            <p style="color: #78350F; margin-bottom: 20px;">Get started with your fitness journey in 3 easy steps:</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
+                <div style="background: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 12px; border: 1px solid #FCD34D;">
+                    <div style="font-size: 32px; margin-bottom: 12px;">💪</div>
+                    <h3 style="color: #92400E; font-size: 16px; margin-bottom: 8px;">1. Select Muscle Group</h3>
+                    <p style="color: #78350F; font-size: 14px; margin-bottom: 12px;">Choose which muscles you want to train today</p>
+                    <a href="muscle-workout.html" style="color: #1E40AF; font-weight: 600; text-decoration: underline; font-size: 13px;">Start Workout →</a>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 12px; border: 1px solid #FCD34D;">
+                    <div style="font-size: 32px; margin-bottom: 12px;">🤖</div>
+                    <h3 style="color: #92400E; font-size: 16px; margin-bottom: 8px;">2. Get AI Suggestions</h3>
+                    <p style="color: #78350F; font-size: 14px; margin-bottom: 12px;">Let AI create personalized workout plans</p>
+                    <a href="ai-suggestions.html" style="color: #1E40AF; font-weight: 600; text-decoration: underline; font-size: 13px;">Get Suggestions →</a>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.8); padding: 20px; border-radius: 12px; border: 1px solid #FCD34D;">
+                    <div style="font-size: 32px; margin-bottom: 12px;">📊</div>
+                    <h3 style="color: #92400E; font-size: 16px; margin-bottom: 8px;">3. Track Progress</h3>
+                    <p style="color: #78350F; font-size: 14px; margin-bottom: 12px;">Monitor your stats and achievements</p>
+                    <a href="progress.html" style="color: #1E40AF; font-weight: 600; text-decoration: underline; font-size: 13px;">View Progress →</a>
+                </div>
+            </div>
+            <button onclick="document.getElementById('quick-start-guide').style.display='none'; localStorage.setItem('hideQuickStart', 'true');" style="margin-top: 16px; background: white; color: #92400E; border: 1px solid #FCD34D; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                Got it! Hide this guide
+            </button>
+        </section>
 
         <!-- Latest Workout Section -->
         <section id="workout-summary">
@@ -135,6 +211,20 @@
             if (!currentUser) {
                 window.location.href = "login.html";
                 return;
+            }
+            
+            // Show quick start guide for new users (no workouts yet)
+            const hideQuickStart = localStorage.getItem('hideQuickStart');
+            const totalWorkouts = parseInt(document.getElementById('total-workouts').querySelector('.count-up').textContent) || 0;
+            
+            if (!hideQuickStart && totalWorkouts === 0) {
+                setTimeout(() => {
+                    const guideElement = document.getElementById('quick-start-guide');
+                    if (guideElement) {
+                        guideElement.style.display = 'block';
+                        guideElement.style.animation = 'fadeInUp 0.5s ease-out';
+                    }
+                }, 1500);
             }
 
             // Show/hide sections based on role (no redirects, keep dashboard static)

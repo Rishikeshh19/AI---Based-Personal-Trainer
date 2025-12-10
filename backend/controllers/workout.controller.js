@@ -64,9 +64,15 @@ exports.createWorkout = asyncHandler(async (req, res, next) => {
             title: 'Workout Completed',
             message: `Great job! You completed a workout with ${workout.exercises?.length || 0} exercises`,
             metadata: { workoutId: workout._id, duration: workout.totalDuration, calories: workout.totalCalories },
-            read: false
+            read: false,
+            timestamp: new Date().toISOString()
         };
         await global.notificationQueue?.add(notification);
+        
+        // Emit real-time notification to user via Socket.IO
+        if (global.io) {
+            global.io.to(`user:${req.user.id}`).emit('notification', notification);
+        }
         
         // Notify trainer if member has one
         if (user.trainerId) {
@@ -76,9 +82,15 @@ exports.createWorkout = asyncHandler(async (req, res, next) => {
                 title: 'Client Workout Completed',
                 message: `${user.profile?.firstName || user.username} completed a workout (${workout.totalDuration} min, ${workout.totalCalories} cal)`,
                 metadata: { memberId: req.user.id, workoutId: workout._id },
-                read: false
+                read: false,
+                timestamp: new Date().toISOString()
             };
             await global.notificationQueue?.add(trainerNotification);
+            
+            // Emit real-time notification to trainer
+            if (global.io) {
+                global.io.to(`user:${user.trainerId}`).emit('notification', trainerNotification);
+            }
         }
     } catch (notifError) {
         logger.error('Error creating workout notifications:', notifError);

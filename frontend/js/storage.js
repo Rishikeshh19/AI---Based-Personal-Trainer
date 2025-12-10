@@ -216,6 +216,11 @@ const storage = {
         return userStr ? JSON.parse(userStr) : null;
     },
 
+    // Set current user (alias for setSession for backwards compatibility)
+    setCurrentUser(user) {
+        localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(user));
+    },
+
     // Get current token
     getToken() {
         return localStorage.getItem(STORAGE_KEYS.TOKEN);

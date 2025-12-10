@@ -110,38 +110,96 @@ For EACH day (Monday through Sunday), provide:
 ### DAY X: [Day Name]
 
 **BREAKFAST (6:30 AM - 7:30 AM)**
+Choose ONE option:
+
+**Option 1:**
 - Main Dish: [e.g., 3 Idlis with Sambar]
 - Side: [e.g., Coconut Chutney - 2 tbsp]
 - Beverage: [e.g., Filter Coffee without sugar]
 - **Portion Sizes**: [Be specific - 150g, 2 pieces, 1 cup, etc.]
-- **Calories**: [X kcal]
-- **Macros**: P: [X]g | C: [X]g | F: [X]g
-- **Preparation Tips**: [Quick cooking instructions]
+- **Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**Option 2:**
+- Main Dish: [Alternative option, e.g., 2 Dosas with Potato Filling]
+- Side: [e.g., Tomato Chutney]
+- Beverage: [e.g., Green Tea]
+- **Portion Sizes**: [Be specific]
+- **Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**Option 3:**
+- Main Dish: [Third alternative, e.g., Upma with Vegetables]
+- Side: [e.g., Curd]
+- Beverage: [e.g., Buttermilk]
+- **Portion Sizes**: [Be specific]
+- **Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**Preparation Tips**: [Quick cooking instructions for all options]
 
 **MID-MORNING SNACK (10:00 AM - 10:30 AM)**
+Choose ONE option:
+
+**Option 1:**
 - Food Item: [e.g., Sundal (Chickpea Salad)]
 - **Portion**: [1 cup / 100g]
 - **Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
 
+**Option 2:**
+- Food Item: [Alternative snack, e.g., Roasted Makhana]
+- **Portion**: [Specific amount]
+- **Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
 **LUNCH (12:30 PM - 1:30 PM)**
+Choose ONE option:
+
+**Option 1:**
 - Rice: [Type and amount - e.g., 1 cup cooked brown rice]
 - Main Curry: [e.g., Sambar with vegetables]
 - Side Dish 1: [e.g., Rasam - 1 bowl]
 - Side Dish 2: [e.g., Vegetable Curry]
 - Accompaniment: [e.g., Buttermilk - 1 glass]
-- **Total Calories**: [X kcal]
-- **Total Macros**: P: [X]g | C: [X]g | F: [X]g
+- **Total Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**Option 2:**
+- Rice/Roti: [Alternative base - e.g., 2 Chapatis]
+- Main Curry: [Different curry option]
+- Side Dish: [Alternative sides]
+- Accompaniment: [e.g., Raita]
+- **Total Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**Option 3:**
+- [Third complete lunch alternative with all components]
+- **Total Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
 
 **EVENING SNACK (4:00 PM - 4:30 PM)**
-- Snack: [e.g., Roasted Peanuts or Fresh Fruit]
+Choose ONE option:
+
+**Option 1:**
+- Snack: [e.g., Roasted Peanuts]
+- **Portion**: [Specific amount]
+- **Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**Option 2:**
+- Snack: [Alternative - e.g., Fresh Fruit]
 - **Portion**: [Specific amount]
 - **Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
 
 **DINNER (7:30 PM - 8:30 PM)**
+Choose ONE option:
+
+**Option 1:**
 - Main: [Light dinner option - e.g., 2 Dosas with Chutney]
 - Side: [e.g., Vegetable Kurma]
-- **Total Calories**: [X kcal]
-- **Total Macros**: P: [X]g | C: [X]g | F: [X]g
+- **Total Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**Option 2:**
+- Main: [Alternative dinner - e.g., Ragi Mudde with Dal]
+- Side: [Alternative side]
+- **Total Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
+
+**Option 3:**
+- Main: [Third option - e.g., Vegetable Pulao with Raita]
+- Side: [Alternative accompaniment]
+- **Total Calories**: [X kcal] | **Macros**: P: [X]g | C: [X]g | F: [X]g
 
 **DAILY TOTALS for Day X:**
 - **Total Calories**: [X kcal]

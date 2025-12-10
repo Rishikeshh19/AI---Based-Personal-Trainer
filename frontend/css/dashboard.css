@@ -36,8 +36,156 @@
     }
 }
 
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 .stat-updated {
     animation: statUpdate 0.3s ease-out !important;
+}
+
+.count-up {
+    animation: countUp 0.6s ease-out;
+}
+
+/* Card icon with pulse effect */
+.card-icon-wrapper {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-pulse {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(30, 64, 175, 0.2), transparent);
+    animation: pulse 2s ease-in-out infinite;
+    z-index: 0;
+}
+
+/* Stat trend indicator */
+.stat-trend {
+    font-size: 11px;
+    color: #10B981;
+    font-weight: 600;
+    margin-top: 8px;
+    padding: 4px 12px;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 12px;
+    display: inline-block;
+    animation: fadeInUp 0.5s ease-out 0.3s both;
+}
+
+/* Tooltip styles */
+[data-tooltip] {
+    position: relative;
+    cursor: help;
+}
+
+[data-tooltip]::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: rgba(15, 23, 42, 0.95);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 1000;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+[data-tooltip]::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: rgba(15, 23, 42, 0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+[data-tooltip]:hover::before {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-12px);
+}
+
+[data-tooltip]:hover::after {
+    opacity: 1;
+}
+
+/* Progress ring animation */
+.progress-ring {
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    opacity: 0.3;
+}
+
+.progress-ring-svg {
+    transform: rotate(-90deg);
+}
+
+.progress-ring-circle-bg {
+    fill: none;
+    stroke: #E0F2FE;
+    stroke-width: 6;
+}
+
+.progress-ring-circle {
+    fill: none;
+    stroke: #1E40AF;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-dasharray: 326.73;
+    stroke-dashoffset: 326.73;
+    transition: stroke-dashoffset 1s ease-in-out;
 }
 
 * {

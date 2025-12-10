@@ -99,6 +99,20 @@ io.on('connection', (socket) => {
     socket.leave(roomName);
     logger.info(`User ${socket.id} left room: ${roomName}`);
   });
+  
+  // Listen for user joining their notification room
+  socket.on('joinNotificationRoom', (userId) => {
+    const roomName = `user:${userId}`;
+    socket.join(roomName);
+    logger.info(`User ${socket.id} joined notification room: ${roomName}`);
+  });
+  
+  // Listen for user leaving notification room
+  socket.on('leaveNotificationRoom', (userId) => {
+    const roomName = `user:${userId}`;
+    socket.leave(roomName);
+    logger.info(`User ${socket.id} left notification room: ${roomName}`);
+  });
 });
 
 // Health check endpoint

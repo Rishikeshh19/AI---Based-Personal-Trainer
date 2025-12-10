@@ -74,10 +74,16 @@ exports.sendMessage = async (req, res) => {
                 type: 'new_message',
                 title: 'New Message',
                 message: `${sender.profile?.firstName || sender.username} sent you a message`,
-                metadata: { senderId: senderId, messageId: newMessage._id },
-                read: false
+                metadata: { senderId: senderId, messageId: newMessage._id, preview: message.trim().substring(0, 50) },
+                read: false,
+                timestamp: new Date().toISOString()
             };
             await global.notificationQueue?.add(notification);
+            
+            // Emit real-time notification to receiver via Socket.IO
+            if (global.io) {
+                global.io.to(`user:${receiverId}`).emit('notification', notification);
+            }
         } catch (notifError) {
             logger.error('Error creating message notification:', notifError);
         }

@@ -804,6 +804,16 @@
                 <h4 style="margin-top: 0; color: white;">${plan.type} Plan</h4>
                 <p style="margin: 0; font-size: 14px; opacity: 0.95;">${plan.description || ''}</p>
             </div>`;
+            
+            // Add info box about multiple options
+            htmlContent += `<div style="margin-bottom: 20px; padding: 15px; background: #E0F2FE; border-left: 4px solid var(--primary-color); border-radius: 8px;">
+                <p style="margin: 0; color: #0F172A; font-size: 14px; line-height: 1.6;">
+                    <strong style="color: var(--primary-color);">💡 Flexible Meal Options:</strong> 
+                    Each meal includes 2-3 different food options. Choose what you prefer or what's available. 
+                    All options are nutritionally balanced for your goals.
+                </p>
+            </div>`;
+            
             htmlContent += formatDietPlan(plan.plan);
             contentDiv.innerHTML = htmlContent;
         }

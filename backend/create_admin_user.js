@@ -20,14 +20,14 @@ const createUsers = async () => {
         // This ensures passwords are re-hashed with the new JWT_SECRET
 
         // Admin User
-        let admin = await User.findOne({ email: 'admin@aitrainer.com' });
+        let admin = await User.findOne({ email: 'admin@gmail.com' });
         if (!admin) {
             // Check if username exists
             const existingUsername = await User.findOne({ username: 'admin' });
             if (existingUsername) {
                 // Update the existing user
-                existingUsername.email = 'admin@aitrainer.com';
-                existingUsername.password = 'Admin@123';
+                existingUsername.email = 'admin@gmail.com';
+                existingUsername.password = 'Admin@1234';
                 existingUsername.role = 'admin';
                 existingUsername.status = 'active';
                 await existingUsername.save();
@@ -35,8 +35,8 @@ const createUsers = async () => {
             } else {
                 admin = await User.create({
                     username: 'admin',
-                    email: 'admin@aitrainer.com',
-                    password: 'Admin@123',
+                    email: 'admin@gmail.com',
+                    password: 'Admin@1234',
                     role: 'admin',
                     status: 'active',
                     profile: { firstName: 'Admin', lastName: 'User' }
@@ -44,7 +44,7 @@ const createUsers = async () => {
                 console.log('✅ Admin user created');
             }
         } else {
-            admin.password = 'Admin@123';
+            admin.password = 'Admin@1234';
             await admin.save();
             console.log('✅ Admin user password updated');
         }
@@ -125,8 +125,8 @@ const createUsers = async () => {
         console.log('\n📋 Test User Credentials:');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
         console.log('Admin:');
-        console.log('  Email: admin@aitrainer.com');
-        console.log('  Password: Admin@123');
+        console.log('  Email: admin@gmail.com');
+        console.log('  Password: Admin@1234');
         console.log('\nTrainer:');
         console.log('  Email: trainer@aitrainer.com');
         console.log('  Password: Trainer@123');

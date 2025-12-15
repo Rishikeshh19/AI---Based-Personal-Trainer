@@ -10,6 +10,19 @@
 
 ---
 
+## 📸 Screenshots
+
+### Login Page
+![Login Page](https://github.com/user-attachments/assets/e3b4f5e0-8b9e-4c0e-8f3e-7f3e3e3e3e3e)
+
+### AI-Powered Fitness Recommendations
+![AI Recommendations](https://github.com/user-attachments/assets/f3b4f5e0-8b9e-4c0e-8f3e-7f3e3e3e3e3f)
+
+### Workout Suggestions
+![Workout Suggestions](https://github.com/user-attachments/assets/f3b4f5e0-8b9e-4c0e-8f3e-7f3e3e3e3e3g)
+
+---
+
 ## ✨ Features
 
 ### 🎯 Core Functionality

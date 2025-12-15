@@ -13,13 +13,13 @@
 ## 📸 Screenshots
 
 ### Login Page
-![Login Page](https://github.com/user-attachments/assets/e3b4f5e0-8b9e-4c0e-8f3e-7f3e3e3e3e3e)
+![Login Page](screenshots/login.png)
 
 ### AI-Powered Fitness Recommendations
-![AI Recommendations](https://github.com/user-attachments/assets/f3b4f5e0-8b9e-4c0e-8f3e-7f3e3e3e3e3f)
+![AI Recommendations](screenshots/ai-recommendations.png)
 
 ### Workout Suggestions
-![Workout Suggestions](https://github.com/user-attachments/assets/f3b4f5e0-8b9e-4c0e-8f3e-7f3e3e3e3e3g)
+![Workout Suggestions](screenshots/workout-suggestions.png)
 
 ---
 

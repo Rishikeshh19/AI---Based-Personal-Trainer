@@ -1999,3 +1999,14 @@ Please retry in 10.340996356s. [{"@type":"type.googleapis.com/google.rpc.Help","
   "ip": "::1",
   "user": "693009fc645d76acdf4f1d60"
 }
+2025-12-16 21:04:44 [[31merror[39m]: Error: Invalid credentials
+    at C:\Users\Saketh Showry\AI-TRAINER 2.0\AI---Based-Personal-Trainer\backend\controllers\auth.controller.js:49:21
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+2025-12-16 21:04:44 [[31merror[39m]: Error: Invalid credentials
+{
+  "statusCode": 401,
+  "path": "/api/auth/login",
+  "method": "POST",
+  "ip": "::1",
+  "user": "unauthenticated"
+}
